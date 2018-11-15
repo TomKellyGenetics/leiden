@@ -52,8 +52,8 @@ To use Leiden with the Seurat pipeline for a Seurat Object `object` that has an 
 ```R
 adjacency_matrix <- as.matrix(object@snn)
 membership <- leiden(adjacency_matrix)
-object@ident <- membership
-object@meta.data$ident <- membership
+object@ident <- as.factor(membership)
+object@meta.data$ident <- as.factor(membership)
 ```
 
 These clusters can then be plotted with:
