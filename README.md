@@ -56,6 +56,22 @@ object@ident <- membership
 object@meta.data$ident <- membership
 ```
 
+These clusters can then be plotted with:
+
+```R
+library("RColorBrewer")
+colourPal <- function(groups) colorRampPalette(brewer.pal(min(length(names(table(groups))), 11), "Set3"))(length(names(table(groups))))
+
+object <- RunPCA(object = object, do.print = TRUE, pcs.print = 1:5, genes.print = 5)
+PCAPlot(object = object, colors.use = colourPal(object@ident), group.by = "ident")
+
+object <- RunTSNE(object = object, dims.use = 1:20, do.fast = TRUE, dim.embed = 2)
+TSNEPlot(object = object, colors.use = colourPal(object@ident), group.by = "ident")
+
+object <- RunUMAP(object = object, dims.use = 1:20, metric = "correlation", max.dim = 2)
+DimPlot(object, reduction.use = "umap", colors.use = colourPal(object@ident), group.by = "ident")
+```
+
 
 ### Citation
 
