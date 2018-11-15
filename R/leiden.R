@@ -6,7 +6,6 @@
 ##' @description Implements the Leiden clustering algorithm in R using reticulate to run the Python version. Requires the python "leidenalg" and "igraph" modules to be installed. Returns a vector of partition indices.
 ##'
 ##' @param adj_mat An adjacency matrix compatible with \code{\link[igraph]{igraph}} object.
-##' @param state numeric vector. Vector of length E(graph). Sign used to calculate state matrix, may be an integer state or inferred directly from expected correlations for each edge. May be applied a scalar across all edges or as a vector for each edge respectively. May also be entered as text for "activating" or "inhibiting" or as integers for activating (0,1) or inhibiting (-1,2). Compatible with inputs for \code{\link[plot.igraph]{plot_directed}}.
 ##' @param ... Parameters to pass to the Python leidenalg function.
 ##'
 ##' @keywords graph network igraph mvtnorm simulation
@@ -14,7 +13,7 @@
 ##' @importFrom igraph graph_from_adjacency_matrix write.graph
 ##' @export
 
-leiden <- function(){
+leiden <- function(adj_mat, ...){
     #import python modules with reticulate
     leidenalg <- reticulate::import("leidenalg")
     ig <- reticulate::import("igraph")
