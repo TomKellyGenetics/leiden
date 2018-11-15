@@ -53,6 +53,7 @@ To use Leiden with the Seurat pipeline for a Seurat Object `object` that has an 
 adjacency_matrix <- as.matrix(object@snn)
 membership <- leiden(adjacency_matrix)
 object@ident <- as.factor(membership)
+names(test@ident) <- rownames(test@meta.data)
 object@meta.data$ident <- as.factor(membership)
 ```
 
