@@ -1,11 +1,13 @@
 Package: leiden
 Type: Package
-Title: What the Package Does (Title Case)
+Title: R implementation of the Leiden package
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Author: Tom Kelly <tom.kelly@riken.jp>
+Maintainer: Tom Kelly <tom.kelly@riken.jp>
+Description: Implements the Python leidenalg module to be called in R.
+    Enables clustering using the leiden algorithm for partition a graph into communities.
+    See the Python repository for more details: https://github.com/vtraag.leidenalg
+    Traag et al (2018) From Louvian to Leiden: guaranteeing well-connected communities. arXiv:1810.08473
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
