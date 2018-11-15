@@ -1,0 +1,18 @@
+citHeader("To cite the leiden package in publications use:")
+
+citEntry(entry = "Manual",
+         title        = "leiden: R implementation of the Leiden algorithm",
+         author       = personList(as.person("S. Thomas Kelly")),
+         year         = "2018",
+         note         = "R package version 0.1.0",
+         url          = "https://github.com/TomKellyGenetics/leiden",
+
+         textVersion  =
+           paste("S. Thomas Kelly (2018). leiden: R implementation of the Leiden algorithm. R package version 0.1.0",
+                 "https://github.com/TomKellyGenetics/leiden")
+)
+
+citFooter(paste("Please also acknowledge the original publication: \n",
+                "Traag, V.A., Waltman. L., Van Eck, N.-J. (2018). \n",
+                "From Louvain to  Leiden: guaranteeing well-connected communities.  \n",
+                "`arXiv:1810.08473 <https://arxiv.org/abs/1810.08473>`",sep=" "))

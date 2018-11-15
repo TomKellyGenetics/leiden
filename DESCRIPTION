@@ -2,6 +2,7 @@ Package: leiden
 Type: Package
 Title: R implementation of the Leiden package
 Version: 0.1.0
+Date: 2018
 Author: Tom Kelly <tom.kelly@riken.jp>
 Maintainer: Tom Kelly <tom.kelly@riken.jp>
 Description: Implements the Python leidenalg module to be called in R.
@@ -12,3 +13,5 @@ License: GPL-3
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.1
+Suggests: 
+    covr

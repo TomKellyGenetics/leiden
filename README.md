@@ -1,4 +1,16 @@
+# Leiden Algorithm
 
+## leiden version 0.1.0
+
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/leiden)](https://cran.r-project.org/package=leiden)
+[![Travis Build Status](https://travis-ci.org/TomKellyGenetics/leiden.svg?branch=master)](https://travis-ci.org/TomKellyGenetics/leiden)
+[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/TomKellyGenetics/leiden?branch=master&svg=true)](https://ci.appveyor.com/project/TomKellyGenetics/leiden)
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
+[![codecov](https://codecov.io/gh/TomKellyGenetics/leiden/branch/master/graph/badge.svg)](https://codecov.io/gh/TomKellyGenetics/leiden)
+
+## Clustering with the Leiden Algorithm in R
+
+This package allows calling the Leiden algorthm for clustering on an igraph object from R. See the Python and Java implementations for more details: 
 
 https://github.com/CWTSLeiden/networkanalysis
 
@@ -47,6 +59,29 @@ object@meta.data$ident <- membership
 
 ### Citation
 
+Please cite this implementation R in if you use it:
+
+```
+To cite the leiden package in publications use:
+
+  S. Thomas Kelly (2018). leiden: R implementation of the Leiden algorithm. R
+  package version 0.1.0 https://github.com/TomKellyGenetics/leiden
+
+A BibTeX entry for LaTeX users is
+
+  @Manual{,
+    title = {leiden: R implementation of the Leiden algorithm},
+    author = {S. Thomas Kelly},
+    year = {2018},
+    note = {R package version 0.1.0},
+    url = {https://github.com/TomKellyGenetics/leiden},
+  }
+ ```
+
+Please also cite the original publication of this algorithm.
+
+```
 Traag, V.A., Waltman. L., Van Eck, N.-J. (2018). From Louvain to
        Leiden: guaranteeing well-connected communities.
-       `arXiv:1810.08473 <https://arxiv.org/abs/1810.08473>`_
+       `arXiv:1810.08473 <https://arxiv.org/abs/1810.08473>`
+```
