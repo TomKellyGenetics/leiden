@@ -34,7 +34,7 @@ If you do not have root access, you can use `pip install --user` or `pip install
 
 The 'devtools' package will be used to install 'leiden' and the dependancies (igraph and reticulate). To install the development version:
 
-```{r}
+```{r, eval=FALSE}
 if (!requireNamespace("devtools"))
     install.packages("devtools")
 devtools::install_github("TomKellyGenetics/leiden")

@@ -1,4 +1,4 @@
-library(testthat)
-library(leiden)
+library("testthat")
+library("leiden")
 
 test_check("leiden")

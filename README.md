@@ -10,7 +10,7 @@
 
 ## Clustering with the Leiden Algorithm in R
 
-This package allows calling the Leiden algorthm for clustering on an igraph object from R. See the Python and Java implementations for more details: 
+This package allows calling the Leiden algorithm for clustering on an igraph object from R. See the Python and Java implementations for more details: 
 
 https://github.com/CWTSLeiden/networkanalysis
 

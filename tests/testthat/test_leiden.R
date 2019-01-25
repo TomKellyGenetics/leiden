@@ -4,11 +4,11 @@ context("running Leiden on an adjacency matrix")
 
 adj_mat <- matrix(round(runif(10000, 0, 1)), 100, 100)
 
-modules <- py_module_available("leidenalg") && py_module_available("igraph")
+modules <- devtools::py_module_available("leidenalg") && devtools::py_module_available("igraph")
 
 skip_if_no_python <- function() {
   if (!modules)
-    skip("scipy not available for testing")
+    testthat::skip("scipy not available for testing")
 }
 
 
