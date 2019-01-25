@@ -16,8 +16,8 @@
 
 leiden <- function(adj_mat, partition_type = c('RBConfigurationVertexPartition', 'ModularityVertexPartition', 'RBERVertexPartition', 'CPMVertexPartition', 'MutableVertexPartition', 'SignificanceVertexPartition', 'SurpriseVertexPartition'), resolution_parameter = 1, ...){
     #import python modules with reticulate
-    leidenalg <- reticulate::import("leidenalg")
-    ig <- reticulate::import("igraph")
+    leidenalg <- reticulate::import("leidenalg", delay_load = TRUE)
+    ig <- reticulate::import("igraph", delay_load = TRUE)
 
     #convert matrix input
     adj_mat <- as.matrix(ceiling(adj_mat))
@@ -49,4 +49,21 @@ leiden <- function(adj_mat, partition_type = c('RBConfigurationVertexPartition',
         stop("please specify a partition type as a string out of those documented")
     }
     return(part$membership+1)
+}
+
+
+# global reference to python modules (will be initialized in .onLoad)
+leidenalg <- NULL
+ig <- NULL
+
+.onLoad <- function(libname, pkgname) {
+    # use superassignment to update global reference to scipy
+    leidenalg <<- reticulate::import("leidenalg", delay_load = TRUE)
+    ig <<- reticulate::import("igraph", delay_load = TRUE)
+
+    install_python_modules <- function(method = "auto", conda = "auto") {
+        reticulate::py_install("leidenalg", method = method, conda = conda)
+        reticulate::py_install("igraph", method = method, conda = conda)
+    }
+    install_python_modules()
 }

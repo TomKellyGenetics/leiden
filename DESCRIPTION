@@ -20,6 +20,7 @@ Suggests:
     testthat,
     spelling,
     knitr,
-    rmarkdown
+    rmarkdown,
+    igraph
 Language: en-US
 VignetteBuilder: knitr

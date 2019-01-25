@@ -3,3 +3,11 @@
 language: R
 sudo: false
 cache: packages
+
+python:
+  - "2.7"
+  - "3.6"
+install:
+  - pip install igraph
+  - pip install leidenalg
+
