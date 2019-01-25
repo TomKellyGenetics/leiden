@@ -1,7 +1,7 @@
 Package: leiden
 Type: Package
 Title: R implementation of the Leiden package
-Version: 0.1.1
+Version: 0.2.0
 Date: 2018
 Author: Tom Kelly <tom.kelly@riken.jp>
 Maintainer: Tom Kelly <tom.kelly@riken.jp>

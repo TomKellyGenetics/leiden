@@ -5,12 +5,19 @@
 \alias{leiden}
 \title{Run Leiden clustering algorithm}
 \usage{
-leiden(adj_mat, ...)
+leiden(adj_mat, partition_type = c("RBConfigurationVertexPartition",
+  "ModularityVertexPartition", "RBERVertexPartition", "CPMVertexPartition",
+  "MutableVertexPartition", "SignificanceVertexPartition",
+  "SurpriseVertexPartition"), resolution_parameter = 1, ...)
 }
 \arguments{
 \item{adj_mat}{An adjacency matrix compatible with \code{\link[igraph]{igraph}} object.}
 
-\item{...}{Parameters to pass to the Python leidenalg function.}
+\item{partition_type}{Type of partition to use. Defaults to RBConfigurationVertexPartition. Options include: ModularityVertexPartition, RBERVertexPartition, CPMVertexPartition, MutableVertexPartition, SignificanceVertexPartition, SurpriseVertexPartition (see the Leiden python module documentation for more details)}
+
+\item{resolution_parameter}{A parameter controlling the coarseness of the clusters. Higher values lead to more clusters. (defaults to 1.0 for partition types that accept a resolution parameter)}
+
+\item{...}{Parameters to pass to the Python leidenalg function (defaults initial_membership=None, weights=None).}
 }
 \description{
 Implements the Leiden clustering algorithm in R using reticulate to run the Python version. Requires the python "leidenalg" and "igraph" modules to be installed. Returns a vector of partition indices.
