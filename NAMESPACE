@@ -2,5 +2,3 @@
 
 export(leiden)
 import(reticulate)
-importFrom(igraph,graph_from_adjacency_matrix)
-importFrom(igraph,write.graph)
