@@ -7,8 +7,9 @@ cache: packages
 python:
   - "2.7"
   - "3.4"
-install:
-  - pip install --upgrade pip
-  - pip install igraph
-  - pip install leidenalg
+
+before_install:
+  - pip install --user --upgrade pip
+  - pip install --user igraph
+  - pip install --user leidenalg
 
