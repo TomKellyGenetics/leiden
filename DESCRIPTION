@@ -8,7 +8,7 @@ Maintainer: Tom Kelly <tom.kelly@riken.jp>
 Description: Implements the Python leidenalg module to be called in R.
     Enables clustering using the leiden algorithm for partition a graph into communities.
     See the Python repository for more details: https://github.com/vtraag/leidenalg
-    Traag et al (2018) From Louvian to Leiden: guaranteeing well-connected communities. arXiv:1810.08473
+    Traag et al (2018) From Louvain to Leiden: guaranteeing well-connected communities. arXiv:1810.08473.
 License: GPL-3
 Imports:
     reticulate
@@ -17,4 +17,6 @@ LazyData: true
 RoxygenNote: 6.1.1
 Suggests: 
     covr,
-    testthat
+    testthat,
+    spelling
+Language: en-US
