@@ -4,7 +4,7 @@ context("running Leiden on an adjacency matrix")
 
 adj_mat <- matrix(round(runif(10000, 0, 1)), 100, 100)
 
-modules <- devtools::py_module_available("leidenalg") && devtools::py_module_available("igraph")
+modules <- reticulate::py_module_available("leidenalg") && reticulate::py_module_available("igraph")
 
 skip_if_no_python <- function() {
   if (!modules)

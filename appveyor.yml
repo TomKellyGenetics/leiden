@@ -33,9 +33,9 @@ cache:
 # Adapt as necessary starting from here
 
 build_script:
-  - "%PYTHON%\\python.exe -m pip install --upgrade pip"
-  - "%PYTHON%\\python.exe -m pip install igraph --install-option=--c-core-version=0.7.1"
-  - "%PYTHON%\\python.exe -m pip install numpy leidenalg"
+  - %PYTHON%\\python.exe -m pip install --upgrade pip
+  - %PYTHON%\\python.exe -m pip install igraph --install-option="--c-core-version=0.7.1"
+  - %PYTHON%\\python.exe -m pip install numpy leidenalg
   - travis-tool.sh install_deps
 
 test_script:
