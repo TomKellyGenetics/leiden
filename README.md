@@ -57,6 +57,8 @@ names(test@ident) <- rownames(test@meta.data)
 object@meta.data$ident <- as.factor(membership)
 ```
 
+Note that this code is designed for Seurat version 2 releases. For Seurat version 3 objects, the Leiden algorithm will be implemented in the Seurat version 3 package with `Seurat::FindClusters` and `algorithm = "leiden"`).  
+
 These clusters can then be plotted with:
 
 ```R
@@ -90,7 +92,7 @@ A BibTeX entry for LaTeX users is
     title = {leiden: R implementation of the Leiden algorithm},
     author = {S. Thomas Kelly},
     year = {2018},
-    note = {R package version 0.1.0},
+    note = {R package version 0.2.0},
     url = {https://github.com/TomKellyGenetics/leiden},
   }
  ```
