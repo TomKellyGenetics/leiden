@@ -30,6 +30,7 @@ leiden <- function(adj_mat, partition_type = c('RBConfigurationVertexPartition',
     snn_graph <- ig$Graph$Adjacency(adj_mat_py)
 
     #compute partitions
+    partition_type <- partition_type[1]
     if(partition_type == "RBConfigurationVertexPartition"){
         part <- leidenalg$find_partition(snn_graph, leidenalg$RBConfigurationVertexPartition, resolution_parameter = resolution_parameter, ...)
     } else if(partition_type == "ModularityVertexPartition"){
