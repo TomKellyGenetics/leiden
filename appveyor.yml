@@ -35,7 +35,7 @@ cache:
 # Adapt as necessary starting from here
 
 build_script:
-  - "%PYTHON%\\python.exe -m pip install --update pip"
+  - "%PYTHON%\\python.exe -m pip install --upgrade pip"
   - "%PYTHON%\\python.exe -m pip install igraph leidenalg"
   - travis-tool.sh install_deps
 
