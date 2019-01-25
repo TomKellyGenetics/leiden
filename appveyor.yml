@@ -14,9 +14,6 @@ environment:
     - PYTHON_VERSION: 3.4
       MINICONDA: C:\Miniconda3
 
-init:
-  - "ECHO %PYTHON_VERSION% %MINICONDA%"
-
 install:
   ps: Bootstrap
 
