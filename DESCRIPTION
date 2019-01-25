@@ -18,5 +18,8 @@ RoxygenNote: 6.1.1
 Suggests: 
     covr,
     testthat,
-    spelling
+    spelling,
+    knitr,
+    rmarkdown
 Language: en-US
+VignetteBuilder: knitr

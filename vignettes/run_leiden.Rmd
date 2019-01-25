@@ -1,0 +1,110 @@
+---
+title: "Running the Leiden algorithm with R"
+author: "S. Thomas Kelly"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library("leiden")
+```
+
+## Clustering with the Leiden Algorithm in R
+
+This package allows calling the Leiden algorthm for clustering on an igraph object from R. See the Python and Java implementations for more details: 
+
+https://github.com/CWTSLeiden/networkanalysis
+
+https://github.com/vtraag/leidenalg
+
+## Install
+
+This package requires the 'leidenalg' and 'igraph' modules for python (2) to be installed on your system. For example:
+
+``pip install leidenalg igraph``
+
+If you do not have root access, you can use `pip install --user` or `pip install --prefix` to install these in your user directory (which you have write permissions for) and ensure that this directory is in your PATH so that Python can find it.
+
+The 'devtools' package will be used to install 'leiden' and the dependancies (igraph and reticulate). To install the development version:
+
+```R
+if (!requireNamespace("devtools"))
+    install.packages("devtools")
+devtools::install_github("TomKellyGenetics/leiden")
+```
+
+The current release on CRAN can be installed with:
+
+```
+install.packages("leiden")
+```
+
+## Usage
+
+### Running the Leiden algorithm in R
+
+First set up a compatible adjacency matrix:
+
+```{r}
+adjacency_matrix <- matrix(round(runif(10000, 0, 1)), 100, 100)
+```
+
+This can be a shared nearest neighbours matrix derived from a graph object.
+
+```{r, eval=FALSE}
+adjacency_matrix <- igraph::as_adjacency_matrix(graph)
+```
+
+Then the Leiden algorithm can be run on the adjacency matrix.
+
+```
+membership <- leiden(adjacency_matrix)
+```
+
+### Running Leiden with arguments passed to leidenalg
+
+Arguments can be passed to the leidenalg implementation in Python:
+
+```{r}
+#run with defaults
+  partition <- leiden(adjacency_matrix)
+
+
+#run with ModularityVertexPartition"
+  partition <- leiden(adjacency_matrix, partition_type = "ModularityVertexPartition")
+
+
+#run with resolution parameter
+  partition <- leiden(adjacency_matrix, resolution_parameter = 0.95)
+```
+
+See the documentation on the leidenalg Python module for more information: [https://leidenalg.readthedocs.io/en/latest/reference.html](https://leidenalg.readthedocs.io/en/latest/reference.html)
+
+## Running on a Seurat Object
+
+### Seurat version 2
+
+To use Leiden with the Seurat pipeline for a Seurat Object `object` that has an SNN computed (for example with `Seurat::FindClusters` with `save.SNN = TRUE`). This will compute the Leiden clusters and add them to the Seurat Object Class.
+
+```R
+adjacency_matrix <- as.matrix(object@snn)
+membership <- leiden(adjacency_matrix)
+object@ident <- as.factor(membership)
+names(test@ident) <- rownames(test@meta.data)
+object@meta.data$ident <- as.factor(membership)
+```
+
+Note that this code is designed for Seurat version 2 releases.
+
+
+### Seurat version 3 or later
+
+For Seurat version 3 objects, the Leiden algorithm will be implemented in the Seurat version 3 package with `Seurat::FindClusters` and `algorithm = "leiden"`).  See the documentation for these functions.
