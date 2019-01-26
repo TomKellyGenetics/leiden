@@ -46,7 +46,7 @@ install:
 
 
     # setup conda environment for building
-  - cmd: set "PATH=%CONDA_INSTALL_LOCN%;%CONDA_INSTALL_LOCN%\scripts;%PATH%"
+  - cmd: set "PATH=%MINICONDA%;%MINICONDA%\\Scripts;%PATH%"
   - cmd: set PYTHONUNBUFFERED=1
 
     # update mysy2
