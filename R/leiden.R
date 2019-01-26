@@ -57,13 +57,15 @@ leidenalg <- NULL
 ig <- NULL
 
 .onLoad <- function(libname, pkgname) {
-    # use superassignment to update global reference to scipy
-    leidenalg <<- reticulate::import("leidenalg", delay_load = TRUE)
-    ig <<- reticulate::import("igraph", delay_load = TRUE)
-
     install_python_modules <- function(method = "auto", conda = "auto") {
         reticulate::py_install("leidenalg", method = method, conda = conda)
         reticulate::py_install("igraph", method = method, conda = conda)
     }
-    install_python_modules()
+    modules <- reticulate::py_module_available("leidenalg") && reticulate::py_module_available("igraph")
+    if(!modules){
+        install_python_modules()
+    }
+    # use superassignment to update global reference to python modules
+    leidenalg <<- reticulate::import("leidenalg", delay_load = TRUE)
+    ig <<- reticulate::import("igraph", delay_load = TRUE)
 }
