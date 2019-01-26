@@ -6,7 +6,7 @@ image: Visual Studio 2015
 
 environment:
   global:
-    PATH: C:\msys64\usr\bin;C:\msys64\mingw64\bin;C:\Windows\System32;C:\Windows;%PATH%
+    PATH: "C:\msys64\usr\bin;C:\msys64\mingw64\bin;C:\Windows\System32;C:\Windows;%PATH%"
     R_ARCH: x64
     NOT_CRAN: true
     USE_RTOOLS: true
