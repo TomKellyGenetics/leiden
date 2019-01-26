@@ -25,6 +25,9 @@ init:
         Import-Module '..\appveyor-tool.ps1'
 
 install:
+  - '%PYTHON%\\python.exe -m pip install --upgrade pip'
+  - '%PYTHON%\\python.exe -m pip install --upgrade python-igraph'
+  - '%PYTHON%\\python.exe -m pip install --user numpy leidenalg'
   ps: Bootstrap
 
 cache:
@@ -33,9 +36,6 @@ cache:
 # Adapt as necessary starting from here
 
 build_script:
-  - '%PYTHON%\\python.exe -m pip install --upgrade pip'
-  - '%PYTHON%\\python.exe -m pip install --upgrade python-igraph'
-  - '%PYTHON%\\python.exe -m pip install --user numpy leidenalg'
   - travis-tool.sh install_deps
 
 test_script:

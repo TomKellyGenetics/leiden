@@ -4,6 +4,12 @@ language: R
 sudo: false
 cache: packages
 
+os:
+  - linux
+  - osx
+
+r: release
+
 r-packages:
   - reticulate
 
@@ -13,7 +19,12 @@ python:
   - "3.7"
 
 before_install:
+  - chmod +x travis_setup.sh
+  - ./travis_setup.sh
+
+before_install:
   - pip install --user igraph
   - pip install --user numpy
   - pip install --user leidenalg
 
+warnings_are_errors: false
