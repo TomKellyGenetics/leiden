@@ -6,18 +6,18 @@ image: Visual Studio 2015
 
 environment:
   global:
-    PATH: "C:\msys64\usr\bin;C:\msys64\mingw64\bin;C:\Windows\System32;C:\Windows;%PATH%"
+    PATH: C:\msys64\usr\bin;C:\msys64\mingw64\bin;C:\Windows\System32;C:\Windows;%PATH%
     R_ARCH: x64
     NOT_CRAN: true
     USE_RTOOLS: true
     _R_CHECK_FORCE_SUGGESTS_: false
-    matrix:
-     - PYTHON: "C:\\Python35"
-       RETICULATE_PYTHON: "C:\\Python35"
-     - PYTHON: "C:\\Python36"
-       RETICULATE_PYTHON: "C:\\Python36"
-     - PYTHON: "C:\\Python37"
-       RETICULATE_PYTHON: "C:\\Python37"
+  matrix:
+    - PYTHON: "C:\\Python35"
+      RETICULATE_PYTHON: "C:\\Python35"
+    - PYTHON: "C:\\Python36"
+      RETICULATE_PYTHON: "C:\\Python36"
+    - PYTHON: "C:\\Python37"
+      RETICULATE_PYTHON: "C:\\Python37"
 
 matrix:
   fast_finish: true
