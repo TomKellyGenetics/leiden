@@ -34,63 +34,12 @@ init:
   - cmd: "ECHO %PYTHON_VERSION% %CONDA_INSTALL_LOCN%"
 
 install:
-    # If there is a newer build queued for the same PR, cancel this one.
-    # The AppVeyor 'rollout builds' option is supposed to serve the same
-    # purpose but it is problematic because it tends to cancel builds pushed
-    # directly to master instead of just PR builds (or the converse).
-    # credits: JuliaLang developers.
-  - ps: if ($env:APPVEYOR_PULL_REQUEST_NUMBER -and $env:APPVEYOR_BUILD_NUMBER -ne ((Invoke-RestMethod `
-        https://ci.appveyor.com/api/projects/$env:APPVEYOR_ACCOUNT_NAME/$env:APPVEYOR_PROJECT_SLUG/history?recordsNumber=50).builds | `
-        Where-Object pullRequestId -eq $env:APPVEYOR_PULL_REQUEST_NUMBER)[0].buildNumber) { `
-          throw "There are newer queued builds for this pull request, failing early." }
-
-
-    # setup conda environment for building
-  - cmd: set "PATH=%MINICONDA%;%MINICONDA%\\Scripts;%PATH%"
-  - cmd: set PYTHONUNBUFFERED=1
-
-    # update mysy2
-  - C:\msys64\usr\bin\bash -lc "pacman --needed --noconfirm -Sy pacman-mirrors"
-  - C:\msys64\usr\bin\bash -lc "pacman --noconfirm -Sy"
-  - C:\msys64\usr\bin\bash -lc "pacman --noconfirm -S autoconf automake bison flex"
-  - C:\msys64\usr\bin\bash -lc "pacman --noconfirm -S libxml2-devel zip"
-
-
-    # also install a msvc build environment -> use libxml2 from conda-forge
-    # updating conda always updates python, even with "no-update-deps" and
-    # updating python takes ages on appveyor... So just keep the shorter PATH
-    # workaround for the activate failure and don't update conda itself...
-    #- cmd: conda update conda --no-update-dependencies
-  - cmd: conda config --add channels conda-forge
-  - cmd: conda config --set show_channel_urls yes
-  - cmd: conda config --set always_yes true
-  - cmd: if [%PYTHON_VERSION%] NEQ [NONE] conda install --quiet libxml2 python=%PYTHON_VERSION%
-  - cmd: conda info -a
-
-    # Now start with the build: first the msys2 based one
-  - cmd: bash bootstrap.sh
-  - cmd: bash configure
-    # for testing purpose removed, takes ages...
-  - cmd: if %PYTHON_VERSION%==NONE  make
-
-    # now make the msvc builds
-  - cmd: if [%PYTHON_VERSION%] NEQ [NONE] make msvc
-    # now build the with the right compiler for each python version
-  - cmd: if [%PYTHON_VERSION%] NEQ [NONE] cd igraph-*-msvc
-  - cmd: if %PYTHON_VERSION%==2.7 call "C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\bin\vcvars64.bat"
-  - cmd: if %PYTHON_VERSION%==2.7 vcbuild.exe /upgrade
-  - cmd: if %PYTHON_VERSION%==2.7 vcbuild.exe igraph.vcproj "Release|%TARGET_ARCH%"
-  - cmd: if %PYTHON_VERSION%==3.4 call "%VS100COMNTOOLS%\vsvars32.bat"
-  - cmd: if %PYTHON_VERSION%==3.4 VCUpgrade.exe /overwrite igraph.vcproj
-  - cmd: if %PYTHON_VERSION%==3.4 msbuild.exe igraph.vcxproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
-  - cmd: if %PYTHON_VERSION%==3.5 call "%VS140COMNTOOLS%\vsvars32.bat"
-  - cmd: if %PYTHON_VERSION%==3.5 devenv /upgrade igraph.vcproj
-  - cmd: if %PYTHON_VERSION%==3.5 msbuild.exe igraph.vcxproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
   #install python libraries
   - "%PYTHON%\\python.exe -m pip install --upgrade pip"
-  - "%PYTHON%\\python.exe -m pip install python-igraph"
-  - "%PYTHON%\\python.exe -m pip install igraph"
-  - "%PYTHON%\\python.exe -m pip install numpy leidenalg"
+  - "%PYTHON%\\python.exe -m pip install --user python-igraph"
+  - "%PYTHON%\\python.exe -m pip install --user igraph"
+  - "%PYTHON%\\python.exe -m pip install --user numpy"
+  - "%PYTHON%\\python.exe -m pip install --user leidenalg"
   - ps: Bootstrap
 
 cache:
