@@ -25,10 +25,10 @@ init:
         Import-Module '..\appveyor-tool.ps1'
 
 install:
-  - '%PYTHON%\\python.exe -m pip install --upgrade pip'
-  - '%PYTHON%\\python.exe -m pip install --upgrade python-igraph'
-  - '%PYTHON%\\python.exe -m pip install --user numpy leidenalg'
-  ps: Bootstrap
+  - "%PYTHON%\\python.exe -m pip install --upgrade pip""
+  - "%PYTHON%\\python.exe -m pip install --upgrade igraph"
+  - "%PYTHON%\\python.exe -m pip install numpy leidenalg"
+  - ps: Bootstrap
 
 cache:
   - C:\RLibrary
