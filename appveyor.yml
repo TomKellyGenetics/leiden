@@ -25,7 +25,7 @@ init:
         Import-Module '..\appveyor-tool.ps1'
 
 install:
-  - "%PYTHON%\\python.exe -m pip install --upgrade pip""
+  - "%PYTHON%\\python.exe -m pip install --upgrade pip"
   - "%PYTHON%\\python.exe -m pip install --upgrade igraph"
   - "%PYTHON%\\python.exe -m pip install numpy leidenalg"
   - ps: Bootstrap
