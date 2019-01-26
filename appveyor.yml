@@ -34,7 +34,7 @@ cache:
 
 build_script:
   - '%PYTHON%\\python.exe -m pip install --upgrade pip'
-  - '%PYTHON%\\python.exe -m pip install -U git+https://github.com/igraph/python-igraph.git --install-option="--c-core-url=https://github.com/igraph/igraph/archive/master.tar.gz"'
+  - '%PYTHON%\\python.exe -m pip install --upgrade python-igraph'
   - '%PYTHON%\\python.exe -m pip install --user numpy leidenalg'
   - travis-tool.sh install_deps
 
