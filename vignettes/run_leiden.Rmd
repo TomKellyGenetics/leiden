@@ -14,6 +14,9 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+library("reticulate")
+module <- py_available()
+
 ```
 
 ## Clustering with the Leiden Algorithm in R
@@ -56,7 +59,7 @@ library("leiden")
 
 First set up a compatible adjacency matrix:
 
-```{r}
+```{r
 adjacency_matrix <- matrix(round(runif(10000, 0, 1)), 100, 100)
 ```
 
@@ -77,7 +80,7 @@ membership <- leiden(adjacency_matrix)
 
 Arguments can be passed to the leidenalg implementation in Python:
 
-```{r}
+```{r, eval=module}
 #run with defaults
   partition <- leiden(adjacency_matrix)
 
@@ -98,7 +101,7 @@ See the documentation on the leidenalg Python module for more information: [http
 
 To use Leiden with the Seurat pipeline for a Seurat Object `object` that has an SNN computed (for example with `Seurat::FindClusters` with `save.SNN = TRUE`). This will compute the Leiden clusters and add them to the Seurat Object Class.
 
-```R
+```{r, eval=FALSE}
 adjacency_matrix <- as.matrix(object@snn)
 membership <- leiden(adjacency_matrix)
 object@ident <- as.factor(membership)
