@@ -7,23 +7,37 @@
 ##'
 ##' @param adj_mat An adjacency matrix compatible with \code{\link[igraph]{igraph}} object.
 ##' @param partition_type Type of partition to use. Defaults to RBConfigurationVertexPartition. Options include: ModularityVertexPartition, RBERVertexPartition, CPMVertexPartition, MutableVertexPartition, SignificanceVertexPartition, SurpriseVertexPartition (see the Leiden python module documentation for more details)
+##' @param initial_membership,weights,node_sizes Parameters to pass to the Python leidenalg function (defaults initial_membership=None, weights=None).
 ##' @param resolution_parameter A parameter controlling the coarseness of the clusters. Higher values lead to more clusters. (defaults to 1.0 for partition types that accept a resolution parameter)
-##' @param ... Parameters to pass to the Python leidenalg function (defaults initial_membership=None, weights=None).
 ##'
 ##' @keywords graph network igraph mvtnorm simulation
-##' @import reticulate
+##' @importFrom reticulate import r_to_py
 ##' @export
 
-leiden <- function(adj_mat, partition_type = c('RBConfigurationVertexPartition', 'ModularityVertexPartition', 'RBERVertexPartition', 'CPMVertexPartition', 'MutableVertexPartition', 'SignificanceVertexPartition', 'SurpriseVertexPartition'), resolution_parameter = 1, ...){
+leiden <- function(adj_mat,
+     partition_type = c(
+    'RBConfigurationVertexPartition',
+    'ModularityVertexPartition',
+    'RBERVertexPartition',
+    'CPMVertexPartition',
+    'MutableVertexPartition',
+    'SignificanceVertexPartition',
+    'SurpriseVertexPartition'
+),
+initial_membership = NULL,
+weights = NULL,
+node_sizes = NULL,
+resolution_parameter = 1
+) {
     #import python modules with reticulate
-    leidenalg <- reticulate::import("leidenalg", delay_load = TRUE)
-    ig <- reticulate::import("igraph", delay_load = TRUE)
+    leidenalg <- import("leidenalg", delay_load = TRUE)
+    ig <- import("igraph", delay_load = TRUE)
 
     #convert matrix input
     adj_mat <- as.matrix(ceiling(adj_mat))
 
     ##convert to python numpy.ndarray, then a list
-    adj_mat_py <- reticulate::r_to_py(adj_mat)
+    adj_mat_py <- r_to_py(adj_mat)
     adj_mat_py <- adj_mat_py$tolist()
 
     #convert graph structure to a Python compatible object
@@ -31,26 +45,51 @@ leiden <- function(adj_mat, partition_type = c('RBConfigurationVertexPartition',
 
     #compute partitions
     partition_type <- partition_type[1]
-    if(partition_type == "RBConfigurationVertexPartition"){
-        part <- leidenalg$find_partition(snn_graph, leidenalg$RBConfigurationVertexPartition, resolution_parameter = resolution_parameter, ...)
-    } else if(partition_type == "ModularityVertexPartition"){
-        part <- leidenalg$find_partition(snn_graph, leidenalg$ModularityVertexPartition, ...)
-    } else if(partition_type == "RBERVertexPartition"){
-        part <- leidenalg$find_partition(snn_graph, leidenalg$RBERVertexPartition, resolution_parameter = resolution_parameter, ...)
-    } else if(partition_type == "CPMVertexPartition"){
-        part <- leidenalg$find_partition(snn_graph, leidenalg$CPMVertexPartition, resolution_parameter = resolution_parameter, ...)
-    } else if(partition_type == "MutableVertexPartition"){
-        part <- leidenalg$find_partition(snn_graph, leidenalg$MutableVertexPartition, ...)
-    } else if(partition_type == "SignificanceVertexPartition"){
-        part <- leidenalg$find_partition(snn_graph, leidenalg$SignificanceVertexPartition, resolution_parameter = resolution_parameter, ...)
-    } else if(partition_type == "SurpriseVertexPartition"){
-        part <- leidenalg$find_partition(snn_graph, leidenalg$SurpriseVertexPartition, resolution_parameter = resolution_parameter, ...)
-    } else {
+    part <- switch(
+        EXPR = partition_type,
+        'RBConfigurationVertexPartition' = leidenalg$find_partition(
+            snn_graph,
+            leidenalg$RBConfigurationVertexPartition,
+            initial_membership = initial_membership, weights = weights,
+            resolution_parameter = resolution_parameter
+        ),
+        'ModularityVertexPartition' = leidenalg$find_partition(
+            snn_graph,
+            leidenalg$ModularityVertexPartition,
+            initial_membership = initial_membership, weights = weights
+        ),
+        'RBERVertexPartition' = leidenalg$find_partition(
+            snn_graph,
+            leidenalg$RBERVertexPartition,
+            initial_membership = initial_membership, weights = weights, node_sizes = node_sizes,
+            resolution_parameter = resolution_parameter
+        ),
+        'CPMVertexPartition' = leidenalg$find_partition(
+            snn_graph,
+            leidenalg$CPMVertexPartition,
+            initial_membership = initial_membership, weights = weights, node_sizes = node_sizes,
+            resolution_parameter = resolution_parameter
+        ),
+        'MutableVertexPartition' = leidenalg$find_partition(
+            snn_graph,
+            leidenalg$MutableVertexPartition,
+            initial_membership = initial_membership
+        ),
+        'SignificanceVertexPartition' = leidenalg$find_partition(
+            snn_graph,
+            leidenalg$SignificanceVertexPartition,
+            initial_membership = initial_membership, node_sizes = node_sizes,
+            resolution_parameter = resolution_parameter
+        ),
+        'SurpriseVertexPartition' = leidenalg$find_partition(
+            snn_graph,
+            leidenalg$SurpriseVertexPartition,
+            initial_membership = initial_membership, weights = weights, node_sizes = node_sizes
+        ),
         stop("please specify a partition type as a string out of those documented")
-    }
+    )
     return(part$membership+1)
 }
-
 
 # global reference to python modules (will be initialized in .onLoad)
 leidenalg <- NULL

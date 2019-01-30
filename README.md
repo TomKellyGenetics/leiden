@@ -1,6 +1,6 @@
 # Leiden Algorithm
 
-## leiden version 0.2.0
+## leiden version 0.2.1
 
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/leiden)](https://cran.r-project.org/package=leiden)
 [![Travis Build Status](https://travis-ci.org/TomKellyGenetics/leiden.svg?branch=master)](https://travis-ci.org/TomKellyGenetics/leiden)
@@ -84,7 +84,7 @@ Please cite this implementation R in if you use it:
 To cite the leiden package in publications use:
 
   S. Thomas Kelly (2018). leiden: R implementation of the Leiden algorithm. R
-  package version 0.1.0 https://github.com/TomKellyGenetics/leiden
+  package version 0.2.1 https://github.com/TomKellyGenetics/leiden
 
 A BibTeX entry for LaTeX users is
 
@@ -92,7 +92,7 @@ A BibTeX entry for LaTeX users is
     title = {leiden: R implementation of the Leiden algorithm},
     author = {S. Thomas Kelly},
     year = {2018},
-    note = {R package version 0.2.0},
+    note = {R package version 0.2.1},
     url = {https://github.com/TomKellyGenetics/leiden},
   }
  ```

@@ -8,16 +8,17 @@
 leiden(adj_mat, partition_type = c("RBConfigurationVertexPartition",
   "ModularityVertexPartition", "RBERVertexPartition", "CPMVertexPartition",
   "MutableVertexPartition", "SignificanceVertexPartition",
-  "SurpriseVertexPartition"), resolution_parameter = 1, ...)
+  "SurpriseVertexPartition"), initial_membership = NULL,
+  weights = NULL, node_sizes = NULL, resolution_parameter = 1)
 }
 \arguments{
 \item{adj_mat}{An adjacency matrix compatible with \code{\link[igraph]{igraph}} object.}
 
 \item{partition_type}{Type of partition to use. Defaults to RBConfigurationVertexPartition. Options include: ModularityVertexPartition, RBERVertexPartition, CPMVertexPartition, MutableVertexPartition, SignificanceVertexPartition, SurpriseVertexPartition (see the Leiden python module documentation for more details)}
 
-\item{resolution_parameter}{A parameter controlling the coarseness of the clusters. Higher values lead to more clusters. (defaults to 1.0 for partition types that accept a resolution parameter)}
+\item{initial_membership, weights, node_sizes}{Parameters to pass to the Python leidenalg function (defaults initial_membership=None, weights=None).}
 
-\item{...}{Parameters to pass to the Python leidenalg function (defaults initial_membership=None, weights=None).}
+\item{resolution_parameter}{A parameter controlling the coarseness of the clusters. Higher values lead to more clusters. (defaults to 1.0 for partition types that accept a resolution parameter)}
 }
 \description{
 Implements the Leiden clustering algorithm in R using reticulate to run the Python version. Requires the python "leidenalg" and "igraph" modules to be installed. Returns a vector of partition indices.
