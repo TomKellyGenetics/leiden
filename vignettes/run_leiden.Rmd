@@ -16,7 +16,6 @@ knitr::opts_chunk$set(
 )
 library("reticulate")
 module <- py_available()
-
 ```
 
 ## Clustering with the Leiden Algorithm in R

@@ -87,20 +87,7 @@ install:
   - C:\msys64\usr\bin\bash -lc "pacman --noconfirm -Sy"
   - C:\msys64\usr\bin\bash -lc "pacman --noconfirm -S autoconf automake bison flex"
   - C:\msys64\usr\bin\bash -lc "pacman --noconfirm -S libxml2-devel zip"
-
-
-    # also install a msvc build environment -> use libxml2 from conda-forge
-    # updating conda always updates python, even with "no-update-deps" and
-    # updating python takes ages on appveyor... So just keep the shorter PATH
-    # workaround for the activate failure and don't update conda itself...
-    #- cmd: conda update conda --no-update-dependencies
-  - cmd: conda config --add channels conda-forge
-  - cmd: conda config --set show_channel_urls yes
-  - cmd: conda config --set always_yes true
-  - cmd: if [%PYTHON_VERSION%] NEQ [NONE] conda install --quiet libxml2 python=%PYTHON_VERSION%
-  - cmd: conda info -a
-
-  - cmd: conda install python-igraph
+  - C:\msys64\usr\bin\bash -lc "pacman --noconfirm -S libigraph""
 
 #install:
   #install python libraries
