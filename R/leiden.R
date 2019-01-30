@@ -95,16 +95,19 @@ resolution_parameter = 1
 leidenalg <- NULL
 ig <- NULL
 
-.onLoad <- function(libname, pkgname) {
-    install_python_modules <- function(method = "auto", conda = "auto") {
-        reticulate::py_install("leidenalg", method = method, conda = conda)
-        reticulate::py_install("igraph", method = method, conda = conda)
+.onLoad = function(libname, pkgname) {
+    if(reticulate::py_available()){
+        install_python_modules <- function(method = "auto", conda = "auto") {
+            reticulate::py_install("leidenalg", method = method, conda = conda)
+            reticulate::py_install("igraph", method = method, conda = conda)
+        }
     }
-    modules <- reticulate::py_module_available("leidenalg") && reticulate::py_module_available("igraph")
-    if(!modules){
-        install_python_modules()
+    if (suppressWarnings(suppressMessages(requireNamespace("reticulate")))) {
+        modules <- reticulate::py_module_available("leidenalg") && reticulate::py_module_available("igraph")
+        if (modules) {
+            ## assignment in parent environment!
+            leidenalg <<- reticulate::import("leidenalg", delay_load = TRUE)
+            ig <<- reticulate::import("igraph", delay_load = TRUE)
+        }
     }
-    # use superassignment to update global reference to python modules
-    leidenalg <<- reticulate::import("leidenalg", delay_load = TRUE)
-    ig <<- reticulate::import("igraph", delay_load = TRUE)
 }

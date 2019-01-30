@@ -10,6 +10,7 @@ Description: Implements the Python leidenalg module to be called in R.
     See the Python repository for more details: https://github.com/vtraag/leidenalg
     Traag et al (2018) From Louvain to Leiden: guaranteeing well-connected communities. arXiv:1810.08473.
 License: GPL-3
+URL: https://github.com/TomKellyGenetics/leiden
 Imports:
     reticulate
 Encoding: UTF-8
