@@ -4,7 +4,7 @@ citEntry(entry = "Manual",
          title        = "leiden: R implementation of the Leiden algorithm",
          author       = personList(as.person("S. Thomas Kelly")),
          year         = "2018",
-         note         = "R package version 0.2.1",
+         note         = "R package version 0.2.2",
          url          = "https://github.com/TomKellyGenetics/leiden",
 
          textVersion  =
