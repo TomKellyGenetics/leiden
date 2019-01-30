@@ -1,6 +1,6 @@
 # Leiden Algorithm
 
-## leiden version 0.2.1
+## leiden version 0.2.2
 
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/leiden)](https://cran.r-project.org/package=leiden)
 [![Travis Build Status](https://travis-ci.org/TomKellyGenetics/leiden.svg?branch=master)](https://travis-ci.org/TomKellyGenetics/leiden)
