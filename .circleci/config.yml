@@ -15,7 +15,7 @@ defaults: &steps
 
     ## install dependencies ------------------
 
-     - run:
+    - run:
         name: Install python module
         command: pip install leidenalg
 
