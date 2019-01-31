@@ -74,7 +74,7 @@ install:
   #- conda install pip numpy scipy
   - "python -m pip install --upgrade pip"
   #- "pip install -q pycairo"
-  - pip install -q python-igraph --install-option="--c-core-url=https://github.com/igraph/igraph/archive/master.tar.gz"
+  - pip -v install python-igraph==0.7.1.post6
   - "pip install -q leidenalg"
   - "echo done"
 
