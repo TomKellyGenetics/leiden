@@ -67,6 +67,17 @@ install:
   - "python --version"
   - "python -c \"import struct; print(struct.calcsize('P') * 8)\""
 
+      # setup conda environment for building
+    - cmd: set "PATH=%CONDA_INSTALL_LOCN%;%CONDA_INSTALL_LOCN%\scripts;%PATH%"
+    - cmd: set PYTHONUNBUFFERED=1
+
+    # update mysy2
+    - C:\msys64\usr\bin\bash -lc "pacman --needed --noconfirm -Sy pacman-mirrors"
+    - C:\msys64\usr\bin\bash -lc "pacman --noconfirm -Sy"
+    - C:\msys64\usr\bin\bash -lc "pacman --noconfirm -S autoconf automake bison flex"
+    - C:\msys64\usr\bin\bash -lc "pacman --noconfirm -S build-essential python-dev libxml2 libxml2-dev zlib1g-dev libxml2-devel zip"
+
+
   - conda config --set always_yes yes --set changeps1 no
   - conda config --add channels conda-forge
   - conda update -q conda pip
