@@ -91,7 +91,7 @@ install:
 #install:
   #install python libraries
   - "pip install --upgrade pip"
-  - "pip install python-igraph"
+#  - "pip install python-igraph"
   - "pip install igraph"
   - "pip install numpy"
   - "pip install leidenalg"
