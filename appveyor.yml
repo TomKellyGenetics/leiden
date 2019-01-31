@@ -100,8 +100,9 @@ install:
   - cmd: conda config --set show_channel_urls yes
   - cmd: conda config --set always_yes true
   - cmd: if [%PYTHON_VERSION%] NEQ [NONE] conda install --quiet libxml2 python=%PYTHON_VERSION%
-  - cmd: if [%PYTHON_VERSION%] NEQ [NONE] conda install --quiet -c conda-forge python-igraph python=%PYTHON_VERSION%
-  - cmd: if [%PYTHON_VERSION%] NEQ [NONE] conda install --quiet -c vtraag leidenalg python=%PYTHON_VERSION%
+  - cmd: if [%PYTHON_VERSION%] NEQ [NONE] conda install -c conda-forge/label/gcc7 python-igraph python=%PYTHON_VERSION%
+  - cmd: if [%PYTHON_VERSION%] NEQ [NONE] conda install -c r r-igraph python=%PYTHON_VERSION%
+  - cmd: if [%PYTHON_VERSION%] NEQ [NONE] conda install -c vtraag leidenalg python=%PYTHON_VERSION%
   - cmd: conda info -a
 
 #install:
