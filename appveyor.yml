@@ -70,7 +70,9 @@ install:
   - conda config --set always_yes yes --set changeps1 no
   - conda config --add channels conda-forge
   - conda update -q conda
-  - conda install pip numpy scipy
+  - conda create -n leiden python=%PYTHON% python-igraph numpy
+  - conda activate leiden
+  #- conda install pip numpy scipy
   - "python -m pip install --upgrade pip"
   - "pip install -q pycairo"
   - pip install -q python-igraph --install-option="--c-core-url=https://github.com/igraph/igraph/archive/master.tar.gz"
