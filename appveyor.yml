@@ -17,14 +17,17 @@ environment:
       RETICULATE_PYTHON: "C:\\Python37"
       MINICONDA: C:\Miniconda37
       CONDA_INSTALL_LOCN: C:\Miniconda37
+      DISTUTILS_USE_SDK: "1"
     - PYTHON: "C:\\Python36"
       RETICULATE_PYTHON: "C:\\Python36"
       MINICONDA: C:\Miniconda36
       CONDA_INSTALL_LOCN: C:\Miniconda36
+      DISTUTILS_USE_SDK: "1"
     - PYTHON: "C:\\Python35"
       RETICULATE_PYTHON: "C:\\Python35"
       MINICONDA: C:\Miniconda35
       CONDA_INSTALL_LOCN: C:\Miniconda35
+      DISTUTILS_USE_SDK: "1"
 
 matrix:
   fast_finish: true
@@ -52,7 +55,7 @@ install:
   - ps: "ls \"C:/\""
 
   #- ECHO "Installed SDKs:"
-  #- ps: "ls \"C:/Program Files/Microsoft SDKs/Windows\""
+  - ps: "ls \"C:/Program Files/Microsoft SDKs/Windows\""
 
   # Install Python (from the official .msi of https://python.org) and pip when
   # not already installed.
@@ -85,7 +88,8 @@ install:
   #- conda install pip numpy scipy
   - "python -m pip install --upgrade pip"
   #- "pip install -q pycairo"
-  - pip -v install python-igraph==0.7.1.post6
+  - pip install wheel
+  - pip install python-igraph==0.7.1.post6
   - "pip install -q leidenalg"
   - "echo done"
 
