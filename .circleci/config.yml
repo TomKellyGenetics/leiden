@@ -32,10 +32,6 @@ defaults: &steps
     ## install dependencies ------------------
 
     - run:
-        name: Install python module
-        command: pip install leidenalg
-
-    - run:
         name: Install devtools and dependencies
         command: |
           Rscript \
