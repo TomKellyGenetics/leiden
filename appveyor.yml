@@ -2,7 +2,7 @@
 
 #image:
 #- Visual Studio 2015
-#- Visual Studio 2017
+- Visual Studio 2017
 #- Ubuntu
 
 environment:
@@ -15,16 +15,16 @@ environment:
   matrix:
     - PYTHON: "C:\\Python35"
       RETICULATE_PYTHON: "C:\\Python35"
-      MINICONDA: C:\Anaconda3
-      CONDA_INSTALL_LOCN: C:\Anaconda3
+      MINICONDA: C:\Miniconda3
+      CONDA_INSTALL_LOCN: C:\Miniconda3
     - PYTHON: "C:\\Python36"
       RETICULATE_PYTHON: "C:\\Python36"
-      MINICONDA: C:\Anaconda3
-      CONDA_INSTALL_LOCN: C:\Anaconda3
+      MINICONDA: C:\Miniconda3
+      CONDA_INSTALL_LOCN: C:\Miniconda3
     - PYTHON: "C:\\Python37"
       RETICULATE_PYTHON: "C:\\Python37"
-      MINICONDA: C:\Anaconda3
-      CONDA_INSTALL_LOCN: C:\Anaconda3
+      MINICONDA: C:\Miniconda3
+      CONDA_INSTALL_LOCN: C:\Miniconda3
 
 matrix:
   fast_finish: true
@@ -36,6 +36,7 @@ init:
         Invoke-WebRequest http://raw.github.com/krlmlr/r-appveyor/master/scripts/appveyor-tool.ps1 -OutFile "..\appveyor-tool.ps1"
         Import-Module '..\appveyor-tool.ps1'
   - cmd: "ECHO %PYTHON_VERSION% %CONDA_INSTALL_LOCN%"
+  - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%MINICONDA%\\Library\\bin;%PATH%"
 
 install:
   # If there is a newer build queued for the same PR, cancel this one.
@@ -66,15 +67,24 @@ install:
   - "python --version"
   - "python -c \"import struct; print(struct.calcsize('P') * 8)\""
 
+  - conda config --set always_yes yes --set changeps1 no
+  - conda config --add channels conda-forge
+  - conda update -q conda
+  - conda install pip numpy scipy
+  - "pip install -q leidenalg python-igraph"
+  - "pip install -qr requirements.txt"
+  - "pip install ."
+  - "echo done"
+
   # Upgrade to the latest version of pip to avoid it displaying warnings
   # about it being out of date.
-  - "python -m pip install --upgrade pip"
+  #- "python -m pip install --upgrade pip"
 
   # Install the build dependencies of the project. If some dependencies contain
   # compiled extensions and are not provided as pre-built wheel packages,
   # pip will build them from source using the MSVC compiler matching the
   # target Python version and architecture
-  - "%CMD_IN_ENV% pip install leidenalg python-igraph numpy"
+  #- "%CMD_IN_ENV% pip install leidenalg python-igraph numpy"
 
 
 #install:
