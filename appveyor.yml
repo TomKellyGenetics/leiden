@@ -67,14 +67,11 @@ install:
   - "python --version"
   - "python -c \"import struct; print(struct.calcsize('P') * 8)\""
 
-  - mkdir C:\Users\appveyor\.conda
-  - call %MINICONDA%\Scripts\activate.bat
   - conda config --set always_yes yes --set changeps1 no
   - conda config --add channels conda-forge
   - conda update -q conda
-  - conda create -n leiden
-  - conda activate leiden
-  - conda install numpy
+  - conda install -q numpy
+  - conda install -q pycairo
   #- conda install pip numpy scipy
   - "python -m pip install --upgrade pip"
   - "pip install -q pycairo"
