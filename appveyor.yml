@@ -97,12 +97,14 @@ install:
     # workaround for the activate failure and don't update conda itself...
     #- cmd: conda update conda --no-update-dependencies
   - cmd: conda config --add channels conda-forge
+  - cmd: conda config --append channels conda-forge
+  - cmd: conda update conda
   - cmd: conda config --set show_channel_urls yes
   - cmd: conda config --set always_yes true
   - cmd: if [%PYTHON_VERSION%] NEQ [NONE] conda install --quiet libxml2 python=%PYTHON_VERSION%
-  - cmd: if [%PYTHON_VERSION%] NEQ [NONE] conda install -c conda-forge/label/gcc7 python-igraph python=%PYTHON_VERSION%
-  - cmd: if [%PYTHON_VERSION%] NEQ [NONE] conda install -c r r-igraph python=%PYTHON_VERSION%
-  - cmd: if [%PYTHON_VERSION%] NEQ [NONE] conda install -c vtraag leidenalg python=%PYTHON_VERSION%
+  - cmd: iconda install -c conda-forge/label/gcc7 python-igraph #python=%PYTHON_VERSION%
+  - cmd: conda install -c r r-igraph #python=%PYTHON_VERSION%
+  - cmd: conda install -c vtraag leidenalg #python=%PYTHON_VERSION%
   - cmd: conda info -a
 
 #install:
