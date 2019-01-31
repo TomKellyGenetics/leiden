@@ -12,6 +12,7 @@ defaults: &steps
             -e 'cat(sprintf("export PKG_TARBALL=%s_%s.tar.gz\n", dsc[,"Package"], dsc[,"Version"]))' \
             -e 'cat(sprintf("export RCHECK_DIR=%s.Rcheck\n", dsc[,"Package"]))' \
             >> ${BASH_ENV}
+
     ## install dependencies ------------------
 
      - run:
@@ -24,6 +25,7 @@ defaults: &steps
           Rscript \
             -e 'if (!requireNamespace("devtools", quietly = TRUE)) install.packages("devtools")' \
             -e 'devtools::install_deps(dependencies = TRUE)'
+
     ## build and test -----------------
 
     - run:
@@ -39,6 +41,7 @@ defaults: &steps
           Rscript -e "message(devtools::check_failures(path = '${RCHECK_DIR}'))"
           # warnings are errors
           # - run: if grep -q -R "WARNING" "${RCHECK_DIR}/00check.log"; then exit 1; fi
+
     ## store artifacts -----------------
 
     - run:
