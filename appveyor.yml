@@ -69,49 +69,17 @@ install:
   # about it being out of date.
   - "python -m pip install --upgrade pip"
 
-  #install:
-    # If there is a newer build queued for the same PR, cancel this one.
-    # The AppVeyor 'rollout builds' option is supposed to serve the same
-    # purpose but it is problematic because it tends to cancel builds pushed
-    # directly to master instead of just PR builds (or the converse).
-    # credits: JuliaLang developers.
-  - ps: if ($env:APPVEYOR_PULL_REQUEST_NUMBER -and $env:APPVEYOR_BUILD_NUMBER -ne ((Invoke-RestMethod `
-        https://ci.appveyor.com/api/projects/$env:APPVEYOR_ACCOUNT_NAME/$env:APPVEYOR_PROJECT_SLUG/history?recordsNumber=50).builds | `
-        Where-Object pullRequestId -eq $env:APPVEYOR_PULL_REQUEST_NUMBER)[0].buildNumber) { `
-          throw "There are newer queued builds for this pull request, failing early." }
+  # Install the build dependencies of the project. If some dependencies contain
+  # compiled extensions and are not provided as pre-built wheel packages,
+  # pip will build them from source using the MSVC compiler matching the
+  # target Python version and architecture
+  - "%CMD_IN_ENV% pip install leidenalg python-igraph numpy""
 
-
-    # setup conda environment for building
-  - cmd: set "PATH=%CONDA_INSTALL_LOCN%;%CONDA_INSTALL_LOCN%\scripts;%PATH%"
-  - cmd: set PYTHONUNBUFFERED=1
-
-    # update mysy2
-  - C:\msys64\usr\bin\bash -lc "pacman --needed --noconfirm -Sy pacman-mirrors"
-  - C:\msys64\usr\bin\bash -lc "pacman --noconfirm -Sy"
-  - C:\msys64\usr\bin\bash -lc "pacman --noconfirm -S autoconf automake bison flex"
-  - C:\msys64\usr\bin\bash -lc "pacman --noconfirm -S libxml2-devel zip"
-
-      # also install a msvc build environment -> use libxml2 from conda-forge
-    # updating conda always updates python, even with "no-update-deps" and
-    # updating python takes ages on appveyor... So just keep the shorter PATH
-    # workaround for the activate failure and don't update conda itself...
-    #- cmd: conda update conda --no-update-dependencies
-  - cmd: conda config --add channels conda-forge
-  - cmd: conda config --append channels conda-forge
-  - cmd: conda update -y conda python=%PYTHON_VERSION%
-  - cmd: conda config --set show_channel_urls yes
-  - cmd: conda config --set always_yes true
-#  - cmd: if [%PYTHON_VERSION%] NEQ [NONE] conda install -y --quiet libxml2 python=%PYTHON_VERSION%
-#  - cmd: conda install -y -c conda-forge/label/gcc7 python-igraph python=%PYTHON_VERSION%
-#  - cmd: conda install -y -c r r-igraph python=%PYTHON_VERSION%'
-  - cmd: pip install --upgrade pip
-  - cmd: pip install leidenalg
-  - cmd: conda info -a
 
 #install:
   #install python libraries
-  - "pip install --upgrade pip"
-  - "pip install leidenalg"
+  #- "pip install --upgrade pip"
+  #- "pip install leidenalg"
   - ps: Bootstrap
 
 cache:
