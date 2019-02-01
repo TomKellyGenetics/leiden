@@ -110,6 +110,9 @@ init:
   - cmd: "ECHO %PYTHON_VERSION% %CONDA_INSTALL_LOCN%"
   - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%MINICONDA%\\Library\\bin;%PATH%"
 
+cache:
+  - C:\RLibrary
+
 install:
   # If there is a newer build queued for the same PR, cancel this one.
   # The AppVeyor 'rollout builds' option is supposed to serve the same
