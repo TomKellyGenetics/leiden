@@ -110,9 +110,6 @@ init:
   - cmd: "ECHO %PYTHON_VERSION% %CONDA_INSTALL_LOCN%"
   - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%MINICONDA%\\Library\\bin;%PATH%"
 
-cache:
-  - C:\RLibrary
-
 install:
   # If there is a newer build queued for the same PR, cancel this one.
   # The AppVeyor 'rollout builds' option is supposed to serve the same
@@ -129,7 +126,6 @@ install:
   #- ECHO "Installed SDKs:"
   #- ps: "ls \"C:/Program Files/Microsoft SDKs/Windows\""
 
-  - Rscript -e 'options(repos=c(CRAN="'"${CRAN}"'")); remotes::install_github(commandArgs(TRUE))' "igraph"
   #- travis-tool.sh install_github igraph/igraph
   #- travis-tool.sh install_github igraph/python-igraph
   # Install Python (from the official .msi of https://python.org) and pip when
@@ -156,8 +152,8 @@ install:
   #- conda install pip numpy scipy
   - "python -m pip install --upgrade pip"
   #- "pip install -q pycairo"
-  - pip install wheel
-  - pip install python-igraph==0.7.1.post6
+  #- pip install wheel
+  #- pip install python-igraph==0.7.1.post6
   - "pip install -q leidenalg"
   - "echo done"
 
@@ -184,6 +180,7 @@ cache:
 # Adapt as necessary starting from here
 
 build_script:
+  - travis-tool.sh install_github igraph/rigraph
   - travis-tool.sh install_deps
 
 test_script:
