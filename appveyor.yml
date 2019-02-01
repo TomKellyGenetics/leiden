@@ -18,24 +18,85 @@ environment:
       MINICONDA: C:\Miniconda37
       CONDA_INSTALL_LOCN: C:\Miniconda37
       DISTUTILS_USE_SDK: "1"
+      R_VERSION: devel
+      GCC_PATH: mingw_32
     - PYTHON: "C:\\Python36"
       RETICULATE_PYTHON: "C:\\Python36"
       MINICONDA: C:\Miniconda36
       CONDA_INSTALL_LOCN: C:\Miniconda36
       DISTUTILS_USE_SDK: "1"
+      R_VERSION: devel
+      GCC_PATH: mingw_32
     - PYTHON: "C:\\Python35"
       RETICULATE_PYTHON: "C:\\Python35"
       MINICONDA: C:\Miniconda35
       CONDA_INSTALL_LOCN: C:\Miniconda35
       DISTUTILS_USE_SDK: "1"
-    - R_VERSION: devel
+      R_VERSION: devel
       GCC_PATH: mingw_32
-    - R_VERSION: devel
+    - PYTHON: "C:\\Python37"
+      RETICULATE_PYTHON: "C:\\Python37"
+      MINICONDA: C:\Miniconda37
+      CONDA_INSTALL_LOCN: C:\Miniconda37
+      DISTUTILS_USE_SDK: "1"
+      R_VERSION: devel
       R_ARCH: x64
       GCC_PATH: mingw_64
-    - R_VERSION: release
+    - PYTHON: "C:\\Python36"
+      RETICULATE_PYTHON: "C:\\Python36"
+      MINICONDA: C:\Miniconda36
+      CONDA_INSTALL_LOCN: C:\Miniconda36
+      DISTUTILS_USE_SDK: "1"
+      R_VERSION: devel
       R_ARCH: x64
-    - R_VERSION: stable
+      GCC_PATH: mingw_64
+    - PYTHON: "C:\\Python35"
+      RETICULATE_PYTHON: "C:\\Python35"
+      MINICONDA: C:\Miniconda35
+      CONDA_INSTALL_LOCN: C:\Miniconda35
+      DISTUTILS_USE_SDK: "1"
+      R_VERSION: devel
+      R_ARCH: x64
+      GCC_PATH: mingw_64
+    - PYTHON: "C:\\Python37"
+      RETICULATE_PYTHON: "C:\\Python37"
+      MINICONDA: C:\Miniconda37
+      CONDA_INSTALL_LOCN: C:\Miniconda37
+      DISTUTILS_USE_SDK: "1"
+      R_VERSION: release
+      R_ARCH: x64
+    - PYTHON: "C:\\Python36"
+      RETICULATE_PYTHON: "C:\\Python36"
+      MINICONDA: C:\Miniconda36
+      CONDA_INSTALL_LOCN: C:\Miniconda36
+      DISTUTILS_USE_SDK: "1"
+      R_VERSION: release
+      R_ARCH: x64
+    - PYTHON: "C:\\Python35"
+      RETICULATE_PYTHON: "C:\\Python35"
+      MINICONDA: C:\Miniconda35
+      CONDA_INSTALL_LOCN: C:\Miniconda35
+      DISTUTILS_USE_SDK: "1"
+      R_VERSION: release
+      R_ARCH: x64
+    - PYTHON: "C:\\Python37"
+      RETICULATE_PYTHON: "C:\\Python37"
+      MINICONDA: C:\Miniconda37
+      CONDA_INSTALL_LOCN: C:\Miniconda37
+      DISTUTILS_USE_SDK: "1"
+      R_VERSION: stable
+    - PYTHON: "C:\\Python36"
+      RETICULATE_PYTHON: "C:\\Python36"
+      MINICONDA: C:\Miniconda36
+      CONDA_INSTALL_LOCN: C:\Miniconda36
+      DISTUTILS_USE_SDK: "1"
+      R_VERSION: stable
+    - PYTHON: "C:\\Python35"
+      RETICULATE_PYTHON: "C:\\Python35"
+      MINICONDA: C:\Miniconda35
+      CONDA_INSTALL_LOCN: C:\Miniconda35
+      DISTUTILS_USE_SDK: "1"
+      R_VERSION: stable
 
 matrix:
   fast_finish: true
@@ -65,9 +126,9 @@ install:
   #- ECHO "Installed SDKs:"
   #- ps: "ls \"C:/Program Files/Microsoft SDKs/Windows\""
 
-  - travis-tool.sh install_github igraph/rigraph
-  - travis-tool.sh install_github igraph/igraph
-  - travis-tool.sh install_github igraph/python-igraph
+  - Rscript -e 'options(repos=c(CRAN="'"${CRAN}"'")); remotes::install_github(commandArgs(TRUE))' "igraph"
+  #- travis-tool.sh install_github igraph/igraph
+  #- travis-tool.sh install_github igraph/python-igraph
   # Install Python (from the official .msi of https://python.org) and pip when
   # not already installed.
   - ps: if (-not(Test-Path($env:PYTHON))) { & appveyor\install.ps1 }
