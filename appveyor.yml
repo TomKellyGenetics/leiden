@@ -28,6 +28,15 @@ environment:
       MINICONDA: C:\Miniconda35
       CONDA_INSTALL_LOCN: C:\Miniconda35
       DISTUTILS_USE_SDK: "1"
+  matrix:
+    - R_VERSION: devel
+      GCC_PATH: mingw_32
+    - R_VERSION: devel
+      R_ARCH: x64
+      GCC_PATH: mingw_64
+    - R_VERSION: release
+      R_ARCH: x64
+    - R_VERSION: stable
 
 matrix:
   fast_finish: true
@@ -55,8 +64,11 @@ install:
   - ps: "ls \"C:/\""
 
   #- ECHO "Installed SDKs:"
-  - ps: "ls \"C:/Program Files/Microsoft SDKs/Windows\""
+  #- ps: "ls \"C:/Program Files/Microsoft SDKs/Windows\""
 
+  - travis-tool.sh install_github igraph/rigraph
+  - travis-tool.sh install_github igraph/igraph
+  - travis-tool.sh install_github igraph/python-igraph
   # Install Python (from the official .msi of https://python.org) and pip when
   # not already installed.
   - ps: if (-not(Test-Path($env:PYTHON))) { & appveyor\install.ps1 }
@@ -73,13 +85,6 @@ install:
       # setup conda environment for building
   - cmd: set "PATH=%CONDA_INSTALL_LOCN%;%CONDA_INSTALL_LOCN%\scripts;%PATH%"
   - cmd: set PYTHONUNBUFFERED=1
-
-    # update mysy2
-  - C:\msys64\usr\bin\bash -lc "pacman --needed --noconfirm -Sy pacman-mirrors"
-  - C:\msys64\usr\bin\bash -lc "pacman --noconfirm -Sy"
-  - C:\msys64\usr\bin\bash -lc "pacman --noconfirm -S autoconf automake bison flex"
-  - C:\msys64\usr\bin\bash -lc "pacman --noconfirm -S libxml2-devel zip"
-
 
   - conda config --set always_yes yes --set changeps1 no
   - conda config --add channels conda-forge
