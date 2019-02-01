@@ -28,7 +28,6 @@ environment:
       MINICONDA: C:\Miniconda35
       CONDA_INSTALL_LOCN: C:\Miniconda35
       DISTUTILS_USE_SDK: "1"
-  matrix:
     - R_VERSION: devel
       GCC_PATH: mingw_32
     - R_VERSION: devel
