@@ -154,7 +154,7 @@ install:
   #- "pip install -q pycairo"
   #- pip install wheel
   #- pip install python-igraph==0.7.1.post6
-  - "pip install -q leidenalg"
+  #- "pip install -q leidenalg"
   - "echo done"
 
   # Upgrade to the latest version of pip to avoid it displaying warnings
@@ -182,6 +182,8 @@ cache:
 build_script:
   - travis-tool.sh install_github igraph/rigraph
   - travis-tool.sh install_deps
+  - "pip install -q igraph"
+  - "pip install -q leidenalg"
 
 test_script:
   - travis-tool.sh run_tests
