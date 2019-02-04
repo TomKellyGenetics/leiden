@@ -164,7 +164,8 @@ install:
   #- "pip install -q pycairo"
   #- pip install wheel
   #- pip install python-igraph==0.7.1.post6
-  #- "pip install -q leidenalg"
+  - "pip install git+git://github.com/igraph/python-igraph.git"
+  - "pip install -q leidenalg"
   - "echo done"
 
   # Upgrade to the latest version of pip to avoid it displaying warnings
