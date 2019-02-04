@@ -6,8 +6,8 @@ cache: packages
 
 os:
   - linux
-  - os: osx
-    osx_image: xcode10.1
+  #- os: osx
+    #osx_image: xcode10.1
     #disable_homebrew: true
     #r_build_args: '--no-build-vignettes'
     #r_check_args: '--ignore-vignettes --no-examples'
@@ -22,14 +22,14 @@ addons:
       - texlive-full
       - cmake
       - python3
-  homebrew:
-    packages:
-      - libpython-dev
-      - libpython3-dev
-      - texlive-full
-      - cmake
-      - python3
-    update: true
+  #homebrew:
+    #packages:
+      #- libpython-dev
+      #- libpython3-dev
+      #- texlive-full
+      #- cmake
+      #- python3
+    #update: true
 
 r:
   - release
