@@ -22,6 +22,10 @@ env:
   global:
     - R_CHECK_ARGS="--no-build-vignettes --no-manual"
 
+
+r_build_args: '--no-build-vignettes'
+r_check_args: '--ignore-vignettes --no-examples'
+
 python:
   - "3.5"
   - "3.6"

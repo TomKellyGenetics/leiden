@@ -183,6 +183,9 @@ install:
   #- "pip install leidenalg"
   - ps: Bootstrap
 
+r_build_args: '--no-build-vignettes'
+r_check_args: '--ignore-vignettes --no-examples'
+
 cache:
   - C:\RLibrary
 
