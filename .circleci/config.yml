@@ -60,26 +60,6 @@ defaults: &steps
         name: Check package
         command: R CMD check "${PKG_TARBALL}" --as-cran --ignore-vignettes --no-examples
 
-    - run:
-        name: Check failures
-        command: Rscript -e "message(devtools::check_failures(path = '.'))"
-
-
-    ## warnings are errors
-    - run: if grep -q -R "WARNING" "./00check.log"; then exit 1; fi
-
-    ## store artifacts -----------------
-
-    - run:
-        command: mv ${RCHECK_DIR} /tmp/Rcheck
-        when: always
-    - store_test_results:
-        path: /tmp/Rcheck/tests/
-        when: always
-    - store_artifacts:
-        path: /tmp/Rcheck
-        when: always
-
 version: 2
 jobs:
   "r-stable":
