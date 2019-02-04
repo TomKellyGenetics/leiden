@@ -49,17 +49,18 @@ defaults: &steps
 
     - run:
         name: Build package
-        command: R CMD build "${PKG_TARBALL}"  --no-build-vignettes
+        command: R CMD build  --no-build-vignettes .
 
     - run:
         name: Check package
         command: R CMD check "${PKG_TARBALL}" --as-cran --ignore-vignettes --no-examples
+
     - run:
         name: Check failures
         command: |
-          Rscript -e "message(devtools::check_failures(path = '${RCHECK_DIR}'))"
-          # warnings are errors
-          # - run: if grep -q -R "WARNING" "${RCHECK_DIR}/00check.log"; then exit 1; fi
+          Rscript -e "message(devtools::check_failures(path = '.'))"
+           warnings are errors
+           - run: if grep -q -R "WARNING" "./00check.log"; then exit 1; fi
 
     ## store artifacts -----------------
 
