@@ -1,14 +1,44 @@
-##' @name Leiden State Matrix
-##' @rdname leiden
-##'
-##' @title Run Leiden clustering algorithm
+##' Run Leiden clustering algorithm
 ##'
 ##' @description Implements the Leiden clustering algorithm in R using reticulate to run the Python version. Requires the python "leidenalg" and "igraph" modules to be installed. Returns a vector of partition indices.
-##'
 ##' @param adj_mat An adjacency matrix compatible with \code{\link[igraph]{igraph}} object.
 ##' @param partition_type Type of partition to use. Defaults to RBConfigurationVertexPartition. Options include: ModularityVertexPartition, RBERVertexPartition, CPMVertexPartition, MutableVertexPartition, SignificanceVertexPartition, SurpriseVertexPartition (see the Leiden python module documentation for more details)
 ##' @param initial_membership,weights,node_sizes Parameters to pass to the Python leidenalg function (defaults initial_membership=None, weights=None).
-##' @param resolution_parameter A parameter controlling the coarseness of the clusters. Higher values lead to more clusters. (defaults to 1.0 for partition types that accept a resolution parameter)
+##' @param resolution_parameter A parameter controlling the coarseness of the clusters
+##' @return A parition of clusters as a vector of integers
+##' @examples
+##' #generate example data
+##' adjacency_matrix <- rbind(cbind(matrix(round(rbinom(4000, 1, 0.8)), 20, 20),
+##'                                 matrix(round(rbinom(4000, 1, 0.3)), 20, 20),
+##'                                 matrix(round(rbinom(400, 1, 0.1)), 20, 20)),
+##'                           cbind(matrix(round(rbinom(400, 1, 0.3)), 20, 20),
+##'                                 matrix(round(rbinom(400, 1, 0.8)), 20, 20),
+##'                                 matrix(round(rbinom(4000, 1, 0.2)), 20, 20)),
+##'                           cbind(matrix(round(rbinom(400, 1, 0.3)), 20, 20),
+##'                                 matrix(round(rbinom(4000, 1, 0.1)), 20, 20),
+##'                                 matrix(round(rbinom(4000, 1, 0.9)), 20, 20)))
+##' rownames(adjacency_matrix) <- 1:60
+##' colnames(adjacency_matrix) <- 1:60
+#' \dontrun{
+#' library("igraph")
+#' graph_object <- graph_from_adjacency_matrix(adjacency_matrix, mode = "directed")
+#' }
+##' #plot graph structure
+#' \dontrun{
+#' library("devtools")
+#' install_github("TomKellyGenetics/igraph.extensions")
+#' library("plot.igraph")
+#' plot_directed(graph_object, cex.arrow = 0.3, col.arrow = "grey50")
+#' }
+##' #generate partitions
+##' partition <- leiden(adjacency_matrix)
+##' table(partition)
+##' #plot results
+#' \dontrun{
+#' library("RColorBrewer")
+#' node.cols <- brewer.pal(max(partition),"Pastel1")[partition]
+#' plot_directed(graph_object, cex.arrow = 0.3, col.arrow = "grey50", fill.node = node.cols)
+#' }
 ##'
 ##' @keywords graph network igraph mvtnorm simulation
 ##' @importFrom reticulate import r_to_py

@@ -3,12 +3,13 @@
 ^\.travis_setup\.R$
 ^appveyor\.yml$
 ^\.travis\.yml$
+^\.circleci$
 ^codecov\.yml$
 ^LICENSE\.md$
 ^cran-comments\.md$
 ^.*\.Rproj$
 ^\.Rproj\.user$
-
+^build.cmd$
 ## Files to ignore when building package
 
 ## For github checks

@@ -108,7 +108,7 @@ plot_directed(graph_object, cex.arrow = 0.3, col.arrow = "grey50", fill.node = n
 
 For more details see the follow vignette:
 
-[https://rawgit.com/TomKellyGenetics/leiden/vignettes/vignettes/run_leiden.html](https://rawgit.com/TomKellyGenetics/leiden/vignettes/vignettes/run_leiden.html)
+[https://github.com/TomKellyGenetics/leiden/blob/master/vignettes/run_leiden.html](https://github.com/TomKellyGenetics/leiden/blob/master/vignettes/run_leiden.html)
 
 
 ### Citation

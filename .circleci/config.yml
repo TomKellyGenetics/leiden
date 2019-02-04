@@ -36,6 +36,8 @@ defaults: &steps
         command: |
           Rscript \
             -e 'if (!requireNamespace("devtools", quietly = TRUE)) install.packages("devtools")' \
+            -e 'if (!requireNamespace("igraph", quietly = TRUE)) install.packages("igraph")' \
+            -e 'if (!requireNamespace("RColorBrewer", quietly = TRUE)) install.packages("RColorBrewer")' \
             -e 'devtools::install_deps(dependencies = TRUE)'
 
     ## build and test -----------------
