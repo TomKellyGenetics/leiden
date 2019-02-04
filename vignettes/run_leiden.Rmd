@@ -58,21 +58,51 @@ library("leiden")
 
 First set up a compatible adjacency matrix:
 
-```{r
-adjacency_matrix <- matrix(round(runif(10000, 0, 1)), 100, 100)
+```{r}
+adjacency_matrix <- rbind(cbind(matrix(round(rbinom(4000, 1, 0.8)), 20, 20), matrix(round(rbinom(4000, 1, 0.3)), 20, 20), matrix(round(rbinom(400, 1, 0.1)), 20, 20)),
+                          cbind(matrix(round(rbinom(400, 1, 0.3)), 20, 20), matrix(round(rbinom(400, 1, 0.8)), 20, 20), matrix(round(rbinom(4000, 1, 0.2)), 20, 20)),
+                          cbind(matrix(round(rbinom(400, 1, 0.3)), 20, 20), matrix(round(rbinom(4000, 1, 0.1)), 20, 20), matrix(round(rbinom(4000, 1, 0.9)), 20, 20)))
+str(adjacency_matrix)
+dim(adjacency_matrix )
 ```
+
+An adjacency matrix is any binary matrix representing links between nodes (column and row names). It is a directed graph if the adjacency matrix is not symmetric. 
+
+```{r}
+library("igraph")
+rownames(adjacency_matrix) <- 1:60
+colnames(adjacency_matrix) <- 1:60
+graph_object <- graph_from_adjacency_matrix(adjacency_matrix, mode = "directed")
+graph_object
+```
+
+This represents the following graph structure.
+
+```{r, warning=FALSE, message=FALSE}
+plot(graph_object, vertex.color = "grey75")
+```
+
 
 This can be a shared nearest neighbours matrix derived from a graph object.
 
 ```{r, eval=FALSE}
 library("igraph")
-adjacency_matrix <- igraph::as_adjacency_matrix(graph)
+adjacency_matrix <- igraph::as_adjacency_matrix(graph_object)
 ```
 
 Then the Leiden algorithm can be run on the adjacency matrix.
 
+```{r}
+partition <- leiden(adjacency_matrix)
+table(partition)
 ```
-membership <- leiden(adjacency_matrix)
+
+Here we can see partitions in the plotted results. The nodes that are more interconnected have been paritioned into separate clusters.
+
+```{r, warning=FALSE, message=FALSE}
+library("RColorBrewer")
+node.cols <- brewer.pal(max(partition),"Pastel1")[partition]
+plot(graph_object, vertex.color = node.cols)
 ```
 
 ### Running Leiden with arguments passed to leidenalg
@@ -90,6 +120,21 @@ Arguments can be passed to the leidenalg implementation in Python:
 
 #run with resolution parameter
   partition <- leiden(adjacency_matrix, resolution_parameter = 0.95)
+```
+
+In particular, the resolution parameter can tue the numberof clusters to be detected.
+
+```{r, warning=FALSE, message=FALSE}
+partition <- leiden(adjacency_matrix, resolution_parameter = 0.5)
+node.cols <- brewer.pal(max(partition),"Pastel1")[partition]
+plot(graph_object, vertex.color = node.cols)
+```
+
+
+```{r, warning=FALSE, message=FALSE}
+partition <- leiden(adjacency_matrix, resolution_parameter = 1.8)
+node.cols <- brewer.pal(max(partition),"Pastel1")[partition]
+plot(graph_object, vertex.color = node.cols)
 ```
 
 See the documentation on the leidenalg Python module for more information: [https://leidenalg.readthedocs.io/en/latest/reference.html](https://leidenalg.readthedocs.io/en/latest/reference.html)

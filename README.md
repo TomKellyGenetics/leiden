@@ -38,24 +38,24 @@ devtools::install_github("TomKellyGenetics/leiden")
 This package provides a function to perform clustering with the Leiden algorithm:
 
 ```R
-membership <- leiden(adjacency_matrix)
+partition <- leiden(adjacency_matrix)
 ```
 
 For an igraph object 'graph' in R:
 
 ```R
 adjacency_matrix <- igraph::as_adjacency_matrix(graph)
-membership <- leiden(adjacency_matrix)
+partition <- leiden(adjacency_matrix)
 ```
 
 To use Leiden with the Seurat pipeline for a Seurat Object `object` that has an SNN computed (for example with `Seurat::FindClusters` with `save.SNN = TRUE`). This will compute the Leiden clusters and add them to the Seurat Object Class.
 
 ```R
 adjacency_matrix <- as.matrix(object@snn)
-membership <- leiden(adjacency_matrix)
-object@ident <- as.factor(membership)
+partition <- leiden(adjacency_matrix)
+object@ident <- as.factor(partition)
 names(test@ident) <- rownames(test@meta.data)
-object@meta.data$ident <- as.factor(membership)
+object@meta.data$ident <- as.factor(partition)
 ```
 
 Note that this code is designed for Seurat version 2 releases. For Seurat version 3 objects, the Leiden algorithm will be implemented in the Seurat version 3 package with `Seurat::FindClusters` and `algorithm = "leiden"`).  
@@ -75,6 +75,38 @@ TSNEPlot(object = object, colors.use = colourPal(object@ident), group.by = "iden
 object <- RunUMAP(object = object, dims.use = 1:20, metric = "correlation", max.dim = 2)
 DimPlot(object, reduction.use = "umap", colors.use = colourPal(object@ident), group.by = "ident")
 ```
+
+### Example
+
+```
+#generate example data
+adjacency_matrix <- rbind(cbind(matrix(round(rbinom(4000, 1, 0.8)), 20, 20), matrix(round(rbinom(4000, 1, 0.3)), 20, 20), matrix(round(rbinom(400, 1, 0.1)), 20, 20)),
+##'                           cbind(matrix(round(rbinom(400, 1, 0.3)), 20, 20), matrix(round(rbinom(400, 1, 0.8)), 20, 20), matrix(round(rbinom(4000, 1, 0.2)), 20, 20)),
+##'                           cbind(matrix(round(rbinom(400, 1, 0.3)), 20, 20), matrix(round(rbinom(4000, 1, 0.1)), 20, 20), matrix(round(rbinom(4000, 1, 0.9)), 20, 20)))
+library("igraph")
+rownames(adjacency_matrix) <- 1:60
+colnames(adjacency_matrix) <- 1:60
+graph_object <- graph_from_adjacency_matrix(adjacency_matrix, mode = "directed")
+#plot graph structure
+library("devtools")
+install_github("TomKellyGenetics/igraph.extensions")
+library("plot.igraph")
+plot_directed(graph_object, cex.arrow = 0.3, col.arrow = "grey50")
+#generate partitions
+partition <- leiden(adjacency_matrix)
+table(partition)
+#plot results
+library("RColorBrewer")
+node.cols <- brewer.pal(max(partition),"Pastel1")[partition]
+plot_directed(graph_object, cex.arrow = 0.3, col.arrow = "grey50", fill.node = node.cols)
+```
+
+<img src="https://github.com/TomKellyGenetics/leiden/blob/master/images/example_plot.png?raw=true" alt="A graph plot of results showing distinct clusters" width="600px">
+</img>
+
+### Vignette
+
+https://rawgit.com/TomKellyGenetics/vioplot/vignettes/vignettes/violin_ylog.html
 
 
 ### Citation
