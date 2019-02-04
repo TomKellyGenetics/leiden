@@ -13,6 +13,8 @@ r:
   - devel
 
 r-packages:
+  - knitr
+  - rmarkdown
   - reticulate
   - igraph
   - RColorBrewer

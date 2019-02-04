@@ -43,6 +43,8 @@ defaults: &steps
             -e 'if (!requireNamespace("devtools", quietly = TRUE)) install.packages("devtools")' \
             -e 'if (!requireNamespace("igraph", quietly = TRUE)) install.packages("igraph")' \
             -e 'if (!requireNamespace("RColorBrewer", quietly = TRUE)) install.packages("RColorBrewer")' \
+            -e 'if (!requireNamespace("rmarkdown", quietly = TRUE)) install.packages("rmarkdown")' \
+            -e 'if (!requireNamespace("knitr", quietly = TRUE)) install.packages("knitr")' \
             -e 'devtools::install_deps(dependencies = TRUE)'
 
     ## build and test -----------------
