@@ -41,7 +41,7 @@ defaults: &steps
 
     - run:
         name: Install devtools and dependencies
-        command: sudo apt-get install pdflatex
+        command: | sudo apt-get install pdflatex
 
     ## build and test -----------------
 
