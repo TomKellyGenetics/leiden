@@ -13,7 +13,6 @@ os:
     r_check_args: '--ignore-vignettes --no-examples'
 
 r:
-  - stable
   - release
   - devel
 
