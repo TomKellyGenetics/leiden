@@ -49,10 +49,11 @@ defaults: &steps
 
     - run:
         name: Build package
+        command: R CMD build "${PKG_TARBALL}"  --no-build-vignettes
 
     - run:
         name: Check package
-        command: R CMD check "${PKG_TARBALL}" --as-cran --no-build-vignettes --no-manual
+        command: R CMD check "${PKG_TARBALL}" --as-cran --ignore-vignettes --no-examples
     - run:
         name: Check failures
         command: |
@@ -89,9 +90,6 @@ jobs:
      docker:
        - image: rocker/tidyverse:latest
      <<: *steps
-
-r_build_args: '--no-build-vignettes'
-r_check_args: '--ignore-vignettes --no-examples'
 
 workflows:
   version: 2
