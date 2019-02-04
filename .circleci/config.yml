@@ -9,6 +9,7 @@ machine:
     PATH: "${PATH}:${HOME}/${CIRCLE_PROJECT_REPONAME}/front-end/node_modules/.bin"
 dependencies:
   pre:
+    - sudo apt-get update; sudo apt-get install -y libpython-dev; sudo apt-get install -y libpython3-dev
     - pip install --upgrade pip
     - pip install --upgrade
     - pip install leidenalg numpy python-igraph
@@ -21,10 +22,6 @@ defaults: &steps
     - checkout
 
     ## setup -------------------------------
-
-     - run:
-        name: Install Python for Rocker
-        command: sudo apt-get update; sudo apt-get install -y libpython-dev; sudo apt-get install -y libpython3-dev
 
     - run:
         name: Set environmental variables
