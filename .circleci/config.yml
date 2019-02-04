@@ -28,7 +28,7 @@ defaults: &steps
 
     - run:
         name: Install devtools and dependencies
-        command: sudo apt-get install pdflatex
+        command: sudo apt-get install texlive-full
 
     - run:
         name: Set environmental variables
