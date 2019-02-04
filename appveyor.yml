@@ -8,7 +8,8 @@ image:
 environment:
   global:
     PATH: C:\msys64\usr\bin;C:\msys64\mingw64\bin;C:\Windows\System32;C:\Windows;%PATH%
-    R_CHECK_ARGS: "--no-build-vignettes --no-manual"
+    R_CHECK_ARGS: "--ignore-vignettes --no-examples --no-build-vignettes --no-manual"
+    R_BUILD_ARGS: '--no-build-vignettes'
     R_ARCH: x64
     NOT_CRAN: true
     USE_RTOOLS: true
@@ -183,9 +184,6 @@ install:
   #- "pip install leidenalg"
   - ps: Bootstrap
 
-r_build_args: '--no-build-vignettes'
-r_check_args: '--ignore-vignettes --no-examples'
-
 cache:
   - C:\RLibrary
 
@@ -197,6 +195,7 @@ build_script:
   - travis-tool.sh install_deps
   - "pip install -q igraph"
   - "pip install -q leidenalg"
+
 
 test_script:
   - travis-tool.sh run_tests
