@@ -9,9 +9,9 @@ os:
     r:
     - release
     - devel
+    r_build_args: '--no-build-vignettes'
+    r_check_args: '--no-build-vignettes --no-manual'
   - os: osx
-    osx_image: xcode7.3
-    disable_homebrew: true
     r: release
     r_build_args: '--no-build-vignettes'
     r_check_args: '--ignore-vignettes --no-examples'
@@ -22,10 +22,6 @@ r-packages:
   - reticulate
   - igraph
   - RColorBrewer
-
-env:
-  global:
-    - R_CHECK_ARGS="--no-build-vignettes --no-manual"
 
 python:
   - "3.5"
