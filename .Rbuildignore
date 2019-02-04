@@ -32,3 +32,4 @@
 ^vignettes/.*rprof$
 ^vignettes/.*html$
 ^vignettes/.*png$
+^circle\.yml$
