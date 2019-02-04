@@ -1,3 +1,5 @@
+^Meta$
+^doc$
 ^CRAN-RELEASE$
 ^travis_setup\.R$
 ^\.travis_setup\.R$
@@ -16,12 +18,9 @@
 .travis.yml
 .gitignore
 .git
-
 ^README
 ^LICENSE.md
-
 ^images$
-
 ## Temporary files
 ^R/.+~$
 ^vignettes/.+~$

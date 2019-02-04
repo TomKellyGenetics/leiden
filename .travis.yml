@@ -1,7 +1,7 @@
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
 
 language: R
-sudo: true
+sudo: false
 cache: packages
 
 os:
@@ -13,8 +13,6 @@ r:
   - devel
 
 r-packages:
-  - knitr
-  - rmarkdown
   - reticulate
   - igraph
   - RColorBrewer
@@ -33,9 +31,6 @@ before_install:
   - ./travis_setup.sh
 
 before_install:
-  - sudo apt-get update
-  - sudo apt-get install -y libpython-dev
-  - sudo apt-get install -y libpython3-dev
   - pip install --user igraph
   - pip install --user numpy
   - pip install --user leidenalg
