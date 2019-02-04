@@ -12,7 +12,28 @@ os:
     #r_build_args: '--no-build-vignettes'
     #r_check_args: '--ignore-vignettes --no-examples'
 
-r: release
+addons:
+  apt:
+    #sources:
+    #  - ubuntu-toolchain-r-test
+    packages:
+      - libpython-dev
+      - libpython3-dev
+      - texlive-full
+      - cmake
+      - python3
+  homebrew:
+    packages:
+      - libpython-dev
+      - libpython3-dev
+      - texlive-full
+      - cmake
+      - python3
+    update: true
+
+r:
+  - release
+  - devel
 
 r-packages:
   - reticulate
@@ -32,10 +53,6 @@ python:
 before_install:
   - chmod +x travis_setup.sh
   - ./travis_setup.sh
-
-before_install:
-  - sudo apt-get update; sudo apt-get install -y libpython-dev; sudo apt-get install -y libpython3-dev
-  - sudo apt-get install -y texlive-full
   - pip install --user igraph
   - pip install --user numpy
   - pip install --user leidenalg
