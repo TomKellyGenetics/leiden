@@ -48,7 +48,7 @@ The current release on CRAN can be installed with:
 install.packages("leiden")
 ```
 
-```{r, eval=FALSE}
+```{r}
 library("leiden")
 ```
 
