@@ -15,6 +15,10 @@ r-packages:
   - igraph
   - RColorBrewer
 
+env:
+  global:
+    - R_CHECK_ARGS="--no-build-vignettes --no-manual"
+
 python:
   - "3.5"
   - "3.6"
