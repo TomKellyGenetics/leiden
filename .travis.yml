@@ -9,6 +9,7 @@ os:
   - osx
 
 r:
+  - stable
   - release
   - devel
 
