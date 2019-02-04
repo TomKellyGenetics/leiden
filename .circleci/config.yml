@@ -25,6 +25,10 @@ defaults: &steps
     ## setup -------------------------------
 
     - run:
+        name: Install dependancies
+        command: |
+
+    - run:
         name: Set environmental variables
         command: |
           Rscript --vanilla \
@@ -37,14 +41,7 @@ defaults: &steps
 
     - run:
         name: Install devtools and dependencies
-        command: |
-          Rscript \
-            -e 'if (!requireNamespace("devtools", quietly = TRUE)) install.packages("devtools")' \
-            -e 'if (!requireNamespace("igraph", quietly = TRUE)) install.packages("igraph")' \
-            -e 'if (!requireNamespace("RColorBrewer", quietly = TRUE)) install.packages("RColorBrewer")' \
-            -e 'if (!requireNamespace("rmarkdown", quietly = TRUE)) install.packages("rmarkdown")' \
-            -e 'if (!requireNamespace("knitr", quietly = TRUE)) install.packages("knitr")' \
-            -e 'devtools::install_deps(dependencies = TRUE)'
+        command: sudo apt-get install pdflatex
 
     ## build and test -----------------
 
