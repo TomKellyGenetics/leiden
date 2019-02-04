@@ -8,12 +8,18 @@ os:
   - linux
   - osx
 
-r: release
+r:
+  - release
+  - devel
 
 r-packages:
   - reticulate
   - igraph
   - RColorBrewer
+
+env:
+  global:
+    - R_CHECK_ARGS="--no-build-vignettes --no-manual"
 
 python:
   - "3.5"
@@ -25,6 +31,9 @@ before_install:
   - ./travis_setup.sh
 
 before_install:
+  - apt-get update
+  - apt-get install -y libpython-dev
+  - apt-get install -y libpython3-dev
   - pip install --user igraph
   - pip install --user numpy
   - pip install --user leidenalg

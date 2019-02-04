@@ -44,11 +44,11 @@ defaults: &steps
 
     - run:
         name: Build package
-        command: R CMD build .
+        command: R CMD build  .
 
     - run:
         name: Check package
-        command: R CMD check "${PKG_TARBALL}" --as-cran --no-manual
+        command: R CMD check "${PKG_TARBALL}" --as-cran --no-build-vignettes --no-manual
     - run:
         name: Check failures
         command: |
