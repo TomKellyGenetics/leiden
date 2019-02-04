@@ -157,6 +157,7 @@ install:
 
   - conda config --set always_yes yes --set changeps1 no
   - conda config --add channels conda-forge
+  - conda config --add channels vtraag
   - conda update -q conda pip
   - conda install -q numpy
   - conda install -q -c r r-igraph
