@@ -6,8 +6,6 @@ cache: packages
 
 os:
   - linux
-    r_build_args: '--no-build-vignettes'
-    r_check_args: '--no-build-vignettes --no-manual'
   - os: osx
     osx_image: xcode7.3
     disable_homebrew: true
@@ -24,6 +22,7 @@ r-packages:
 env:
   global:
     - R_CHECK_ARGS="--no-build-vignettes --no-manual"
+    - R_BUILD_ARGS="--no-build-vignettes"
 
 python:
   - "3.5"
