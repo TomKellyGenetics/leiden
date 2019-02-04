@@ -51,7 +51,7 @@ defaults: &steps
 
     - run:
         name: Build package
-        command: R CMD build  .
+        command: R CMD build  --no-build-vignettes --no-manual .
 
     - run:
         name: Check package
