@@ -106,7 +106,9 @@ plot_directed(graph_object, cex.arrow = 0.3, col.arrow = "grey50", fill.node = n
 
 ### Vignette
 
-https://rawgit.com/TomKellyGenetics/vioplot/vignettes/vignettes/violin_ylog.html
+For more details see the follow vignette:
+
+[https://rawgit.com/TomKellyGenetics/leiden/vignettes/vignettes/run_leiden.html](https://rawgit.com/TomKellyGenetics/leiden/vignettes/vignettes/run_leiden.html)
 
 
 ### Citation
