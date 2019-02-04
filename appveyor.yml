@@ -110,7 +110,7 @@ init:
         Invoke-WebRequest http://raw.github.com/krlmlr/r-appveyor/master/scripts/appveyor-tool.ps1 -OutFile "..\appveyor-tool.ps1"
         Import-Module '..\appveyor-tool.ps1'
   - cmd: "ECHO %PYTHON_VERSION% %CONDA_INSTALL_LOCN%"
-  - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%MINICONDA%\\Library\\bin;%PATH%"
+  - cmd: "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%MINICONDA%\\Library\\bin;%PATH%"
 
 install:
   # If there is a newer build queued for the same PR, cancel this one.
@@ -196,7 +196,7 @@ build_script:
   - R -e 'install.packages("knitr")'
   - travis-tool.sh install_github igraph/rigraph
   - travis-tool.sh install_deps
-  - "pip install -q igraph"
+  - "pip install -q graphviz" #includes python-igraph
   - "pip install -q leidenalg"
 
 
