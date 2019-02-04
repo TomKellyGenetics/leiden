@@ -57,10 +57,11 @@ defaults: &steps
 
     - run:
         name: Check failures
-        command: |
-          Rscript -e "message(devtools::check_failures(path = '.'))"
-           warnings are errors
-           - run: if grep -q -R "WARNING" "./00check.log"; then exit 1; fi
+        command: Rscript -e "message(devtools::check_failures(path = '.'))"
+
+
+    ## warnings are errors
+    - run: if grep -q -R "WARNING" "./00check.log"; then exit 1; fi
 
     ## store artifacts -----------------
 
