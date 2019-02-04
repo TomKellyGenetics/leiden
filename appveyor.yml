@@ -188,6 +188,7 @@ cache:
 # Adapt as necessary starting from here
 
 build_script:
+  - R -e 'install.packages(c("igraph", "RColorBrewer"))'
   - travis-tool.sh install_github igraph/rigraph
   - travis-tool.sh install_deps
   - "pip install -q igraph"

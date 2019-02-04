@@ -12,6 +12,8 @@ r: release
 
 r-packages:
   - reticulate
+  - igraph
+  - RColorBrewer
 
 python:
   - "3.5"
