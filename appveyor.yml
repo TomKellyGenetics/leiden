@@ -159,6 +159,11 @@ install:
   - conda config --add channels conda-forge
   - conda update -q conda pip
   - conda install -q numpy
+  - conda install -q -c r r-igraph
+  - conda install -c conda-forge libcxx 
+  - conda install -c anaconda git
+  - conda install -c vtraag python-igraph
+  - conda install -c vtraag leidenalg
   #- conda install pip numpy scipy
   - "python -m pip install --upgrade pip"
   #- "pip install -q pycairo"
