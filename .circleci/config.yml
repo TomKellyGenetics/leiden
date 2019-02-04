@@ -24,9 +24,11 @@ defaults: &steps
 
     ## setup -------------------------------
 
+    ## install dependencies ------------------
+
     - run:
-        name: Install dependancies
-        command: |
+        name: Install devtools and dependencies
+        command: sudo apt-get install pdflatex
 
     - run:
         name: Set environmental variables
@@ -36,12 +38,6 @@ defaults: &steps
             -e 'cat(sprintf("export PKG_TARBALL=%s_%s.tar.gz\n", dsc[,"Package"], dsc[,"Version"]))' \
             -e 'cat(sprintf("export RCHECK_DIR=%s.Rcheck\n", dsc[,"Package"]))' \
             >> ${BASH_ENV}
-
-    ## install dependencies ------------------
-
-    - run:
-        name: Install devtools and dependencies
-        command: | sudo apt-get install pdflatex
 
     ## build and test -----------------
 
