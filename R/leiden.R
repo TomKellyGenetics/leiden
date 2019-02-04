@@ -19,26 +19,10 @@
 ##'                                 matrix(round(rbinom(4000, 1, 0.9)), 20, 20)))
 ##' rownames(adjacency_matrix) <- 1:60
 ##' colnames(adjacency_matrix) <- 1:60
-#' \dontrun{
-#' library("igraph")
-#' graph_object <- graph_from_adjacency_matrix(adjacency_matrix, mode = "directed")
-#' }
-##' #plot graph structure
-#' \dontrun{
-#' library("devtools")
-#' install_github("TomKellyGenetics/igraph.extensions")
-#' library("plot.igraph")
-#' plot_directed(graph_object, cex.arrow = 0.3, col.arrow = "grey50")
-#' }
 ##' #generate partitions
 ##' partition <- leiden(adjacency_matrix)
 ##' table(partition)
-##' #plot results
-#' \dontrun{
-#' library("RColorBrewer")
-#' node.cols <- brewer.pal(max(partition),"Pastel1")[partition]
-#' plot_directed(graph_object, cex.arrow = 0.3, col.arrow = "grey50", fill.node = node.cols)
-#' }
+##'
 ##'
 ##' @keywords graph network igraph mvtnorm simulation
 ##' @importFrom reticulate import r_to_py
