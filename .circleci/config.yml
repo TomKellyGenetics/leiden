@@ -77,7 +77,7 @@ defaults: &steps
 
 version: 2
 jobs:
-  "r-release":
+  "r-stable":
      docker:
        - image: rocker/tidyverse:stable
      <<: *steps
