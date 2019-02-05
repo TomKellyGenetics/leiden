@@ -154,7 +154,8 @@ install:
   - C:\msys64\usr\bin\bash -lc "pacman --noconfirm -S autoconf automake bison flex"
   - C:\msys64\usr\bin\bash -lc "pacman --noconfirm -S libxml2-devel zip"
 
-
+  - conda create -n env_name
+  - conda activate env_name
   - conda config --set always_yes yes --set changeps1 no
   - conda config --add channels conda-forge
   - conda config --add channels vtraag
