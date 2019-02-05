@@ -1,8 +1,8 @@
 Package: leiden
 Type: Package
 Title: Implementation of the 'Python leidenalg' Module
-Version: 0.2.2
-Date: 2019-02-04
+Version: 0.2.3
+Date: 2019-02-05
 Author: Tom Kelly <tom.kelly@riken.jp>
 Maintainer: Tom Kelly <tom.kelly@riken.jp>
 Description: Implements the 'Python leidenalg' module to be called in R.
