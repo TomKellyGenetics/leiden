@@ -187,7 +187,7 @@ install:
   - conda.exe config --remove channels defaults
   - conda.exe config --add channels defaults
   - conda.exe config --add channels conda-forge
-  - conda.exe install -n root --quiet --yes conda-forge-build-setup
+  - conda.exe install -n env_name --quiet --yes conda-forge-build-setup
   - run_conda_forge_build_setup
   - conda.exe build recipe --quiet
   #- conda install -n env_name -y q igraph
