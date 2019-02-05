@@ -5,6 +5,8 @@ image:
 - Visual Studio 2017
 #- Ubuntu
 
+sudo: true
+
 environment:
   global:
     PATH: C:\msys64\usr\bin;C:\msys64\mingw64\bin;C:\Windows\System32;C:\Windows;%PATH%
@@ -157,9 +159,9 @@ install:
   - conda info --envs
   - conda create -n env_name -y
   - conda update -y -n base -c defaults conda
+  #- CALL conda.bat activate
   - conda init bash
   - bash
-  #ALL conda.bat activate
   - conda activate base
   - echo ". C:\Miniconda37/etc/profile.d/conda.sh" >> ~/.bashrc
   - conda activate env_name
