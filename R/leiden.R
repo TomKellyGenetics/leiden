@@ -7,6 +7,9 @@
 ##' @param resolution_parameter A parameter controlling the coarseness of the clusters
 ##' @return A parition of clusters as a vector of integers
 ##' @examples
+##' #check if python is availble
+##' modules <- reticulate::py_module_available("leidenalg") && reticulate::py_module_available("igraph")
+##' if(modules){
 ##' #generate example data
 ##' adjacency_matrix <- rbind(cbind(matrix(round(rbinom(4000, 1, 0.8)), 20, 20),
 ##'                                 matrix(round(rbinom(4000, 1, 0.3)), 20, 20),
@@ -22,6 +25,7 @@
 ##' #generate partitions
 ##' partition <- leiden(adjacency_matrix)
 ##' table(partition)
+##' }
 ##'
 ##'
 ##' @keywords graph network igraph mvtnorm simulation

@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 library("reticulate")
-module <- py_available()
+module <- py_available() && reticulate::py_module_available("leidenalg") && reticulate::py_module_available("igraph")
 ```
 
 ## Clustering with the Leiden Algorithm in R
@@ -98,7 +98,12 @@ adjacency_matrix <- igraph::as_adjacency_matrix(graph_object)
 
 Then the Leiden algorithm can be run on the adjacency matrix.
 
-```{r}
+```{r, eval=!module}
+partition <- c(rep(1, 20), rep(2, 20), rep(3, 20))
+table(partition)
+```
+
+```{r, eval=module}
 partition <- leiden(adjacency_matrix)
 table(partition)
 ```
@@ -130,14 +135,14 @@ Arguments can be passed to the leidenalg implementation in Python:
 
 In particular, the resolution parameter can tue the numberof clusters to be detected.
 
-```{r, warning=FALSE, message=FALSE}
+```{r, warning=FALSE, message=FALSE, eval=module}
 partition <- leiden(adjacency_matrix, resolution_parameter = 0.5)
 node.cols <- brewer.pal(max(partition),"Pastel1")[partition]
 plot(graph_object, vertex.color = node.cols)
 ```
 
 
-```{r, warning=FALSE, message=FALSE}
+```{r, warning=FALSE, message=FALSE, eval=module}
 partition <- leiden(adjacency_matrix, resolution_parameter = 1.8)
 node.cols <- brewer.pal(max(partition),"Pastel1")[partition]
 plot(graph_object, vertex.color = node.cols)
