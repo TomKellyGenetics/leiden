@@ -126,6 +126,7 @@ install:
   - ps: "ls \"C:/\""
 
   #- ECHO "Installed SDKs:"
+  - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
   #- ps: "ls \"C:/Program Files/Microsoft SDKs/Windows\""
 
   #- travis-tool.sh install_github igraph/igraph
@@ -157,7 +158,7 @@ install:
   - conda info --envs
   - conda create -n env_name -y
   - conda update -y -n base -c defaults conda
-  - conda.bat activate
+  - call "conda.bat activate"
   #- sudo conda init bash
   #- bash
   - conda activate base
