@@ -183,13 +183,13 @@ install:
   - conda.exe build recipe --quiet
   #- conda install -q igraph
   #- conda install -q -c conda-forge python-igraph
-  - conda install -q -c vtraag leidenalg
+  #- conda install -q -c vtraag leidenalg
   #- conda install pip numpy scipy
   - "python -m pip install --upgrade pip"
   #- "pip install -q pycairo"
   #- pip install wheel
   #- pip install python-igraph==0.7.1.post6
-  - "pip install git+git://github.com/igraph/python-igraph.git"
+  #- "pip install git+git://github.com/igraph/python-igraph.git"
   - "pip install -q leidenalg"
   - "echo done"
 
