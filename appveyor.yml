@@ -190,9 +190,9 @@ install:
   - conda.exe install -n root --quiet --yes conda-forge-build-setup
   - run_conda_forge_build_setup
   - conda.exe build recipe --quiet
-  #- conda install -y -q igraph
-  - conda install -y -q -c conda-forge python-igraph
-  - conda install -y -q -c vtraag leidenalg
+  #- conda install -n env_name -y q igraph
+  - conda install -n env_name -y -c conda-forge python-igraph
+  - conda install -n env_name -y -q -c vtraag leidenalg
   #- conda install pip numpy scipy
   - "python -m pip install --upgrade pip"
   #- "pip install -q pycairo"
