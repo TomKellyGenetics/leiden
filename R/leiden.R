@@ -106,7 +106,7 @@ resolution_parameter = 1
         ),
         stop("please specify a partition type as a string out of those documented")
     )
-    return(part$membership+1)
+    partition <- part$membership+1
 }
 
 # global reference to python modules (will be initialized in .onLoad)
