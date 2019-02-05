@@ -13,7 +13,7 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^build.cmd$
-^\.revdev$
+^\.revdep$
 ## Files to ignore when building package
 
 ## For github checks
