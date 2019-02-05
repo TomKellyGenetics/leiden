@@ -166,11 +166,12 @@ install:
   - conda config --set always_yes yes --set changeps1 no
   - conda config --add channels conda-forge
   - conda config --add channels vtraag
+  - conda install -y -q conda pip
   - conda update -q conda pip
-  - conda install -q numpy
-  - conda install -q -c r r-igraph
-  - conda install -q -c conda-forge libcxx
-  - conda install -q -c anaconda git
+  - conda install -y -q numpy
+  - conda install -y -q -c r r-igraph
+  - conda install -y -q -c conda-forge libcxx
+  - conda install -y -q -c anaconda git
 
   - git clone -q https://github.com/conda-forge/igraph-feedstock.git C:\projects\igraph-feedstock
   - git fetch -q origin +refs/pull/7/merge:
