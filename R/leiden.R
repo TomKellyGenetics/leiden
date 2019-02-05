@@ -25,6 +25,20 @@
 ##' #generate partitions
 ##' partition <- leiden(adjacency_matrix)
 ##' table(partition)
+##'
+##' #generate partitions at a lower resolution
+##' partition <- leiden(adjacency_matrix, resolution_parameter = 0.5)
+##' table(partition)
+##'
+##' #generate example weights
+##' weights <- sample(1:10, sum(adjacency_matrix!=0), replace=TRUE)
+##' partition <- leiden(adjacency_matrix, weights = weights)
+##' table(partition)
+##'
+##' #generate example weighted matrix
+##' adjacency_matrix[adjacency_matrix == 1] <- weights
+##' partition <- leiden(adjacency_matrix)
+##' table(partition)
 ##' }
 ##'
 ##'
@@ -51,15 +65,28 @@ resolution_parameter = 1
     leidenalg <- import("leidenalg", delay_load = TRUE)
     ig <- import("igraph", delay_load = TRUE)
 
-    #convert matrix input
-    adj_mat <- as.matrix(ceiling(adj_mat))
+    #convert matrix input (corrects for sparse matrix input)
+    adj_mat <- as.matrix(adj_mat)
+
+    #compute weights if non-binary adjacency matrix given
+    is_pure_adj <- all(as.logical(adj_mat) == adj_mat)
+    if (is.null(weights) && !is_pure_adj) {
+        #assign weights to edges (without dependancy on igraph)
+        weights <- t(adj_mat)[t(adj_mat)!=0]
+        #remove zeroes from rows of matrix and return vector of length edges
+    }
 
     ##convert to python numpy.ndarray, then a list
     adj_mat_py <- r_to_py(adj_mat)
     adj_mat_py <- adj_mat_py$tolist()
 
     #convert graph structure to a Python compatible object
-    snn_graph <- ig$Graph$Adjacency(adj_mat_py)
+    GraphClass <- if (!is.null(weights) && !is_pure_adj){
+        ig$Graph$Weighted_Adjacency
+    } else {
+        ig$Graph$Adjacency
+    }
+    snn_graph <- GraphClass(adj_mat_py)
 
     #compute partitions
     partition_type <- match.arg(partition_type)
@@ -107,7 +134,9 @@ resolution_parameter = 1
         stop("please specify a partition type as a string out of those documented")
     )
     partition <- part$membership+1
+    partition
 }
+
 
 # global reference to python modules (will be initialized in .onLoad)
 leidenalg <- NULL

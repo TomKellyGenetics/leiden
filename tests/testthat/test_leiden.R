@@ -29,3 +29,19 @@ test_that("run with resolution parameter", {
   partition <- leiden(adj_mat, resolution_parameter = 0.95)
   expect_length(partition, 100)
 })
+
+weights <- sample(1:10, sum(adj_mat!=0), replace=TRUE)
+
+test_that("run with non-wieghted adjacency matrix and weights vector", {
+  skip_if_no_python()
+  partition <- leiden(adj_mat, weights = weights)
+  expect_length(partition, 100)
+})
+
+adj_mat[adj_mat == 1] <- weights
+
+test_that("run with wieghted adjacency matrix", {
+  skip_if_no_python()
+  partition <- leiden(adj_mat)
+  expect_length(partition, 100)
+})

@@ -148,6 +148,22 @@ node.cols <- brewer.pal(max(partition),"Pastel1")[partition]
 plot(graph_object, vertex.color = node.cols)
 ```
 
+Weights for edges an also be passed to the leiden algorithm either as a separate vector or weights or a weighted adjacency matrix.
+
+```{r, warning=FALSE, message=FALSE, eval=module}
+#generate example weights
+weights <- sample(1:10, sum(adjacency_matrix!=0), replace=TRUE)
+partition <- leiden(adjacency_matrix, weights = weights)
+table(partition)
+```
+
+```{r, warning=FALSE, message=FALSE, eval=module}
+#generate example weighted matrix
+adjacency_matrix[adjacency_matrix == 1] <- weights
+partition <- leiden(adjacency_matrix)
+table(partition)
+```
+
 See the documentation on the leidenalg Python module for more information: [https://leidenalg.readthedocs.io/en/latest/reference.html](https://leidenalg.readthedocs.io/en/latest/reference.html)
 
 ## Running on a Seurat Object
