@@ -2,6 +2,7 @@
 #^doc$
 ^CRAN-RELEASE$
 ^travis_setup\.R$
+^travis_setup.sh$
 ^\.travis_setup\.R$
 ^appveyor\.yml$
 ^\.travis\.yml$
