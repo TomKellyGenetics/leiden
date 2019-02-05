@@ -163,8 +163,26 @@ install:
   - conda install -q -c r r-igraph
   - conda install -q -c conda-forge libcxx
   - conda install -q -c anaconda git
-  - conda install -q igraph
-  - conda install -q -c conda-forge python-igraph
+
+  - git clone -q https://github.com/conda-forge/igraph-feedstock.git C:\projects\igraph-feedstock
+  - git fetch -q origin +refs/pull/7/merge:
+  - git checkout -qf FETCH_HEAD
+  - powershell -Command "(New-Object Net.WebClient).DownloadFile('https://raw.githubusercontent.com/conda-forge/conda-forge-build-setup-feedstock/master/recipe/ff_ci_pr_build.py', 'ff_ci_pr_build.py')"
+  - ff_ci_pr_build -v --ci "appveyor" "%APPVEYOR_ACCOUNT_NAME%/%APPVEYOR_PROJECT_SLUG%" "%APPVEYOR_BUILD_NUMBER%" "%APPVEYOR_PULL_REQUEST_NUMBER%"
+  - del ff_ci_pr_build.py
+  - rmdir C:\cygwin /s /q
+  - call %CONDA_INSTALL_LOCN%\Scripts\activate.bat
+  - conda.exe update --yes --quiet conda
+  - set PYTHONUNBUFFERED=1
+  - conda.exe config --set show_channel_urls true
+  - conda.exe config --remove channels defaults
+  - conda.exe config --add channels defaults
+  - conda.exe config --add channels conda-forge
+  - conda.exe install -n root --quiet --yes conda-forge-build-setup
+  - run_conda_forge_build_setup
+  - conda.exe build recipe --quiet
+  #- conda install -q igraph
+  #- conda install -q -c conda-forge python-igraph
   - conda install -q -c vtraag leidenalg
   #- conda install pip numpy scipy
   - "python -m pip install --upgrade pip"
