@@ -157,6 +157,8 @@ install:
   - conda info --envs
   - conda create -n env_name -y
   - conda update -y -n base -c defaults conda
+  - conda init bash
+  #ALL conda.bat activate
   - conda activate base
   - echo ". C:\Miniconda37/etc/profile.d/conda.sh" >> ~/.bashrc
   - conda activate env_name
