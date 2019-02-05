@@ -62,7 +62,7 @@ resolution_parameter = 1
     snn_graph <- ig$Graph$Adjacency(adj_mat_py)
 
     #compute partitions
-    partition_type <- partition_type[1]
+    partition_type <- match.arg(partition_type)
     part <- switch(
         EXPR = partition_type,
         'RBConfigurationVertexPartition' = leidenalg$find_partition(
