@@ -72,7 +72,8 @@ resolution_parameter = 1
     is_pure_adj <- all(as.logical(adj_mat) == adj_mat)
     if (is.null(weights) && !is_pure_adj) {
         #assign weights to edges (without dependancy on igraph)
-        weights <- t(adj_mat)[t(adj_mat)!=0]
+        t_mat <- t(adj_mat); mat[mat!=0]
+        weights <- t_mat[t_mat!=0]
         #remove zeroes from rows of matrix and return vector of length edges
     }
 
