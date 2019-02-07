@@ -38,7 +38,7 @@ test_that("run with non-wieghted adjacency matrix and weights vector", {
   expect_length(partition, 100)
 })
 
-adj_mat[adj_mat == 1] <- weights
+adj_mat <- ifelse(adj_mat == 1, weights, 0)
 
 test_that("run with wieghted adjacency matrix", {
   skip_if_no_python()
