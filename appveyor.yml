@@ -15,7 +15,7 @@ environment:
     USE_RTOOLS: true
     _R_CHECK_FORCE_SUGGESTS_: false
   matrix:
-  - PYTHON: "C:\\Python36"
+    - PYTHON: "C:\\Python36"
       RETICULATE_PYTHON: "C:\\Python36"
       MINICONDA: C:\Miniconda36
       CONDA_INSTALL_LOCN: C:\Miniconda36
@@ -109,6 +109,11 @@ environment:
 
 matrix:
   fast_finish: true
+  exclude:
+    - platform: x64
+      PYTHON_ARCH: "32"
+    - platform: x86
+      PYTHON_ARCH: "64"
 
 # Download script file from GitHub
 init:
@@ -148,13 +153,24 @@ install:
   #- "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
 
   # Check that we have the expected version and architecture for Python
-  #- "python --version"
+  - "python --version"
   #- "python -c \"import struct; print(struct.calcsize('P') * 8)\""
 
   # setup conda environment for building
   #- cmd: set "PATH=%CONDA_INSTALL_LOCN%;%CONDA_INSTALL_LOCN%\scripts;%PATH%"
   #- cmd: set PYTHONUNBUFFERED=1
 
+  - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
+  # Check that we have the expected version and architecture for Python
+  - "python -c \"import sys; print(sys.version)\""
+  # Install the build and runtime dependencies of the project.
+  - "conda update -q --yes conda"
+  # Install constructor, take into account what vc version we target later in the build..
+  - "conda install -q --yes 'constructor>=2.0'"
+  # list package versions
+  - "conda list"
+  # build installer
+  - "constructor --verbose --platform=%CONDA_PLATFORM% %OBSPY_VERSION%_%CONDA_PYSUFFIX%"
 
     # update mysy2
   #- C:\msys64\usr\bin\bash -lc "pacman --needed --noconfirm -Sy pacman-mirrors"
