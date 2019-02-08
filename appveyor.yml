@@ -101,8 +101,8 @@ environment:
       PYTHON_ARCH: "64"
     - PYTHON: "C:\\Python36"
       RETICULATE_PYTHON: "C:\\Python36"
-      MINICONDA: C:\Miniconda36-x64
-      CONDA_INSTALL_LOCN: C:\Miniconda36-x64
+      MINICONDA: C:\Miniconda36
+      CONDA_INSTALL_LOCN: C:\Miniconda36
       DISTUTILS_USE_SDK: "1"
       R_VERSION: devel
       GCC_PATH: mingw_32
