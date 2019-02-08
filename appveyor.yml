@@ -22,6 +22,8 @@ environment:
       DISTUTILS_USE_SDK: "1"
       R_VERSION: devel
       R_ARCH: x64
+      platform: x86
+      PYTHON_ARCH: "64"
       GCC_PATH: mingw_64
     - PYTHON: "C:\\Python37"
       RETICULATE_PYTHON: "C:\\Python37"
@@ -30,6 +32,8 @@ environment:
       DISTUTILS_USE_SDK: "1"
       R_VERSION: devel
       R_ARCH: x64
+      platform: x86
+      PYTHON_ARCH: "64"
       GCC_PATH: mingw_64
     - PYTHON: "C:\\Python35"
       RETICULATE_PYTHON: "C:\\Python35"
@@ -38,6 +42,8 @@ environment:
       DISTUTILS_USE_SDK: "1"
       R_VERSION: devel
       R_ARCH: x64
+      platform: x86
+      PYTHON_ARCH: "64"
       GCC_PATH: mingw_64
     - PYTHON: "C:\\Python37"
       RETICULATE_PYTHON: "C:\\Python37"
@@ -46,6 +52,8 @@ environment:
       DISTUTILS_USE_SDK: "1"
       R_VERSION: release
       R_ARCH: x64
+      platform: x86
+      PYTHON_ARCH: "64"
     - PYTHON: "C:\\Python36"
       RETICULATE_PYTHON: "C:\\Python36"
       MINICONDA: C:\Miniconda36
@@ -53,6 +61,8 @@ environment:
       DISTUTILS_USE_SDK: "1"
       R_VERSION: release
       R_ARCH: x64
+      platform: x86
+      PYTHON_ARCH: "64"
     - PYTHON: "C:\\Python35"
       RETICULATE_PYTHON: "C:\\Python35"
       MINICONDA: C:\Miniconda35
@@ -60,6 +70,8 @@ environment:
       DISTUTILS_USE_SDK: "1"
       R_VERSION: release
       R_ARCH: x64
+      platform: x86
+      PYTHON_ARCH: "64"
     - PYTHON: "C:\\Python37"
       RETICULATE_PYTHON: "C:\\Python37"
       MINICONDA: C:\Miniconda37
@@ -67,6 +79,8 @@ environment:
       DISTUTILS_USE_SDK: "1"
       R_VERSION: stable
       R_ARCH: x64
+      platform: x86
+      PYTHON_ARCH: "64"
     - PYTHON: "C:\\Python36"
       RETICULATE_PYTHON: "C:\\Python36"
       MINICONDA: C:\Miniconda36
@@ -74,6 +88,8 @@ environment:
       DISTUTILS_USE_SDK: "1"
       R_VERSION: stable
       R_ARCH: x64
+      platform: x86
+      PYTHON_ARCH: "64"
     - PYTHON: "C:\\Python35"
       RETICULATE_PYTHON: "C:\\Python35"
       MINICONDA: C:\Miniconda35
@@ -81,6 +97,8 @@ environment:
       DISTUTILS_USE_SDK: "1"
       R_VERSION: stable
       R_ARCH: x64
+      platform: x86
+      PYTHON_ARCH: "64"
     - PYTHON: "C:\\Python36"
       RETICULATE_PYTHON: "C:\\Python36"
       MINICONDA: C:\Miniconda36
@@ -89,6 +107,8 @@ environment:
       R_VERSION: devel
       GCC_PATH: mingw_32
       R_ARCH: i386
+      platform: x86
+      PYTHON_ARCH: "32"
     - PYTHON: "C:\\Python37"
       RETICULATE_PYTHON: "C:\\Python37"
       MINICONDA: C:\Miniconda37
@@ -96,6 +116,8 @@ environment:
       DISTUTILS_USE_SDK: "1"
       R_VERSION: devel
       R_ARCH: i386
+      platform: x86
+      PYTHON_ARCH: "32"
       GCC_PATH: mingw_32
     - PYTHON: "C:\\Python35"
       RETICULATE_PYTHON: "C:\\Python35"
@@ -105,6 +127,8 @@ environment:
       R_VERSION: devel
       GCC_PATH: mingw_32
       R_ARCH: i386
+      platform: x86
+      PYTHON_ARCH: "32"
 
 
 matrix:
