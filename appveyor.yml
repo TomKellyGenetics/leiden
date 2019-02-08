@@ -7,47 +7,26 @@ image:
 
 environment:
   global:
-    PATH: C:\msys64\usr\bin;C:\msys64\mingw64\bin;C:\Windows\System32;C:\Windows;%PATH%
+    PATH: C:\msys64\usr\bin;C:\msys64\mingw64\bin;C:\Windows;%PATH%
+    #;C:\Windows\System32
     R_CHECK_ARGS: "--ignore-vignettes --no-examples --no-build-vignettes --no-manual"
     R_BUILD_ARGS: '--no-build-vignettes'
-    R_ARCH: x64
     NOT_CRAN: true
     USE_RTOOLS: true
     _R_CHECK_FORCE_SUGGESTS_: false
   matrix:
-    - PYTHON: "C:\\Python37"
-      RETICULATE_PYTHON: "C:\\Python37"
-      MINICONDA: C:\Miniconda37
-      CONDA_INSTALL_LOCN: C:\Miniconda37
-      DISTUTILS_USE_SDK: "1"
-      R_VERSION: devel
-      GCC_PATH: mingw_32
-    - PYTHON: "C:\\Python36"
+  - PYTHON: "C:\\Python36"
       RETICULATE_PYTHON: "C:\\Python36"
       MINICONDA: C:\Miniconda36
       CONDA_INSTALL_LOCN: C:\Miniconda36
-      DISTUTILS_USE_SDK: "1"
-      R_VERSION: devel
-      GCC_PATH: mingw_32
-    - PYTHON: "C:\\Python35"
-      RETICULATE_PYTHON: "C:\\Python35"
-      MINICONDA: C:\Miniconda35
-      CONDA_INSTALL_LOCN: C:\Miniconda35
-      DISTUTILS_USE_SDK: "1"
-      R_VERSION: devel
-      GCC_PATH: mingw_32
-    - PYTHON: "C:\\Python37"
-      RETICULATE_PYTHON: "C:\\Python37"
-      MINICONDA: C:\Miniconda37
-      CONDA_INSTALL_LOCN: C:\Miniconda37
       DISTUTILS_USE_SDK: "1"
       R_VERSION: devel
       R_ARCH: x64
       GCC_PATH: mingw_64
-    - PYTHON: "C:\\Python36"
-      RETICULATE_PYTHON: "C:\\Python36"
-      MINICONDA: C:\Miniconda36
-      CONDA_INSTALL_LOCN: C:\Miniconda36
+    - PYTHON: "C:\\Python37"
+      RETICULATE_PYTHON: "C:\\Python37"
+      MINICONDA: C:\Miniconda37
+      CONDA_INSTALL_LOCN: C:\Miniconda37
       DISTUTILS_USE_SDK: "1"
       R_VERSION: devel
       R_ARCH: x64
@@ -87,18 +66,46 @@ environment:
       CONDA_INSTALL_LOCN: C:\Miniconda37
       DISTUTILS_USE_SDK: "1"
       R_VERSION: stable
+      R_ARCH: x64
     - PYTHON: "C:\\Python36"
       RETICULATE_PYTHON: "C:\\Python36"
       MINICONDA: C:\Miniconda36
       CONDA_INSTALL_LOCN: C:\Miniconda36
       DISTUTILS_USE_SDK: "1"
       R_VERSION: stable
+      R_ARCH: x64
     - PYTHON: "C:\\Python35"
       RETICULATE_PYTHON: "C:\\Python35"
       MINICONDA: C:\Miniconda35
       CONDA_INSTALL_LOCN: C:\Miniconda35
       DISTUTILS_USE_SDK: "1"
       R_VERSION: stable
+      R_ARCH: x64
+    - PYTHON: "C:\\Python36"
+      RETICULATE_PYTHON: "C:\\Python36"
+      MINICONDA: C:\Miniconda36
+      CONDA_INSTALL_LOCN: C:\Miniconda36
+      DISTUTILS_USE_SDK: "1"
+      R_VERSION: devel
+      GCC_PATH: mingw_32
+      R_ARCH: i386
+    - PYTHON: "C:\\Python37"
+      RETICULATE_PYTHON: "C:\\Python37"
+      MINICONDA: C:\Miniconda37
+      CONDA_INSTALL_LOCN: C:\Miniconda37
+      DISTUTILS_USE_SDK: "1"
+      R_VERSION: devel
+      R_ARCH: i386
+      GCC_PATH: mingw_32
+    - PYTHON: "C:\\Python35"
+      RETICULATE_PYTHON: "C:\\Python35"
+      MINICONDA: C:\Miniconda35
+      CONDA_INSTALL_LOCN: C:\Miniconda35
+      DISTUTILS_USE_SDK: "1"
+      R_VERSION: devel
+      GCC_PATH: mingw_32
+      R_ARCH: i386
+
 
 matrix:
   fast_finish: true
@@ -155,7 +162,7 @@ install:
   #- C:\msys64\usr\bin\bash -lc "pacman --noconfirm -S autoconf automake bison flex"
   #- C:\msys64\usr\bin\bash -lc "pacman --noconfirm -S libxml2-devel zip"
 
-  #- conda info --envs
+  - conda info --envs
   #- conda create -n env_name -y
   #- conda update -y -n base -c defaults conda
   #- "conda.bat activate"
@@ -164,10 +171,10 @@ install:
   #- conda activate base
   #- echo ". C:\Miniconda37/etc/profile.d/conda.sh" >> ~/.bashrc
   #- conda activate env_name
-  #- conda config --set always_yes yes --set changeps1 no
-  #- conda config --add channels conda-forge
-  #- conda config --add channels vtraag
-  #- conda install -y -q conda pip
+  - conda config --set always_yes yes --set changeps1 no
+  - conda config --add channels conda-forge
+  - conda config --add channels vtraag
+  - conda install -y -q conda pip
   #- conda update -q conda pip
   #- conda install -y -q numpy
   #- conda install -y -q -c r r-igraph
@@ -192,13 +199,13 @@ install:
   #- run_conda_forge_build_setup
   #- conda.exe build recipe --quiet
   #- conda install -n env_name -y q igraph
-  #- conda install -n env_name -y -c conda-forge igraph
-  #- conda install -n env_name -y -q -c vtraag leidenalg
+  - conda install -y -c vtraag python-igraph
+  - conda install -y -c vtraag leidenalg
   #- conda install pip numpy scipy
-  - "python -m pip install --upgrade pip"
+  #- "python -m pip install --upgrade pip"
   #- "pip install -q pycairo"
   #- pip install wheel
-  - pip install python-igraph==0.7.1.post6
+  #- pip install python-igraph==0.7.1.post6
   #- "pip install git+git://github.com/igraph/python-igraph.git"
   #- "pip install -q leidenalg"
   #- "echo done"
