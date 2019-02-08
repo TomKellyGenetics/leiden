@@ -170,7 +170,7 @@ install:
   # list package versions
   - "conda list"
   # build installer
-  - "constructor --verbose --platform=%CONDA_PLATFORM% %OBSPY_VERSION%_%CONDA_PYSUFFIX%"
+  #- "constructor --verbose --platform=%CONDA_PLATFORM% %OBSPY_VERSION%_%CONDA_PYSUFFIX%"
 
     # update mysy2
   #- C:\msys64\usr\bin\bash -lc "pacman --needed --noconfirm -Sy pacman-mirrors"
