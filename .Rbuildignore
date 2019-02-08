@@ -16,6 +16,7 @@
 ^\.Rproj\.user$
 ^build.cmd$
 ^\.revdep$
+^\ .DS_Store$
 ## Files to ignore when building package
 
 ## For github checks
