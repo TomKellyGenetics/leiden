@@ -98,13 +98,15 @@ adjacency_matrix <- igraph::as_adjacency_matrix(graph_object)
 
 Then the Leiden algorithm can be run on the adjacency matrix.
 
-```{r, eval=!module}
+```{r, eval=!module,echo=FALSE, message=FALSE, warning=FALSE}
 partition <- c(rep(1, 20), rep(2, 20), rep(3, 20))
-table(partition)
 ```
 
 ```{r, eval=module}
 partition <- leiden(adjacency_matrix)
+```
+
+```{r}
 table(partition)
 ```
 
