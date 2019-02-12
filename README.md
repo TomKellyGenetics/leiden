@@ -25,7 +25,15 @@ This package requires the 'leidenalg' and 'igraph' modules for python (2) to be 
 
 If you do not have root access, you can use `pip install --user` or `pip install --prefix` to install these in your user directory (which you have write permissions for) and ensure that this directory is in your PATH so that Python can find it.
 
-The 'devtools' package will be used to install 'leiden' and the dependancies (igraph and reticulate):
+The stable 'leiden' package and the dependancies can be installed from CRAN:
+
+```R
+install.packages("leiden")
+```
+
+### Development version
+
+The 'devtools' package can also be used to install development version of 'leiden' and the dependancies (igraph and reticulate) from GitHub:
 
 ```R
 if (!requireNamespace("devtools"))
