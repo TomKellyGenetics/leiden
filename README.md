@@ -21,9 +21,17 @@ https://github.com/vtraag/leidenalg
 
 This package requires the 'leidenalg' and 'igraph' modules for python (2) to be installed on your system. For example:
 
-``pip install leidenalg numpy igraph``
+```
+pip install leidenalg numpy igraph
+```
 
 If you do not have root access, you can use `pip install --user` or `pip install --prefix` to install these in your user directory (which you have write permissions for) and ensure that this directory is in your PATH so that Python can find it.
+
+Dependancies can also be installed from a conda repository. This is recommended fro Windows users:
+
+```
+conda -c vtraag python-igraph leidenalg
+```
 
 The stable 'leiden' package and the dependancies can be installed from CRAN:
 
