@@ -66,9 +66,9 @@ adjacency_matrix <- igraph::as_adjacency_matrix(graph)
 partition <- leiden(adjacency_matrix)
 ```
 
-### Computing paritions on data matrices or dimension reductions
+### Computing partitions on data matrices or dimension reductions
 
-To generate an adjacency matrix from a dataset, we can compute the nearest neighbours from the data. For example, for a dataset `data_mat` with `n` features (rows) by `m` samples or cells (columns), we generate an adjacency matrix of nearest neighbours between samples.
+To generate an adjacency matrix from a dataset, we can compute the shared nearest neighbours (SNN) from the data. For example, for a dataset `data_mat` with `n` features (rows) by `m` samples or cells (columns), we generate an adjacency matrix of nearest neighbours between samples.
 
 ```R
 library(RANN)
