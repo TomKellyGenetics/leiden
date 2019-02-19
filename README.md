@@ -57,6 +57,8 @@ This package provides a function to perform clustering with the Leiden algorithm
 partition <- leiden(adjacency_matrix)
 ```
 
+### Use with iGraph
+
 For an igraph object 'graph' in R:
 
 ```R
@@ -64,7 +66,9 @@ adjacency_matrix <- igraph::as_adjacency_matrix(graph)
 partition <- leiden(adjacency_matrix)
 ```
 
-To generate an adjacency_matrixacency matrix from a dataset, we can compute the nearest neighbours from the data. For example, for a dataset `data_mat` with `n` features (rows) by `m` samples or cells (columns), we generate an adjacency_matrixacency matrix of nearest neighbours between samples.
+### Computing paritions on data matrices or dimension reductions
+
+To generate an adjacency matrix from a dataset, we can compute the nearest neighbours from the data. For example, for a dataset `data_mat` with `n` features (rows) by `m` samples or cells (columns), we generate an adjacency matrix of nearest neighbours between samples.
 
 ```R
 library(RANN)
@@ -93,6 +97,10 @@ for(ii in 1:nrow(embedding)) {
 sum(adjacency_matrix[1,]) == 30
 table(apply(adjacency_matrix, 1, sum))
 ```
+
+This is compatible with PCA, tSNE, or UMAP results.
+
+### Use with Seurat
 
 To use Leiden with the Seurat pipeline for a Seurat Object `object` that has an SNN computed (for example with `Seurat::FindClusters` with `save.SNN = TRUE`). This will compute the Leiden clusters and add them to the Seurat Object Class.
 
