@@ -64,6 +64,36 @@ adjacency_matrix <- igraph::as_adjacency_matrix(graph)
 partition <- leiden(adjacency_matrix)
 ```
 
+To generate an adjacency_matrixacency matrix from a dataset, we can compute the nearest neighbours from the data. For example, for a dataset `data_mat` with `n` features (rows) by `m` samples or cells (columns), we generate an adjacency_matrixacency matrix of nearest neighbours between samples.
+
+```R
+library(RANN)
+snn <- RANN::nn2(t(data_mat), k=30)$nn.idx
+adjacency_matrix <- matrix(0L, ncol(data_mat), ncol(data_mat))
+rownames(adjacency_matrix) <- colnames(adjacency_matrix) <- colnames(data_mat)
+for(ii in 1:ncol(data_mat)) {
+    adjacency_matrix[i,colnames(data_mat)[snn[ii,]]] <- 1L
+}
+#check that rows add to k
+sum(adjacency_matrix[1,]) == 30
+table(apply(adjacency_matrix, 1, sum))
+```
+
+For a dimension reduction `embedding` of `m` samples (rows) by `n` dimensions (columns):
+
+```R
+library(RANN)
+snn <- RANN::nn2(embedding, k=30)$nn.idx
+adjacency_matrix <- matrix(0L, nrow(embedding), nrow(embedding))
+rownames(adjacency_matrix) <- colnames(adjacency_matrix) <- colnames(data_mat)
+for(ii in 1:nrow(embedding)) {
+    adjacency_matrix[ii,rownames(data_mat)[snn[ii,]]] <- 1L
+}
+#check that rows add to k
+sum(adjacency_matrix[1,]) == 30
+table(apply(adjacency_matrix, 1, sum))
+```
+
 To use Leiden with the Seurat pipeline for a Seurat Object `object` that has an SNN computed (for example with `Seurat::FindClusters` with `save.SNN = TRUE`). This will compute the Leiden clusters and add them to the Seurat Object Class.
 
 ```R
