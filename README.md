@@ -8,6 +8,8 @@
 [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/TomKellyGenetics/leiden?branch=master&svg=true)](https://ci.appveyor.com/project/TomKellyGenetics/leiden)
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
 [![codecov](https://codecov.io/gh/TomKellyGenetics/leiden/branch/master/graph/badge.svg)](https://codecov.io/gh/TomKellyGenetics/leiden)
+[![Downloads](https://cranlogs.r-pkg.org/badges/leiden)](https://CRAN.R-project.org/package=leiden)
+[![Total Downloads](https://cranlogs.r-pkg.org/badges/grand-total/leiden?color=orange)](https://CRAN.R-project.org/package=leiden)
 
 ## Clustering with the Leiden Algorithm in R
 
