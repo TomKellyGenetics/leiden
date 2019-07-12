@@ -2,9 +2,25 @@
 % Please edit documentation in R/leiden.R
 \name{leiden}
 \alias{leiden}
+\alias{leiden.data.frame}
+\alias{leiden.Matrix}
+\alias{leiden.matrix}
+\alias{leiden.igraph}
 \title{Run Leiden clustering algorithm}
 \usage{
-leiden(adj_mat, partition_type = c("RBConfigurationVertexPartition",
+\method{leiden}{data.frame}(...)
+
+\method{leiden}{Matrix}(...)
+
+\method{leiden}{matrix}(adj_mat,
+  partition_type = c("RBConfigurationVertexPartition",
+  "ModularityVertexPartition", "RBERVertexPartition", "CPMVertexPartition",
+  "MutableVertexPartition", "SignificanceVertexPartition",
+  "SurpriseVertexPartition"), initial_membership = NULL,
+  weights = NULL, node_sizes = NULL, resolution_parameter = 1)
+
+\method{leiden}{igraph}(snn_graph,
+  partition_type = c("RBConfigurationVertexPartition",
   "ModularityVertexPartition", "RBERVertexPartition", "CPMVertexPartition",
   "MutableVertexPartition", "SignificanceVertexPartition",
   "SurpriseVertexPartition"), initial_membership = NULL,
