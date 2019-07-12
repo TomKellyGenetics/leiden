@@ -38,7 +38,7 @@
 \item{snn_graph}{The input graph as an \code{\link[igraph]{igraph}} object (e.g., shared nearest neighbours).}
 }
 \value{
-A parition of clusters as a vector of integers
+A partition of clusters as a vector of integers
 }
 \description{
 Implements the Leiden clustering algorithm in R using reticulate to run the Python version. Requires the python "leidenalg" and "igraph" modules to be installed. Returns a vector of partition indices.

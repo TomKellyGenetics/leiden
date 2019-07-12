@@ -21,6 +21,8 @@ https://github.com/vtraag/leidenalg
 
 ## Install
 
+### Dependancies
+
 This package requires the 'leidenalg' and 'igraph' modules for python (2) to be installed on your system. For example:
 
 ```
@@ -29,11 +31,13 @@ pip install leidenalg numpy igraph
 
 If you do not have root access, you can use `pip install --user` or `pip install --prefix` to install these in your user directory (which you have write permissions for) and ensure that this directory is in your PATH so that Python can find it.
 
-Dependancies can also be installed from a conda repository. This is recommended fro Windows users:
+Dependancies can also be installed from a conda repository. This is recommended for Windows users:
 
 ```
 conda -c vtraag python-igraph leidenalg
 ```
+
+### Stable release
 
 The stable 'leiden' package and the dependancies can be installed from CRAN:
 
@@ -48,7 +52,23 @@ The 'devtools' package can also be used to install development version of 'leide
 ```R
 if (!requireNamespace("devtools"))
     install.packages("devtools")
-devtools::install_github("TomKellyGenetics/leiden")
+devtools::install_github("TomKellyGenetics/leiden", ref = "master")
+```
+
+### Development version
+
+To use or test the development version, install the "dev" branch from GitHub.
+
+```R
+if (!requireNamespace("devtools"))
+    install.packages("devtools")
+devtools::install_github("TomKellyGenetics/leiden", ref = "dev")
+```
+
+Please submit pull requests to the "dev" branch. This can be downloaded to your system with:
+
+```
+git clone --branch dev git@github.com:TomKellyGenetics/leiden.git
 ```
 
 ## Usage
@@ -175,7 +195,7 @@ Please cite this implementation R in if you use it:
 To cite the leiden package in publications use:
 
   S. Thomas Kelly (2019). leiden: R implementation of the Leiden algorithm. R
-  package version 0.2.3 https://github.com/TomKellyGenetics/leiden
+  package version 0.3.0 https://github.com/TomKellyGenetics/leiden
 
 A BibTeX entry for LaTeX users is
 
@@ -183,7 +203,7 @@ A BibTeX entry for LaTeX users is
     title = {leiden: R implementation of the Leiden algorithm},
     author = {S. Thomas Kelly},
     year = {2018},
-    note = {R package version 0.2.3},
+    note = {R package version 0.3.0},
     url = {https://github.com/TomKellyGenetics/leiden},
   }
  ```

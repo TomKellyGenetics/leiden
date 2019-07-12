@@ -110,7 +110,7 @@ partition <- leiden(adjacency_matrix)
 table(partition)
 ```
 
-Here we can see partitions in the plotted results. The nodes that are more interconnected have been paritioned into separate clusters.
+Here we can see partitions in the plotted results. The nodes that are more interconnected have been partitioned into separate clusters.
 
 ```{r, warning=FALSE, message=FALSE}
 library("RColorBrewer")
@@ -135,7 +135,7 @@ Arguments can be passed to the leidenalg implementation in Python:
   partition <- leiden(adjacency_matrix, resolution_parameter = 0.95)
 ```
 
-In particular, the resolution parameter can tue the numberof clusters to be detected.
+In particular, the resolution parameter can tune the number of clusters to be detected.
 
 ```{r, warning=FALSE, message=FALSE, eval=module}
 partition <- leiden(adjacency_matrix, resolution_parameter = 0.5)
@@ -180,7 +180,7 @@ membership <- leiden(adjacency_matrix)
 object@ident <- as.factor(membership)
 names(test@ident) <- rownames(test@meta.data)
 object@meta.data$ident <- as.factor(membership)
-```
+``` 
 
 Note that this code is designed for Seurat version 2 releases.
 

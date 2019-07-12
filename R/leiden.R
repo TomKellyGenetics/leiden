@@ -6,7 +6,7 @@
 ##' @param partition_type Type of partition to use. Defaults to RBConfigurationVertexPartition. Options include: ModularityVertexPartition, RBERVertexPartition, CPMVertexPartition, MutableVertexPartition, SignificanceVertexPartition, SurpriseVertexPartition (see the Leiden python module documentation for more details)
 ##' @param initial_membership,weights,node_sizes Parameters to pass to the Python leidenalg function (defaults initial_membership=None, weights=None).
 ##' @param resolution_parameter A parameter controlling the coarseness of the clusters
-##' @return A parition of clusters as a vector of integers
+##' @return A partition of clusters as a vector of integers
 ##' @examples
 ##' #check if python is availble
 ##' modules <- reticulate::py_module_available("leidenalg") && reticulate::py_module_available("igraph")
@@ -117,7 +117,8 @@ leiden.matrix <- function(adj_mat,
     is_pure_adj <- all(as.logical(adj_mat) == adj_mat)
     if (is.null(weights) && !is_pure_adj) {
         #assign weights to edges (without dependancy on igraph)
-        weights <- t(adj_mat)[t(adj_mat)!=0]
+        t_mat <- t(adj_mat)
+        weights <- t_mat[t_mat!=0]
         #remove zeroes from rows of matrix and return vector of length edges
     }
 
