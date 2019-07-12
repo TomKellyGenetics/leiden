@@ -34,6 +34,8 @@
 \item{initial_membership, weights, node_sizes}{Parameters to pass to the Python leidenalg function (defaults initial_membership=None, weights=None).}
 
 \item{resolution_parameter}{A parameter controlling the coarseness of the clusters}
+
+\item{snn_graph}{The input graph as an \code{\link[igraph]{igraph}} object (e.g., shared nearest neighbours).}
 }
 \value{
 A parition of clusters as a vector of integers
@@ -74,8 +76,31 @@ table(partition)
 adjacency_matrix[adjacency_matrix == 1] <- weights
 partition <- leiden(adjacency_matrix)
 table(partition)
-}
 
+
+# generate (unweighted) igraph object in R
+library("igraph")
+adjacency_matrix[adjacency_matrix > 1] <- 1
+snn_graph <- graph_from_adjacency_matrix(adjacency_matrix)
+partition <- leiden(snn_graph)
+table(partition)
+
+# generate (weighted) igraph object in R
+library("igraph")
+adjacency_matrix[adjacency_matrix >= 1] <- weights
+snn_graph <- graph_from_adjacency_matrix(adjacency_matrix, weighted = TRUE)
+partition <- leiden(snn_graph)
+table(partition)
+
+# pass weights to python leidenalg
+adjacency_matrix[adjacency_matrix >= 1 ] <- 1
+snn_graph <- graph_from_adjacency_matrix(adjacency_matrix, weighted = NULL)
+weights <- sample(1:10, sum(adjacency_matrix!=0), replace=TRUE)
+partition <- leiden(snn_graph, weights = weights)
+table(partition)
+
+# run only if python is available (for testing)
+}
 
 }
 \keyword{graph}
