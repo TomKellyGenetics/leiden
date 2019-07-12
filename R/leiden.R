@@ -45,8 +45,18 @@
 ##' @keywords graph network igraph mvtnorm simulation
 ##' @importFrom reticulate import r_to_py
 ##' @export
+##'
+#' @export
+#' @usage NULL
+leiden <- function(x, ...) {
+    UseMethod("leiden")
+}
 
-leiden <- function(adj_mat,
+leiden.data.frame <- function(...) {
+    leiden.matrix(...)
+}
+
+leiden.matrix <- function(adj_mat,
      partition_type = c(
     'RBConfigurationVertexPartition',
     'ModularityVertexPartition',
