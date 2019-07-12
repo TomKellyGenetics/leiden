@@ -1,5 +1,5 @@
 ---
-title: "Running the Leiden algorithm with R"
+title: "Running the Leiden algorithm with R on adjacency matrices"
 author: "S. Thomas Kelly"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
