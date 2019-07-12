@@ -56,6 +56,11 @@ leiden.data.frame <- function(...) {
     leiden.matrix(...)
 }
 
+leiden.Matrix <- function(...) {
+    leiden.matrix(...)
+}
+
+
 leiden.matrix <- function(adj_mat,
                           partition_type = c(
                               'RBConfigurationVertexPartition',
@@ -147,7 +152,7 @@ leiden.matrix <- function(adj_mat,
     partition
 }
 
-leiden.igraph <- function(adj_mat,
+leiden.igraph <- function(snn_graph,
                           partition_type = c(
                               'RBConfigurationVertexPartition',
                               'ModularityVertexPartition',
@@ -166,28 +171,27 @@ leiden.igraph <- function(adj_mat,
     leidenalg <- import("leidenalg", delay_load = TRUE)
     ig <- import("igraph", delay_load = TRUE)
 
-    #convert matrix input (corrects for sparse matrix input)
-    adj_mat <- as.matrix(adj_mat)
-
-    #compute weights if non-binary adjacency matrix given
-    is_pure_adj <- all(as.logical(adj_mat) == adj_mat)
-    if (is.null(weights) && !is_pure_adj) {
-        #assign weights to edges (without dependancy on igraph)
-        weights <- t(adj_mat)[t(adj_mat)!=0]
-        #remove zeroes from rows of matrix and return vector of length edges
-    }
-
     ##convert to python numpy.ndarray, then a list
-    adj_mat_py <- r_to_py(adj_mat)
-    adj_mat_py <- adj_mat_py$tolist()
-
-    #convert graph structure to a Python compatible object
-    GraphClass <- if (!is.null(weights) && !is_pure_adj){
-        ig$Graph$Weighted_Adjacency
-    } else {
-        ig$Graph$Adjacency
+    vertices <- as.list(names(V(snn_graph)))
+    edges <- as_edgelist(snn_graph)
+    dim(edges)
+    edgelist <- list(rep(NA, nrow(edges)))
+    for(ii in 1:nrow(edges)){
+        edgelist[[ii]] <- edges[ii,]
     }
-    snn_graph <- GraphClass(adj_mat_py)
+
+    snn_graph_py <- ig$Graph()
+    snn_graph_py$add_vertices(r_to_py(vertices))
+    snn_graph_py$add_edges(r_to_py(edgelist))
+
+    #compute weights if weighted graph given
+    if (is.weighted(snn_graph)) {
+        #assign weights to edges (without dependancy on igraph)
+        weights <- r_to_py(weights(snn_graph))
+        snn_graph_py$es['weights'] <- weights
+    }
+
+    snn_graph <- snn_graph_py
 
     #compute partitions
     partition_type <- match.arg(partition_type)
