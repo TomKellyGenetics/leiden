@@ -52,15 +52,21 @@ leiden <- function(x, ...) {
     UseMethod("leiden")
 }
 
+#' @rdname leiden
+#' @export
 leiden.data.frame <- function(...) {
     leiden.matrix(...)
 }
 
+#' @rdname leiden
+#' @export
 leiden.Matrix <- function(...) {
     leiden.matrix(...)
 }
 
 
+#' @rdname leiden
+#' @export
 leiden.matrix <- function(adj_mat,
                           partition_type = c(
                               'RBConfigurationVertexPartition',
@@ -102,6 +108,8 @@ leiden.matrix <- function(adj_mat,
         ig$Graph$Adjacency
     }
     snn_graph <- GraphClass(adj_mat_py)
+    # test performance for computing matrix to graph in R
+    # other option is to passing snn_graph to Python
 
     #compute partitions
     partition_type <- match.arg(partition_type)
@@ -152,6 +160,9 @@ leiden.matrix <- function(adj_mat,
     partition
 }
 
+#' @rdname leiden
+#' @importFrom igraph V as_edgelist
+#' @export
 leiden.igraph <- function(snn_graph,
                           partition_type = c(
                               'RBConfigurationVertexPartition',
@@ -192,6 +203,8 @@ leiden.igraph <- function(snn_graph,
     }
 
     snn_graph <- snn_graph_py
+    # from here is the same as method for matrix
+    # would be better to refactor to call from matrix methof
 
     #compute partitions
     partition_type <- match.arg(partition_type)
