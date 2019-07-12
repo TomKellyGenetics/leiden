@@ -57,19 +57,110 @@ leiden.data.frame <- function(...) {
 }
 
 leiden.matrix <- function(adj_mat,
-     partition_type = c(
-    'RBConfigurationVertexPartition',
-    'ModularityVertexPartition',
-    'RBERVertexPartition',
-    'CPMVertexPartition',
-    'MutableVertexPartition',
-    'SignificanceVertexPartition',
-    'SurpriseVertexPartition'
-),
-initial_membership = NULL,
-weights = NULL,
-node_sizes = NULL,
-resolution_parameter = 1
+                          partition_type = c(
+                              'RBConfigurationVertexPartition',
+                              'ModularityVertexPartition',
+                              'RBERVertexPartition',
+                              'CPMVertexPartition',
+                              'MutableVertexPartition',
+                              'SignificanceVertexPartition',
+                              'SurpriseVertexPartition'
+                          ),
+                          initial_membership = NULL,
+                          weights = NULL,
+                          node_sizes = NULL,
+                          resolution_parameter = 1
+) {
+    #import python modules with reticulate
+    leidenalg <- import("leidenalg", delay_load = TRUE)
+    ig <- import("igraph", delay_load = TRUE)
+
+    #convert matrix input (corrects for sparse matrix input)
+    adj_mat <- as.matrix(adj_mat)
+
+    #compute weights if non-binary adjacency matrix given
+    is_pure_adj <- all(as.logical(adj_mat) == adj_mat)
+    if (is.null(weights) && !is_pure_adj) {
+        #assign weights to edges (without dependancy on igraph)
+        weights <- t(adj_mat)[t(adj_mat)!=0]
+        #remove zeroes from rows of matrix and return vector of length edges
+    }
+
+    ##convert to python numpy.ndarray, then a list
+    adj_mat_py <- r_to_py(adj_mat)
+    adj_mat_py <- adj_mat_py$tolist()
+
+    #convert graph structure to a Python compatible object
+    GraphClass <- if (!is.null(weights) && !is_pure_adj){
+        ig$Graph$Weighted_Adjacency
+    } else {
+        ig$Graph$Adjacency
+    }
+    snn_graph <- GraphClass(adj_mat_py)
+
+    #compute partitions
+    partition_type <- match.arg(partition_type)
+    part <- switch(
+        EXPR = partition_type,
+        'RBConfigurationVertexPartition' = leidenalg$find_partition(
+            snn_graph,
+            leidenalg$RBConfigurationVertexPartition,
+            initial_membership = initial_membership, weights = weights,
+            resolution_parameter = resolution_parameter
+        ),
+        'ModularityVertexPartition' = leidenalg$find_partition(
+            snn_graph,
+            leidenalg$ModularityVertexPartition,
+            initial_membership = initial_membership, weights = weights
+        ),
+        'RBERVertexPartition' = leidenalg$find_partition(
+            snn_graph,
+            leidenalg$RBERVertexPartition,
+            initial_membership = initial_membership, weights = weights, node_sizes = node_sizes,
+            resolution_parameter = resolution_parameter
+        ),
+        'CPMVertexPartition' = leidenalg$find_partition(
+            snn_graph,
+            leidenalg$CPMVertexPartition,
+            initial_membership = initial_membership, weights = weights, node_sizes = node_sizes,
+            resolution_parameter = resolution_parameter
+        ),
+        'MutableVertexPartition' = leidenalg$find_partition(
+            snn_graph,
+            leidenalg$MutableVertexPartition,
+            initial_membership = initial_membership
+        ),
+        'SignificanceVertexPartition' = leidenalg$find_partition(
+            snn_graph,
+            leidenalg$SignificanceVertexPartition,
+            initial_membership = initial_membership, node_sizes = node_sizes,
+            resolution_parameter = resolution_parameter
+        ),
+        'SurpriseVertexPartition' = leidenalg$find_partition(
+            snn_graph,
+            leidenalg$SurpriseVertexPartition,
+            initial_membership = initial_membership, weights = weights, node_sizes = node_sizes
+        ),
+        stop("please specify a partition type as a string out of those documented")
+    )
+    partition <- part$membership+1
+    partition
+}
+
+leiden.igraph <- function(adj_mat,
+                          partition_type = c(
+                              'RBConfigurationVertexPartition',
+                              'ModularityVertexPartition',
+                              'RBERVertexPartition',
+                              'CPMVertexPartition',
+                              'MutableVertexPartition',
+                              'SignificanceVertexPartition',
+                              'SurpriseVertexPartition'
+                          ),
+                          initial_membership = NULL,
+                          weights = NULL,
+                          node_sizes = NULL,
+                          resolution_parameter = 1
 ) {
     #import python modules with reticulate
     leidenalg <- import("leidenalg", delay_load = TRUE)
