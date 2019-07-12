@@ -2,6 +2,7 @@
 ##'
 ##' @description Implements the Leiden clustering algorithm in R using reticulate to run the Python version. Requires the python "leidenalg" and "igraph" modules to be installed. Returns a vector of partition indices.
 ##' @param adj_mat An adjacency matrix compatible with \code{\link[igraph]{igraph}} object.
+##' @param snn_graph The input graph as an \code{\link[igraph]{igraph}} object (e.g., shared nearest neighbours).
 ##' @param partition_type Type of partition to use. Defaults to RBConfigurationVertexPartition. Options include: ModularityVertexPartition, RBERVertexPartition, CPMVertexPartition, MutableVertexPartition, SignificanceVertexPartition, SurpriseVertexPartition (see the Leiden python module documentation for more details)
 ##' @param initial_membership,weights,node_sizes Parameters to pass to the Python leidenalg function (defaults initial_membership=None, weights=None).
 ##' @param resolution_parameter A parameter controlling the coarseness of the clusters
@@ -39,8 +40,31 @@
 ##' adjacency_matrix[adjacency_matrix == 1] <- weights
 ##' partition <- leiden(adjacency_matrix)
 ##' table(partition)
-##' }
 ##'
+##'
+##' # generate (unweighted) igraph object in R
+##' library("igraph")
+##' adjacency_matrix[adjacency_matrix > 1] <- 1
+##' snn_graph <- graph_from_adjacency_matrix(adjacency_matrix)
+##' partition <- leiden(snn_graph)
+##' table(partition)
+##'
+##' # generate (weighted) igraph object in R
+##' library("igraph")
+##' adjacency_matrix[adjacency_matrix >= 1] <- weights
+##' snn_graph <- graph_from_adjacency_matrix(adjacency_matrix, weighted = TRUE)
+##' partition <- leiden(snn_graph)
+##' table(partition)
+##'
+##' # pass weights to python leidenalg
+##' adjacency_matrix[adjacency_matrix >= 1 ] <- 1
+##' snn_graph <- graph_from_adjacency_matrix(adjacency_matrix, weighted = NULL)
+##' weights <- sample(1:10, sum(adjacency_matrix!=0), replace=TRUE)
+##' partition <- leiden(snn_graph, weights = weights)
+##' table(partition)
+##'
+##' # run only if python is available (for testing)
+##' }
 ##'
 ##' @keywords graph network igraph mvtnorm simulation
 ##' @importFrom reticulate import r_to_py
@@ -199,7 +223,7 @@ leiden.igraph <- function(snn_graph,
     if (is.weighted(snn_graph)) {
         #assign weights to edges (without dependancy on igraph)
         weights <- r_to_py(weights(snn_graph))
-        snn_graph_py$es['weights'] <- weights
+        snn_graph_py$es$set_attribute_values('weight', weights)
     }
 
     snn_graph <- snn_graph_py
