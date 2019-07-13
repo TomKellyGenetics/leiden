@@ -153,6 +153,7 @@ leiden.matrix <- function(object,
 #' @export
 leiden.data.frame <- leiden.matrix
 #' @export
+#' @importClassesFrom Matrix dgCMatrix
 leiden.Matrix <- leiden.matrix
 #' @export
 leiden.default <- leiden.matrix
