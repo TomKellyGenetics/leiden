@@ -90,6 +90,7 @@ leiden <- function(object,
 }
 
 #' @export
+#' @importFrom methods is
 leiden.matrix <- function(object,
                           partition_type = c(
                               'RBConfigurationVertexPartition',

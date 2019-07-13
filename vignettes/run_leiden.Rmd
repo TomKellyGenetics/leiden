@@ -20,7 +20,7 @@ module <- py_available() && reticulate::py_module_available("leidenalg") && reti
 
 ## Clustering with the Leiden Algorithm in R
 
-This package allows calling the Leiden algorthm for clustering on an igraph object from R. See the Python and Java implementations for more details: 
+This package allows calling the Leiden algorithm for clustering on an igraph object from R. See the Python and Java implementations for more details: 
 
 https://github.com/CWTSLeiden/networkanalysis
 
@@ -114,7 +114,7 @@ Here we can see partitions in the plotted results. The nodes that are more inter
 
 ```{r, warning=FALSE, message=FALSE}
 library("RColorBrewer")
-node.cols <- brewer.pal(max(partition),"Pastel1")[partition]
+node.cols <- brewer.pal(max(c(3, partition)),"Pastel1")[partition]
 plot(graph_object, vertex.color = node.cols)
 ```
 
@@ -139,14 +139,14 @@ In particular, the resolution parameter can tune the number of clusters to be de
 
 ```{r, warning=FALSE, message=FALSE, eval=module}
 partition <- leiden(adjacency_matrix, resolution_parameter = 0.5)
-node.cols <- brewer.pal(max(partition),"Pastel1")[partition]
+node.cols <- brewer.pal(max(c(3, partition)),"Pastel1")[partition]
 plot(graph_object, vertex.color = node.cols)
 ```
 
 
 ```{r, warning=FALSE, message=FALSE, eval=module}
 partition <- leiden(adjacency_matrix, resolution_parameter = 1.8)
-node.cols <- brewer.pal(max(partition),"Pastel1")[partition]
+node.cols <- brewer.pal(max(c(3, partition)),"Pastel1")[partition]
 plot(graph_object, vertex.color = node.cols)
 ```
 

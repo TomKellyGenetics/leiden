@@ -38,3 +38,4 @@
 ^vignettes/.*html$
 ^vignettes/.*png$
 ^circle\.yml$
+^vignettes/bash_py_time$

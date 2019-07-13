@@ -116,7 +116,7 @@ library("igraph")
 library("reticulate")
 library("RColorBrewer")
 graph_object <- graph.famous("Zachary")
-node.cols <- brewer.pal(max(partition),"Pastel1")[partition]
+node.cols <- brewer.pal(max(c(3, partition)),"Pastel1")[partition]
 plot(graph_object, vertex.color = node.cols, layout=layout_with_kk)
 ```
 
@@ -142,7 +142,7 @@ We can plot the result in R to show it in the network. This reproduces the examp
 
 ```{r}
 graph_object <- graph.famous("Zachary")
-node.cols <- brewer.pal(max(partition),"Pastel1")[partition]
+node.cols <- brewer.pal(max(c(3, partition)),"Pastel1")[partition]
 plot(graph_object, vertex.color = node.cols, layout=layout_with_kk)
 ```
 
@@ -167,7 +167,7 @@ We can plot the result in R to show it in the network.
 
 ```{r}
 graph_object <- graph.famous("Zachary")
-node.cols <- brewer.pal(max(partition),"Pastel1")[partition]
+node.cols <- brewer.pal(max(c(3, partition)),"Pastel1")[partition]
 plot(graph_object, vertex.color = node.cols, layout=layout_with_kk)
 ```
 
@@ -290,7 +290,7 @@ We can plot the result in R to show it in the network. This reproduces the examp
 library("igraph")
 library("reticulate")
 library("RColorBrewer")
-node.cols <- brewer.pal(max(partition),"Pastel1")[partition]
+node.cols <- brewer.pal(max(c(3, partition)),"Pastel1")[partition]
 plot(G, vertex.color = node.cols, layout=layout_with_kk)
 ```
 
@@ -310,7 +310,7 @@ table(partition)
 We can plot the result in R to show it in the network. This reproduces the example in the Python leidenalg documentation.
 
 ```{r}
-node.cols <- brewer.pal(max(partition),"Pastel1")[partition]
+node.cols <- brewer.pal(max(c(3, partition)),"Pastel1")[partition]
 plot(G, vertex.color = node.cols, layout=layout_with_kk)
 ```
 
@@ -328,7 +328,7 @@ table(partition)
 We can plot the result in R to show it in the network. 
 
 ```{r}
-node.cols <- brewer.pal(max(partition),"Pastel1")[partition]
+node.cols <- brewer.pal(max(c(3, partition)),"Pastel1")[partition]
 plot(G, vertex.color = node.cols, layout=layout_with_kk)
 ```
 
@@ -530,7 +530,7 @@ print(paste(c("generate graph in python:", timing, "seconds"), collapse = " "))
 
 time7 <- Sys.time()
 #compute partitions
-source("../src/find_partition.R")
+source("../R/find_partition.R")
 
 partition <- find_partition(snn_graph, partition_type = partition_type,
                             initial_membership = initial_membership ,
@@ -686,6 +686,7 @@ barplot(c(bash_py_time, py$py_time, reticulate_time, R_graph_time,
                   "R matrix","R dgCMatrix"), 
         col = brewer.pal(9,"Pastel1"), las = 2, srt = 45,
         ylab = "time (seconds)", main = "benchmarking 100 computations")
+abline(h=0)
 ```
 
 If we account for time to cast matrices from graph objects. Then these are the time taken to compute partitions from a graph in R.
@@ -703,6 +704,7 @@ barplot(c(bash_py_time, py$py_time, reticulate_time, R_graph_time,
                   "R matrix","R dgCMatrix"), 
         col = brewer.pal(9,"Pastel1"), las = 2, srt = 45,
         ylab = "time (seconds)", main = "benchmarking 100 computations", add = TRUE)
+abline(h=0)
 ```
 
 Similarly, if we account for time to generate graph from an adjaceny matrix. Then these are the time taken to compute partitions from a matrix in R.
@@ -721,4 +723,5 @@ barplot(c(bash_py_time, py$py_time, reticulate_time, R_graph_time,
                   "R matrix","R dgCMatrix"), 
         col = brewer.pal(9,"Pastel1"), las = 2, srt = 45,
         ylab = "time (seconds)", main = "benchmarking 100 computations", add = TRUE)
+abline(h=0)
 ```
