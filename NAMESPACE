@@ -2,10 +2,13 @@
 
 S3method(leiden,Matrix)
 S3method(leiden,data.frame)
+S3method(leiden,default)
 S3method(leiden,igraph)
 S3method(leiden,matrix)
 export(leiden)
 importFrom(igraph,V)
 importFrom(igraph,as_edgelist)
+importFrom(igraph,is.named)
+importFrom(igraph,is.weighted)
 importFrom(reticulate,import)
 importFrom(reticulate,r_to_py)

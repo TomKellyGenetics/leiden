@@ -1,6 +1,6 @@
 Package: leiden
 Type: Package
-Title: Implementation of the 'Python leidenalg' Module
+Title: R Implementation of Leiden Clustering Algorithm
 Version: 0.3.0.9001
 Date: 2019-02-05
 Author: Tom Kelly <tom.kelly@riken.jp>
@@ -9,7 +9,7 @@ Description: Implements the 'Python leidenalg' module to be called in R.
     Enables clustering using the leiden algorithm for partition a graph into communities.
     See the 'Python' repository for more details: <https://github.com/vtraag/leidenalg>
     Traag et al (2018) From Louvain to Leiden: guaranteeing well-connected communities. <arXiv:1810.08473>.
-License: GPL-3
+License: GPL-3 | file LICENSE
 URL: https://github.com/TomKellyGenetics/leiden
 Imports:
     reticulate,
@@ -23,7 +23,6 @@ Suggests:
     spelling,
     knitr,
     rmarkdown,
-    igraph,
     RColorBrewer
 Language: en-US
 VignetteBuilder: knitr
