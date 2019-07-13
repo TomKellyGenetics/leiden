@@ -6,6 +6,7 @@
 ##' @param partition_type Type of partition to use. Defaults to RBConfigurationVertexPartition. Options include: ModularityVertexPartition, RBERVertexPartition, CPMVertexPartition, MutableVertexPartition, SignificanceVertexPartition, SurpriseVertexPartition (see the Leiden python module documentation for more details)
 ##' @param initial_membership,weights,node_sizes Parameters to pass to the Python leidenalg function (defaults initial_membership=None, weights=None).
 ##' @param resolution_parameter A parameter controlling the coarseness of the clusters
+##' @param ... 	Arguments to be passed to methods
 ##' @return A partition of clusters as a vector of integers
 ##' @examples
 ##' #check if python is availble
@@ -78,14 +79,14 @@ leiden <- function(x, ...) {
 
 #' @rdname leiden
 #' @export
-leiden.data.frame <- function(...) {
-    leiden.matrix(...)
+leiden.data.frame <- function(adj_mat, ...) {
+    leiden.matrix(adj_mat, ...)
 }
 
 #' @rdname leiden
 #' @export
-leiden.Matrix <- function(...) {
-    leiden.matrix(...)
+leiden.Matrix <- function(adj_mat, ...) {
+    leiden.matrix(adj_mat, ...)
 }
 
 
@@ -104,7 +105,8 @@ leiden.matrix <- function(adj_mat,
                           initial_membership = NULL,
                           weights = NULL,
                           node_sizes = NULL,
-                          resolution_parameter = 1
+                          resolution_parameter = 1,
+                          ...
 ) {
     #import python modules with reticulate
     leidenalg <- import("leidenalg", delay_load = TRUE)
@@ -186,7 +188,7 @@ leiden.matrix <- function(adj_mat,
 }
 
 #' @rdname leiden
-#' @importFrom igraph V as_edgelist
+#' @importFrom igraph V as_edgelist is.weighted
 #' @export
 leiden.igraph <- function(snn_graph,
                           partition_type = c(
@@ -201,19 +203,25 @@ leiden.igraph <- function(snn_graph,
                           initial_membership = NULL,
                           weights = NULL,
                           node_sizes = NULL,
-                          resolution_parameter = 1
+                          resolution_parameter = 1,
+                          ...
 ) {
     #import python modules with reticulate
     leidenalg <- import("leidenalg", delay_load = TRUE)
     ig <- import("igraph", delay_load = TRUE)
 
     ##convert to python numpy.ndarray, then a list
-    vertices <- as.list(names(V(snn_graph)))
+    if(!is.named(snn_graph)){
+        vertices <- as.list(as.character(V(snn_graph)))
+    } else {
+        vertices <- as.list(names(V(snn_graph)))
+    }
+
     edges <- as_edgelist(snn_graph)
     dim(edges)
     edgelist <- list(rep(NA, nrow(edges)))
     for(ii in 1:nrow(edges)){
-        edgelist[[ii]] <- edges[ii,]
+        edgelist[[ii]] <- as.character(edges[ii,])
     }
 
     snn_graph_py <- ig$Graph()
@@ -280,6 +288,7 @@ leiden.igraph <- function(snn_graph,
     partition
 }
 
+leiden.default <- leiden.matrix
 
 # global reference to python modules (will be initialized in .onLoad)
 leidenalg <- NULL
