@@ -26,7 +26,14 @@ https://github.com/vtraag/leidenalg
 This package requires the 'leidenalg' and 'igraph' modules for python (2) to be installed on your system. For example:
 
 ```
-pip install leidenalg numpy igraph
+pip install leidenalg numpy python-igraph
+```
+
+Note you may need to uninstall the igraph 0.1.11 (now deprecated to jgraph) and install python-igraph or igraph-0.7.0:
+
+```
+pip uninstall igraph
+pip install leidenalg python-igraph
 ```
 
 If you do not have root access, you can use `pip install --user` or `pip install --prefix` to install these in your user directory (which you have write permissions for) and ensure that this directory is in your PATH so that Python can find it.
