@@ -4,7 +4,7 @@ author: "S. Thomas Kelly"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Running the Leiden algorithm with R}
+  %\VignetteIndexEntry{Running the Leiden algorithm with R on adjacency matrices}
   %\VignetteEngine{knitr::knitr}
   %\VignetteEncoding{UTF-8}
 ---
@@ -178,7 +178,7 @@ To use Leiden with the Seurat pipeline for a Seurat Object `object` that has an 
 adjacency_matrix <- as.matrix(object@snn)
 membership <- leiden(adjacency_matrix)
 object@ident <- as.factor(membership)
-names(test@ident) <- rownames(test@meta.data)
+names(object@ident) <- rownames(object@meta.data)
 object@meta.data$ident <- as.factor(membership)
 ``` 
 
@@ -187,4 +187,18 @@ Note that this code is designed for Seurat version 2 releases.
 
 ### Seurat version 3 or later
 
-For Seurat version 3 objects, the Leiden algorithm will be implemented in the Seurat version 3 package with `Seurat::FindClusters` and `algorithm = "leiden"`).  See the documentation for these functions.
+Note that the object for Seurat version 3 has changed. For example an SNN can be generated:
+
+```{r, eval=FALSE}
+library("Seurat")
+FindClusters(pbmc_small)
+membership <- leiden(pbmc_small@graphs$RNA_snn)
+table(membership)
+```
+
+For Seurat version 3 objects, the Leiden algorithm has been implemented in the Seurat version 3 package with `Seurat::FindClusters` and `algorithm = "leiden"`).  See the documentation for these functions.
+
+```{r, eval=FALSE}
+FindClusters(pbmc_small, algorithm = "leiden")
+table(pbmc_small@active.ident)
+```

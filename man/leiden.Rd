@@ -2,32 +2,16 @@
 % Please edit documentation in R/leiden.R
 \name{leiden}
 \alias{leiden}
-\alias{leiden.data.frame}
-\alias{leiden.Matrix}
-\alias{leiden.matrix}
-\alias{leiden.igraph}
 \title{Run Leiden clustering algorithm}
 \usage{
-\method{leiden}{data.frame}(...)
-
-\method{leiden}{Matrix}(...)
-
-\method{leiden}{matrix}(adj_mat,
-  partition_type = c("RBConfigurationVertexPartition",
-  "ModularityVertexPartition", "RBERVertexPartition", "CPMVertexPartition",
-  "MutableVertexPartition", "SignificanceVertexPartition",
-  "SurpriseVertexPartition"), initial_membership = NULL,
-  weights = NULL, node_sizes = NULL, resolution_parameter = 1)
-
-\method{leiden}{igraph}(snn_graph,
-  partition_type = c("RBConfigurationVertexPartition",
+leiden(object, partition_type = c("RBConfigurationVertexPartition",
   "ModularityVertexPartition", "RBERVertexPartition", "CPMVertexPartition",
   "MutableVertexPartition", "SignificanceVertexPartition",
   "SurpriseVertexPartition"), initial_membership = NULL,
   weights = NULL, node_sizes = NULL, resolution_parameter = 1)
 }
 \arguments{
-\item{adj_mat}{An adjacency matrix compatible with \code{\link[igraph]{igraph}} object.}
+\item{object}{An adjacency matrix compatible with \code{\link[igraph]{igraph}} object or an input graph as an \code{\link[igraph]{igraph}} object (e.g., shared nearest neighbours).}
 
 \item{partition_type}{Type of partition to use. Defaults to RBConfigurationVertexPartition. Options include: ModularityVertexPartition, RBERVertexPartition, CPMVertexPartition, MutableVertexPartition, SignificanceVertexPartition, SurpriseVertexPartition (see the Leiden python module documentation for more details)}
 
@@ -35,7 +19,7 @@
 
 \item{resolution_parameter}{A parameter controlling the coarseness of the clusters}
 
-\item{snn_graph}{The input graph as an \code{\link[igraph]{igraph}} object (e.g., shared nearest neighbours).}
+\item{...}{Arguments to be passed to methods}
 }
 \value{
 A partition of clusters as a vector of integers

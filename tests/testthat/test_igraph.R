@@ -34,19 +34,21 @@ test_that("run with resolution parameter", {
 
 weights <- sample(1:10, sum(adj_mat!=0), replace=TRUE)
 
-test_that("run with non-wieghted adjacency matrix and weights vector", {
+test_that("run with non-wieghted igraph object and weights vector", {
   skip_if_no_python()
   partition <- leiden(snn_graph, weights = weights)
   expect_length(partition, 100)
 })
 
 adj_mat <- ifelse(adj_mat == 1, weights, 0)
+snn_graph <- graph_from_adjacency_matrix(adj_mat, weighted = TRUE)
 
-test_that("run with wieghted adjacency matrix", {
+test_that("run with wieghted igraph object", {
   skip_if_no_python()
   partition <- leiden(snn_graph)
   expect_length(partition, 100)
 })
+
 
 rownames(adj_mat) <- 1:nrow(adj_mat)
 colnames(adj_mat) <- 1:ncol(adj_mat)
