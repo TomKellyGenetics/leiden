@@ -140,51 +140,13 @@ leiden.matrix <- function(object,
     # other option is to passing snn_graph to Python
 
     #compute partitions
-    partition_type <- match.arg(partition_type)
-    part <- switch(
-        EXPR = partition_type,
-        'RBConfigurationVertexPartition' = leidenalg$find_partition(
-            snn_graph,
-            leidenalg$RBConfigurationVertexPartition,
-            initial_membership = initial_membership, weights = weights,
-            resolution_parameter = resolution_parameter
-        ),
-        'ModularityVertexPartition' = leidenalg$find_partition(
-            snn_graph,
-            leidenalg$ModularityVertexPartition,
-            initial_membership = initial_membership, weights = weights
-        ),
-        'RBERVertexPartition' = leidenalg$find_partition(
-            snn_graph,
-            leidenalg$RBERVertexPartition,
-            initial_membership = initial_membership, weights = weights, node_sizes = node_sizes,
-            resolution_parameter = resolution_parameter
-        ),
-        'CPMVertexPartition' = leidenalg$find_partition(
-            snn_graph,
-            leidenalg$CPMVertexPartition,
-            initial_membership = initial_membership, weights = weights, node_sizes = node_sizes,
-            resolution_parameter = resolution_parameter
-        ),
-        'MutableVertexPartition' = leidenalg$find_partition(
-            snn_graph,
-            leidenalg$MutableVertexPartition,
-            initial_membership = initial_membership
-        ),
-        'SignificanceVertexPartition' = leidenalg$find_partition(
-            snn_graph,
-            leidenalg$SignificanceVertexPartition,
-            initial_membership = initial_membership, node_sizes = node_sizes,
-            resolution_parameter = resolution_parameter
-        ),
-        'SurpriseVertexPartition' = leidenalg$find_partition(
-            snn_graph,
-            leidenalg$SurpriseVertexPartition,
-            initial_membership = initial_membership, weights = weights, node_sizes = node_sizes
-        ),
-        stop("please specify a partition type as a string out of those documented")
+    #compute partitions
+    partition <- find_partition(snn_graph, partition_type = partition_type,
+                                initial_membership = initial_membership ,
+                                weights = weights,
+                                node_sizes = node_sizes,
+                                resolution_parameter = resolution_parameter
     )
-    partition <- part$membership+1
     partition
 }
 
@@ -245,6 +207,52 @@ leiden.igraph <- function(object,
     # would be better to refactor to call from matrix methof
 
     #compute partitions
+    partition <- find_partition(snn_graph, partition_type = partition_type,
+                                initial_membership = initial_membership ,
+                                weights = weights,
+                                node_sizes = node_sizes,
+                                resolution_parameter = resolution_parameter
+    )
+    partition
+}
+
+leiden.default <- leiden.matrix
+
+# global reference to python modules (will be initialized in .onLoad)
+leidenalg <- NULL
+ig <- NULL
+
+.onLoad = function(libname, pkgname) {
+    if(reticulate::py_available()){
+        install_python_modules <- function(method = "auto", conda = "auto") {
+            reticulate::py_install("leidenalg", method = method, conda = conda)
+            reticulate::py_install("igraph", method = method, conda = conda)
+        }
+    }
+    if (suppressWarnings(suppressMessages(requireNamespace("reticulate")))) {
+        modules <- reticulate::py_module_available("leidenalg") && reticulate::py_module_available("igraph")
+        if (modules) {
+            ## assignment in parent environment!
+            leidenalg <<- reticulate::import("leidenalg", delay_load = TRUE)
+            ig <<- reticulate::import("igraph", delay_load = TRUE)
+        }
+    }
+}
+
+find_partition <- function(snn_graph, partition_type = c(
+                              'RBConfigurationVertexPartition',
+                              'ModularityVertexPartition',
+                              'RBERVertexPartition',
+                              'CPMVertexPartition',
+                              'MutableVertexPartition',
+                              'SignificanceVertexPartition',
+                              'SurpriseVertexPartition'
+                          ),
+                          initial_membership = NULL,
+                          weights = NULL,
+                          node_sizes = NULL,
+                          resolution_parameter = 1
+) {
     partition_type <- match.arg(partition_type)
     part <- switch(
         EXPR = partition_type,
@@ -291,27 +299,4 @@ leiden.igraph <- function(object,
     )
     partition <- part$membership+1
     partition
-}
-
-leiden.default <- leiden.matrix
-
-# global reference to python modules (will be initialized in .onLoad)
-leidenalg <- NULL
-ig <- NULL
-
-.onLoad = function(libname, pkgname) {
-    if(reticulate::py_available()){
-        install_python_modules <- function(method = "auto", conda = "auto") {
-            reticulate::py_install("leidenalg", method = method, conda = conda)
-            reticulate::py_install("igraph", method = method, conda = conda)
-        }
-    }
-    if (suppressWarnings(suppressMessages(requireNamespace("reticulate")))) {
-        modules <- reticulate::py_module_available("leidenalg") && reticulate::py_module_available("igraph")
-        if (modules) {
-            ## assignment in parent environment!
-            leidenalg <<- reticulate::import("leidenalg", delay_load = TRUE)
-            ig <<- reticulate::import("igraph", delay_load = TRUE)
-        }
-    }
 }
