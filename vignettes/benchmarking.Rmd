@@ -1,0 +1,724 @@
+---
+title: "Benchmarking the Leiden algorithm with R and Python"
+author: "S. Thomas Kelly"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Benchmarking the Leiden algorithm}
+  %\VignetteEngine{knitr::knitr}
+  %\VignetteEncoding{UTF-8}
+---
+  
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library("reticulate")
+module <- py_available() && reticulate::py_module_available("leidenalg") && reticulate::py_module_available("igraph")
+
+library("reticulate")
+module <- py_available() && reticulate::py_module_available("leidenalg") && reticulate::py_module_available("igraph")
+```
+
+# Benchmarking the Leiden Algorithm
+
+In this guide we will run the Leiden algorithm in both R and Python to benchmark performance and demonstrate how the algorithm is called with `reticulate`.
+
+We are testing this in the following environment:
+  
+```{R}
+paste(Sys.info()[c(4, 2, 1)])
+```
+```{r}
+R.version$version.string
+```
+
+## Clustering with the Leiden Algorithm in R
+
+This package allows calling the Leiden algorialgorithmthm for clustering on an igraph object from R. See the Python and Java implementations for more details: 
+  
+  https://github.com/CWTSLeiden/networkanalysis
+
+https://github.com/vtraag/leidenalg
+
+It calls the Python functions to run the algorithm and passes all arguments need to them.
+
+### Set up the python version to be called in R
+
+
+
+```{r}
+library("reticulate")
+reticulate::use_condaenv("r-reticulate")
+conda_install(env = "r-reticulate", c("leidenalg", "python-igraph"), forge = TRUE, pip = TRUE)
+```
+
+
+
+## Python implementation
+
+The python version can be installed with pip or conda:
+  
+```{bash, eval = FALSE}
+#pip3 uninstall -y igraph
+pip3 install -U -q leidenalg python-igraph
+```
+
+```{bash, eval = FALSE}
+conda install -c vtraag leidenalg
+```
+
+
+### Running in Python
+
+We are using the following version of Python:
+  
+```{python}
+import sys
+print(sys.version)
+```
+
+First we load the packages:
+  
+```{python, warning = T}
+import igraph as ig
+print("igraph", ig.__version__)
+import leidenalg as la
+print("leidenalg", la.__version__)
+```
+
+Then we load the Zachary karate club example data from igraph.
+
+```{python}
+G = ig.Graph.Famous('Zachary')
+G.summary()
+```
+```{python}
+partition = la.find_partition(G, la.ModularityVertexPartition)
+print(partition)
+partition
+```
+
+```{python}
+partition.membership
+```
+
+```{r}
+partition <- py$partition$membership + 1
+table(partition)
+```
+
+We can plot the result in R to show it in the network. This reproduces the example in the Python leidenalg documentation.
+
+```{r}
+library("igraph")
+library("reticulate")
+library("RColorBrewer")
+graph_object <- graph.famous("Zachary")
+node.cols <- brewer.pal(max(partition),"Pastel1")[partition]
+plot(graph_object, vertex.color = node.cols, layout=layout_with_kk)
+```
+
+
+We can reproduce passing arguments in this manner as well.
+
+````{python}
+partition = la.find_partition(G, la.CPMVertexPartition, resolution_parameter = 0.05)
+print(partition)
+partition
+```
+
+```{python}
+partition.membership
+```
+
+```{r}
+partition <- py$partition$membership + 1
+table(partition)
+```
+
+We can plot the result in R to show it in the network. This reproduces the example in the Python leidenalg documentation.
+
+```{r}
+graph_object <- graph.famous("Zachary")
+node.cols <- brewer.pal(max(partition),"Pastel1")[partition]
+plot(graph_object, vertex.color = node.cols, layout=layout_with_kk)
+```
+
+We can run the RBC vertex method which generalises the modularity vertex partition.
+
+````{python}
+partition = la.find_partition(G, la.RBConfigurationVertexPartition, resolution_parameter = 1.5)
+print(partition)
+partition
+```
+
+```{python}
+partition.membership
+```
+
+```{r}
+partition <- py$partition$membership + 1
+table(partition)
+```
+
+We can plot the result in R to show it in the network. 
+
+```{r}
+graph_object <- graph.famous("Zachary")
+node.cols <- brewer.pal(max(partition),"Pastel1")[partition]
+plot(graph_object, vertex.color = node.cols, layout=layout_with_kk)
+```
+
+#### Benchmarking the Python version with reticulate
+
+Now we can time how long the computation of the algorithm takes (for 1000 runs) running within python:
+  
+```{python}
+import time
+G = ig.Graph.Famous('Zachary')
+G.summary()
+start = time.time()
+for ii in range(100):
+    partition = la.find_partition(G, la.ModularityVertexPartition)
+
+end = time.time()
+partition.membership
+py_time = end - start
+print("leiden time:", py_time, "seconds")
+```
+
+```{bash}
+bash_py_time=`python -c 'import igraph as ig
+import leidenalg as la
+import time
+G = ig.Graph.Famous("Zachary")
+G.summary()
+start = time.time()
+for ii in range(100):
+    partition = la.find_partition(G, la.ModularityVertexPartition)
+
+end = time.time()
+partition.membership
+py_time = end - start
+print(py_time)'`
+echo $bash_py_time > bash_py_time
+echo "leiden time:" $bash_py_time "seconds"
+```
+```{r}
+bash_py_time <- as.numeric(readLines("bash_py_time"))
+```
+
+We can also run the leiden algorithm in python by calling functions with reticulate:
+  
+```{R}
+leidenalg <- import("leidenalg", delay_load = TRUE)
+ig <- import("igraph", delay_load = TRUE)
+G = ig$Graph$Famous('Zachary')
+G$summary()
+partition = leidenalg$find_partition(G, leidenalg$ModularityVertexPartition)
+partition$membership
+```
+
+```{r}
+leidenalg <- import("leidenalg", delay_load = TRUE)
+ig <- import("igraph", delay_load = TRUE)
+G = ig$Graph$Famous('Zachary')
+G$summary()
+start <- Sys.time()
+for(ii in 1:100){
+  partition = leidenalg$find_partition(G, leidenalg$ModularityVertexPartition)
+}
+end <- Sys.time()
+partition$membership
+reticulate_time <- difftime(end, start)[[1]]
+print(paste(c("leiden time:", reticulate_time, "seconds"), collapse = " "))
+```
+
+## R implementation
+
+The R version can be installed with devtools or from CRAN:
+  
+```{R, eval = FALSE}
+install.packages("leiden")
+```
+
+```{bash, eval = FALSE}
+install.packages("leiden")
+devtools::install_github("TomKellyGenetics/leiden", ref = "dev")
+```
+
+Note that these require the Python version as a dependency.
+
+### Running in R
+
+We can reproduce these by running the Leiden algorithm in R using the functions in the leiden package.
+
+
+We are using the following version of R:
+  
+```{R}
+R.version.string
+```
+
+First we load the packages:
+  
+```{R}
+library("igraph")
+library("leiden")
+```
+
+Then we load the Zachary karate club example data from igraph.
+
+```{r}
+G <- graph.famous("Zachary")
+summary(G)
+```
+```{R}
+partition <- leiden(G, "ModularityVertexPartition")
+partition
+```
+
+```{r}
+table(partition)
+```
+
+We can plot the result in R to show it in the network. This reproduces the example in the Python leidenalg documentation.
+
+```{r}
+library("igraph")
+library("reticulate")
+library("RColorBrewer")
+node.cols <- brewer.pal(max(partition),"Pastel1")[partition]
+plot(G, vertex.color = node.cols, layout=layout_with_kk)
+```
+
+
+We can reproduce passing arguments in this manner as well.
+
+````{r}
+partition <- leiden(G, "CPMVertexPartition", resolution_parameter = 0.5)
+partition
+```
+
+
+```{r}
+table(partition)
+```
+
+We can plot the result in R to show it in the network. This reproduces the example in the Python leidenalg documentation.
+
+```{r}
+node.cols <- brewer.pal(max(partition),"Pastel1")[partition]
+plot(G, vertex.color = node.cols, layout=layout_with_kk)
+```
+
+We can run the RBC vertex method which generalises the modularity vertex partition.
+
+````{r}
+partition <- leiden(G, "RBConfigurationVertexPartition", resolution_parameter = 1.5)
+partition
+```
+
+```{r}
+table(partition)
+```
+
+We can plot the result in R to show it in the network. 
+
+```{r}
+node.cols <- brewer.pal(max(partition),"Pastel1")[partition]
+plot(G, vertex.color = node.cols, layout=layout_with_kk)
+```
+
+#### Benchmarking the R version with reticulate
+
+Now we can time how long the computation of the algorithm takes (for 1000 runs) calling with R on a graph object:
+  
+```{R, cache=TRUE}
+G <- graph.famous('Zachary')
+summary(G)
+start <- Sys.time()
+for(ii in 1:100){
+  partition = leiden(G, "ModularityVertexPartition")
+}
+end <- Sys.time()
+table(partition)
+R_graph_time = difftime(end, start)[[1]]
+print(paste(c("leiden time:", R_graph_time, "seconds"), collapse = " "))
+```
+
+We can see that the R implementation does not perform as well as the Python version but it is convenient for R users. Calling from a graph object avoids casting to a dense adjacency matrix which reduces memory load for large graph objects.
+
+We can see that calling leiden in R on an adjacency matrix has faster performance but it does require more memory. For example, on a dense adjacency matrix:
+  
+```{R, cache=TRUE}
+G <- graph.famous('Zachary')
+summary(G)
+
+start <- Sys.time()
+for(ii in 1:100){
+  adj_mat <- as_adjacency_matrix(G, sparse = FALSE)
+}
+end <- Sys.time()
+dim(adj_mat)
+R_mat_cast_time = difftime(end, start)[[1]]
+paste(print(c("cast time:", R_mat_cast_time, "seconds"), collapse = " "))
+
+start <- Sys.time()
+for(ii in 1:100){
+  partition <- leiden(adj_mat, "ModularityVertexPartition")
+}
+end <- Sys.time()
+table(partition)
+R_mat_time = difftime(end, start)[[1]]
+print(paste(c("leiden time:", R_mat_time, "seconds"), collapse = " "))
+```
+
+For example, on a sparse dgCMatrix for the adjacency matrix:
+  
+```{R, cache=TRUE}
+G <- graph.famous('Zachary')
+summary(G)
+
+start <- Sys.time()
+for(ii in 1:100){
+  adj_mat <- as_adjacency_matrix(G, sparse = TRUE)
+}
+end <- Sys.time()
+class(adj_mat)
+dim(adj_mat)
+R_sparse_mat_cast_time = difftime(end, start)[[1]]
+paste(print(c("cast time:", R_sparse_mat_cast_time, "seconds"), collapse = " "))
+
+start <- Sys.time()
+for(ii in 1:100){
+  partition <- leiden(adj_mat, "ModularityVertexPartition")
+}
+end <- Sys.time()
+table(partition)
+R_sparse_mat_time = difftime(end, start)[[1]]
+print(paste(c("leiden time:", R_mat_time, "seconds"), collapse = " "))
+```
+
+#### Large adjacency matrices
+
+The difference between sparse and dense matrices is more pronounced for large matrices (with few edges):
+
+```{r, cache=TRUE}
+adjacency_matrix <- rbind(cbind(matrix(round(rbinom(1000000, 1, 0.008)), 1000, 1000),
+                                matrix(round(rbinom(1000000, 1, 0.003)), 1000, 1000),
+                                matrix(round(rbinom(1000000, 1, 0.001)), 1000, 1000)),
+                          cbind(matrix(round(rbinom(1000000, 1, 0.003)), 1000, 1000),
+                                matrix(round(rbinom(1000000, 1, 0.008)), 1000, 1000),
+                                matrix(round(rbinom(0000000, 1, 0.002)), 1000, 1000)),
+                          cbind(matrix(round(rbinom(1000000, 1, 0.003)), 1000, 1000),
+                                matrix(round(rbinom(1000000, 1, 0.001)), 1000, 1000),
+                                matrix(round(rbinom(1000000, 1, 0.009)), 1000, 1000)))
+rownames(adjacency_matrix) <- 1:3000
+colnames(adjacency_matrix) <- 1:3000
+G <- graph_from_adjacency_matrix(adjacency_matrix)
+
+start <- Sys.time()
+for(ii in 1:10){
+  adj_mat <- as_adjacency_matrix(G, sparse = FALSE)
+}
+end <- Sys.time()
+class(adj_mat)
+dim(adj_mat)
+R_mat_large_cast_time = difftime(end, start)[[1]]
+paste(print(c("cast time:", R_mat_large_cast_time, "seconds"), collapse = " "))
+
+start <- Sys.time()
+for(ii in 1:10){
+  partition <- leiden(adj_mat, "ModularityVertexPartition")
+}
+end <- Sys.time()
+table(partition)
+R_mat_large_time = difftime(end, start)[[1]]
+print(paste(c("leiden time:", R_mat_large_time, "seconds"), collapse = " "))
+```
+
+For example, on a sparse adjacency matrix:
+  
+```{R, cache=TRUE}
+start <- Sys.time()
+for(ii in 1:100){
+  adj_mat <- as_adjacency_matrix(G, sparse = TRUE)
+}
+end <- Sys.time()
+class(adj_mat)
+dim(adj_mat)
+R_mat_large_cast_time = difftime(end, start)[[1]]
+paste(print(c("cast time:", R_mat_large_cast_time, "seconds"), collapse = " "))
+
+start <- Sys.time()
+for(ii in 1:10){
+  partition <- leiden(adj_mat, "ModularityVertexPartition")
+}
+end <- Sys.time()
+table(partition)
+R_mat_large_time = difftime(end, start)[[1]]
+print(paste(c("leiden time:", R_mat_large_time, "seconds"), collapse = " "))
+```
+
+### Comparing the adjacency matrix calling
+
+We compare the processing of adjaceny matrices in the leiden.matrix method to casting to graph in python with reticulate. The current implementation of the R function works as follows. The adjacency matrix is passed to python and the graph object is create in the python-igraph:
+
+```{r}
+partition_type <- "RBConfigurationVertexPartition"
+initial_membership <- NULL
+weights <- NULL
+node_sizes = NULL
+resolution_parameter = 1
+
+G <- graph.famous('Zachary')
+summary(G)
+time1 <- Sys.time()
+object <- as.matrix(as_adjacency_matrix(G))
+time2 <- Sys.time()
+timing = difftime(time2, time1)[[1]]
+print(paste(c("cast to adjacent:", timing, "seconds"), collapse = " "))
+
+#run matrix method
+leidenalg <- import("leidenalg", delay_load = TRUE)
+ig <- import("igraph", delay_load = TRUE)
+
+#convert matrix input (corrects for sparse matrix input)
+if(is.matrix(object) || is(adj_mat_sparse, "Matrix")){
+  adj_mat <- object
+} else{
+  adj_mat <- as.matrix(object)
+}
+
+#compute weights if non-binary adjacency matrix given
+is_pure_adj <- all(as.logical(adj_mat) == adj_mat)
+if (is.null(weights) && !is_pure_adj) {
+  #assign weights to edges (without dependancy on igraph)
+  t_mat <- t(adj_mat)
+  weights <- t_mat[t_mat!=0]
+  #remove zeroes from rows of matrix and return vector of length edges
+}
+
+time3 <- Sys.time()
+##convert to python numpy.ndarray, then a list
+adj_mat_py <- r_to_py(adj_mat)
+adj_mat_py <- adj_mat_py$tolist()
+time4 <- Sys.time()
+timing = difftime(time4, time3)[[1]]
+print(paste(c("pass to python matrix:", timing, "seconds"), collapse = " "))
+
+
+#convert graph structure to a Python compatible object
+GraphClass <- if (!is.null(weights) && !is_pure_adj){
+  ig$Graph$Weighted_Adjacency
+} else {
+  ig$Graph$Adjacency
+}
+time5 <- Sys.time()
+snn_graph <- GraphClass(adj_mat_py)
+time6 <- Sys.time()
+timing = difftime(time6, time5)[[1]]
+reticulate_create_time = difftime(time6, time5)[[1]]
+print(paste(c("generate graph in python:", timing, "seconds"), collapse = " "))
+
+
+# test performance for computing matrix to graph in R
+# other option is to passing snn_graph to Python
+
+time7 <- Sys.time()
+#compute partitions
+source("../src/find_partition.R")
+
+partition <- find_partition(snn_graph, partition_type = partition_type,
+                            initial_membership = initial_membership ,
+                            weights = weights,
+                            node_sizes = node_sizes,
+                            resolution_parameter = resolution_parameter
+)
+time8 <- Sys.time()
+timing = difftime(time8, time7)[[1]]
+print(paste(c("compute partitions:", timing, "seconds"), collapse = " "))
+timing = difftime(time8, time1)[[1]]
+print(paste(c("total:", timing, "seconds"), collapse = " "))
+partition
+```
+
+Is it more efficent to pass to create a graph object in R and pass this to python?
+
+```{r}
+partition_type <- "RBConfigurationVertexPartition"
+initial_membership <- NULL
+weights <- NULL
+node_sizes = NULL
+resolution_parameter = 1
+
+G <- graph.famous('Zachary')
+summary(G)
+time1 <- Sys.time()
+object <- as.matrix(as_adjacency_matrix(G))
+time2 <- Sys.time()
+timing = difftime(time2, time1)[[1]]
+print(paste(c("cast to adjacent:", timing, "seconds"), collapse = " "))
+
+#run matrix method
+leidenalg <- import("leidenalg", delay_load = TRUE)
+ig <- import("igraph", delay_load = TRUE)
+
+time3 <- Sys.time()
+##convert to python numpy.ndarray, then a list
+object <- graph_from_adjacency_matrix(adj_mat)
+time4 <- Sys.time()
+timing = difftime(time4, time3)[[1]]
+print(paste(c("generate graph in R:", timing, "seconds"), collapse = " "))
+
+#convert graph structure to a Python compatible object
+time5 <- Sys.time()
+##convert to list for python input
+    if(!is.named(object)){
+        vertices <- as.list(as.character(V(object)))
+    } else {
+        vertices <- as.list(names(V(object)))
+    }
+
+    edges <- as_edgelist(object)
+    dim(edges)
+    edgelist <- list(rep(NA, nrow(edges)))
+    for(ii in 1:nrow(edges)){
+        edgelist[[ii]] <- as.character(edges[ii,])
+    }
+
+    snn_graph <- ig$Graph()
+    snn_graph$add_vertices(r_to_py(vertices))
+    snn_graph$add_edges(r_to_py(edgelist))
+time6 <- Sys.time()
+timing = difftime(time6, time5)[[1]]
+print(paste(c("pass to python graph:", timing, "seconds"), collapse = " "))
+
+
+
+# test performance for computing matrix to graph in R
+# other option is to passing snn_graph to Python
+
+time7 <- Sys.time()
+#compute partitions
+partition <- find_partition(snn_graph, partition_type = partition_type,
+                            initial_membership = initial_membership ,
+                            weights = weights,
+                            node_sizes = node_sizes,
+                            resolution_parameter = resolution_parameter
+)
+time8 <- Sys.time()
+timing = difftime(time8, time7)[[1]]
+print(paste(c("compute partitions:", timing, "seconds"), collapse = " "))
+timing = difftime(time8, time1)[[1]]
+print(paste(c("total:", timing, "seconds"), collapse = " "))
+partition
+```
+
+Another approach is to generate a graph in R and pass it to the leiden.igraph method.
+
+```{r}
+partition_type <- "RBConfigurationVertexPartition"
+initial_membership <- NULL
+weights <- NULL
+node_sizes = NULL
+resolution_parameter = 1
+
+G <- graph.famous('Zachary')
+summary(G)
+time1 <- Sys.time()
+object <- as.matrix(as_adjacency_matrix(G))
+time2 <- Sys.time()
+timing = difftime(time2, time1)[[1]]
+print(paste(c("cast to adjacent:", timing, "seconds"), collapse = " "))
+
+time3 <- Sys.time()
+##convert to python numpy.ndarray, then a list
+object <- graph_from_adjacency_matrix(adj_mat)
+time4 <- Sys.time()
+timing = difftime(time4, time3)[[1]]
+R_graph_create_time = difftime(time4, time3)[[1]]
+print(paste(c("generate graph in R:", timing, "seconds"), collapse = " "))
+
+
+#convert graph structure to a Python compatible object
+time5 <- Sys.time()
+##convert to list for python input
+   snn_graph <- object
+time6 <- Sys.time()
+timing = difftime(time6, time5)[[1]]
+print(paste(c("pass to R graph:", timing, "seconds"), collapse = " "))
+
+
+
+# test performance for computing matrix to graph in R
+# other option is to passing snn_graph to Python
+
+time7 <- Sys.time()
+#compute partitions
+partition <- leiden(snn_graph, partition_type = partition_type,
+                            initial_membership = initial_membership ,
+                            weights = weights,
+                            node_sizes = node_sizes,
+                            resolution_parameter = resolution_parameter
+)
+time8 <- Sys.time()
+timing = difftime(time8, time7)[[1]]
+print(paste(c("compute partitions:", timing, "seconds"), collapse = " "))
+timing = difftime(time8, time1)[[1]]
+print(paste(c("total:", timing, "seconds"), collapse = " "))
+partition
+```
+
+Here we can see that the current approach to pass adjacency matrices to Python and generate graphs in Python is more efficient for a dense matrix than computing the graph in R. Therefore the leiden.matrix method will not call the leiden.igraph method and they will remain distinct.
+
+## Summary
+
+Here we compare the compute time for the Zachary datasets between each method for computing paritions from the leiden clustering algorithm in R or Python.
+
+```{r, fig.align = 'center', fig.height = 3, fig.width = 6, fig.keep = 'last'}
+barplot(c(bash_py_time, py$py_time, reticulate_time, R_graph_time, 
+          R_mat_time, R_sparse_mat_time), 
+        names = c("Python (shell)", "Python (Rmd)", "Reticulate", "R igraph",
+                  "R matrix","R dgCMatrix"), 
+        col = brewer.pal(9,"Pastel1"), las = 2, srt = 45,
+        ylab = "time (seconds)", main = "benchmarking 100 computations")
+```
+
+If we account for time to cast matrices from graph objects. Then these are the time taken to compute partitions from a graph in R.
+
+```{r, fig.align = 'center', fig.height = 3, fig.width = 6, fig.keep = 'last'}
+barplot(c(bash_py_time, py$py_time, reticulate_time, R_graph_time, R_mat_time+R_mat_cast_time, 
+          R_sparse_mat_time+R_sparse_mat_cast_time), 
+        names = c("Python (shell)", "Python (Rmd)", "Reticulate", "R igraph",
+                  "R matrix","R dgCMatrix"), 
+        col = "grey80", las = 2, srt = 45,
+        ylab = "time (seconds)", main = "benchmarking 100 computations")
+barplot(c(bash_py_time, py$py_time, reticulate_time, R_graph_time,
+          R_mat_time,  R_sparse_mat_time), 
+        names = c("Python (shell)", "Python (Rmd)", "Reticulate", "R igraph",
+                  "R matrix","R dgCMatrix"), 
+        col = brewer.pal(9,"Pastel1"), las = 2, srt = 45,
+        ylab = "time (seconds)", main = "benchmarking 100 computations", add = TRUE)
+```
+
+Similarly, if we account for time to generate graph from an adjaceny matrix. Then these are the time taken to compute partitions from a matrix in R.
+
+```{r, fig.align = 'center', fig.height = 3, fig.width = 6, fig.keep = 'last'}
+R_graph_create_time = difftime(time4, time3)[[1]]
+barplot(c(bash_py_time, py$py_time+reticulate_create_time*100, reticulate_time+reticulate_create_time*100, R_graph_time+R_graph_create_time*100, R_mat_time, 
+          R_sparse_mat_time), 
+        names = c("Python (shell)", "Python (Rmd)", "Reticulate", "R igraph",
+                  "R matrix","R dgCMatrix"), 
+        col = "grey80", las = 2, srt = 45,
+        ylab = "time (seconds)", main = "benchmarking 100 computations")
+barplot(c(bash_py_time, py$py_time, reticulate_time, R_graph_time,
+          R_mat_time,  R_sparse_mat_time), 
+        names = c("Python (shell)", "Python (Rmd)", "Reticulate", "R igraph",
+                  "R matrix","R dgCMatrix"), 
+        col = brewer.pal(9,"Pastel1"), las = 2, srt = 45,
+        ylab = "time (seconds)", main = "benchmarking 100 computations", add = TRUE)
+```

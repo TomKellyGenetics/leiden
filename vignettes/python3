@@ -1,0 +1,11 @@
+import time
+G = ig.Graph.Famous("Zachary")
+G.summary()
+start = time.time()
+for ii in range(100):
+    partition = la.find_partition(G, la.ModularityVertexPartition)
+
+end = time.time()
+partition.membership
+py_time = end - start
+print("leiden time:", py_time, "seconds")
