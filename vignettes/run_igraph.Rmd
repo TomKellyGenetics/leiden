@@ -1,0 +1,211 @@
+---
+title: "Running the Leiden algorithm with R on Graph Objects"
+author: "S. Thomas Kelly"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Running the Leiden algorithm with R on Graph Objects}
+  %\VignetteEngine{knitr::knitr}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library("reticulate")
+module <- py_available() && reticulate::py_module_available("leidenalg") && reticulate::py_module_available("igraph")
+```
+
+## Clustering with the Leiden Algorithm in R
+
+This package allows calling the Leiden algorthm for clustering on an igraph object from R. See the Python and Java implementations for more details: 
+
+https://github.com/CWTSLeiden/networkanalysis
+
+https://github.com/vtraag/leidenalg
+
+## Install
+
+This package requires the 'leidenalg' and 'igraph' modules for python (2) to be installed on your system. For example:
+
+``pip install leidenalg igraph``
+
+If you do not have root access, you can use `pip install --user` or `pip install --prefix` to install these in your user directory (which you have write permissions for) and ensure that this directory is in your PATH so that Python can find it.
+
+The 'devtools' package will be used to install 'leiden' and the dependancies (igraph and reticulate). To install the development version:
+
+```{r, eval=FALSE}
+if (!requireNamespace("devtools"))
+    install.packages("devtools")
+devtools::install_github("TomKellyGenetics/leiden")
+```
+
+The current release on CRAN can be installed with:
+
+```{r, eval=FALSE}
+install.packages("leiden")
+```
+
+```{r}
+library("leiden")
+```
+
+## Usage
+
+### Running the Leiden algorithm in R
+
+First set up a compatible adjacency matrix:
+
+```{r}
+adjacency_matrix <- rbind(cbind(matrix(round(rbinom(4000, 1, 0.8)), 20, 20),
+                                matrix(round(rbinom(4000, 1, 0.3)), 20, 20), 
+                                matrix(round(rbinom(400, 1, 0.1)), 20, 20)),
+                          cbind(matrix(round(rbinom(400, 1, 0.3)), 20, 20), 
+                                matrix(round(rbinom(400, 1, 0.8)), 20, 20), 
+                                matrix(round(rbinom(4000, 1, 0.2)), 20, 20)),
+                          cbind(matrix(round(rbinom(400, 1, 0.3)), 20, 20), 
+                                matrix(round(rbinom(4000, 1, 0.1)), 20, 20), 
+                                matrix(round(rbinom(4000, 1, 0.9)), 20, 20)))
+str(adjacency_matrix)
+dim(adjacency_matrix )
+```
+
+An adjacency matrix is any binary matrix representing links between nodes (column and row names). It is a directed graph if the adjacency matrix is not symmetric. 
+
+```{r}
+library("igraph")
+rownames(adjacency_matrix) <- 1:60
+colnames(adjacency_matrix) <- 1:60
+graph_object <- graph_from_adjacency_matrix(adjacency_matrix, mode = "directed")
+graph_object
+```
+
+This represents the following graph structure.
+
+```{r, warning=FALSE, message=FALSE}
+plot(graph_object, vertex.color = "grey75")
+```
+
+Then the Leiden algorithm can be run on the igraph object.
+
+```{r, eval=!module,echo=FALSE, message=FALSE, warning=FALSE, results="hide"}
+partition <- c(rep(1, 20), rep(2, 20), rep(3, 20))
+```
+
+```{r, eval=module}
+partition <- leiden(graph_object)
+```
+
+```{r}
+table(partition)
+```
+
+Here we can see partitions in the plotted results. The nodes that are more interconnected have been paritioned into separate clusters.
+
+```{r, warning=FALSE, message=FALSE}
+library("RColorBrewer")
+node.cols <- brewer.pal(max(partition),"Pastel1")[partition]
+plot(graph_object, vertex.color = node.cols)
+```
+
+### Running Leiden with arguments passed to leidenalg
+
+Arguments can be passed to the leidenalg implementation in Python:
+
+```{r, eval=module}
+#run with defaults
+  partition <- leiden(graph_object)
+
+
+#run with ModularityVertexPartition"
+  partition <- leiden(graph_object, partition_type = "ModularityVertexPartition")
+
+
+#run with resolution parameter
+  partition <- leiden(graph_object, resolution_parameter = 0.95)
+```
+
+In particular, the resolution parameter can tune the number of clusters to be detected.
+
+```{r, warning=FALSE, message=FALSE, eval=module}
+partition <- leiden(graph_object, resolution_parameter = 0.5)
+node.cols <- brewer.pal(max(partition),"Pastel1")[partition]
+plot(graph_object, vertex.color = node.cols)
+```
+
+
+```{r, warning=FALSE, message=FALSE, eval=module}
+partition <- leiden(graph_object, resolution_parameter = 1.8)
+node.cols <- brewer.pal(max(partition),"Pastel1")[partition]
+plot(graph_object, vertex.color = node.cols)
+```
+
+Weights for edges an also be passed to the leiden algorithm either as a separate vector or as a weighted graph_object. Weights will be derived from a weighted graph object.
+
+```{r, warning=FALSE, message=FALSE, eval=module}
+# generate (unweighted) igraph object in R
+library("igraph")
+adjacency_matrix[adjacency_matrix > 1] <- 1
+snn_graph <- graph_from_adjacency_matrix(adjacency_matrix)
+partition <- leiden(snn_graph)
+table(partition)
+```
+
+```{r, warning=FALSE, message=FALSE, eval=module}
+# pass weights to python leidenalg
+adjacency_matrix[adjacency_matrix >= 1 ] <- 1
+snn_graph <- graph_from_adjacency_matrix(adjacency_matrix, weighted = NULL)
+weights <- sample(1:10, sum(adjacency_matrix!=0), replace=TRUE)
+partition <- leiden(snn_graph, weights = weights)
+table(partition)
+```
+
+```{r, warning=FALSE, message=FALSE, eval=module}
+# generate (weighted) igraph object in R
+library("igraph")
+adjacency_matrix[adjacency_matrix >= 1] <- weights
+snn_graph <- graph_from_adjacency_matrix(adjacency_matrix, weighted = TRUE)
+partition <- leiden(snn_graph)
+table(partition)
+```
+
+See the documentation on the leidenalg Python module for more information: [https://leidenalg.readthedocs.io/en/latest/reference.html](https://leidenalg.readthedocs.io/en/latest/reference.html)
+
+## Running on a Seurat Object
+
+### Seurat version 2
+
+To use Leiden with the Seurat pipeline for a Seurat Object `object` that has an SNN computed (for example with `Seurat::FindClusters` with `save.SNN = TRUE`). This will compute the Leiden clusters and add them to the Seurat Object Class. The R implementation of Leiden can be run directly on the snn igraph object in Seurat. 
+
+```{r, eval=FALSE}
+library("Seurat")
+FindClusters(pbmc_small)
+membership <- leiden(pbmc_small@snn)
+table(membership)
+pbmc_small@ident <- as.factor(membership)
+names(pbmc_small@ident) <- rownames(pbmc_small@meta.data)
+pbmc_small@meta.data$ident <- as.factor(membership)
+```
+
+Note that this code is designed for Seurat version 2 releases.
+
+
+### Seurat version 3 or later
+
+Note that the object for Seurat version 3 has changed. For example an SNN can be generated:
+
+```{r, eval=FALSE}
+library("Seurat")
+FindClusters(pbmc_small)
+membership <- leiden(pbmc_small@graphs$RNA_snn)
+table(membership)
+```
+
+For Seurat version 3 objects, the Leiden algorithm has been implemented in the Seurat version 3 package with `Seurat::FindClusters` and `algorithm = "leiden"`).  See the documentation for these functions.
+
+```{r, eval=FALSE}
+FindClusters(pbmc_small, algorithm = "leiden")
+table(pbmc_small@active.ident)
+```
