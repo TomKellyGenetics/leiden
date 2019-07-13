@@ -110,7 +110,7 @@ leiden.matrix <- function(object,
     ig <- import("igraph", delay_load = TRUE)
 
     #convert matrix input (corrects for sparse matrix input)
-    if(is.matrix(object)){
+    if(is.matrix(object) || is(adj_mat_sparse, "Matrix")){
         adj_mat <- object
     } else{
         adj_mat <- as.matrix(object)
