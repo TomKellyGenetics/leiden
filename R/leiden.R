@@ -110,7 +110,7 @@ leiden.matrix <- function(object,
     ig <- import("igraph", delay_load = TRUE)
 
     #convert matrix input (corrects for sparse matrix input)
-    if(is.matrix(object) || is(adj_mat_sparse, "Matrix")){
+    if(is.matrix(object) || is(object, "Matrix")){
         adj_mat <- object
     } else{
         adj_mat <- as.matrix(object)
@@ -119,6 +119,7 @@ leiden.matrix <- function(object,
     #compute weights if non-binary adjacency matrix given
     is_pure_adj <- all(as.logical(adj_mat) == adj_mat)
     if (is.null(weights) && !is_pure_adj) {
+        if(!is.matrix(object)) adj_mat <- as.matrix(adj_mat)
         #assign weights to edges (without dependancy on igraph)
         t_mat <- t(adj_mat)
         weights <- t_mat[t_mat!=0]
@@ -127,6 +128,9 @@ leiden.matrix <- function(object,
 
     ##convert to python numpy.ndarray, then a list
     adj_mat_py <- r_to_py(adj_mat)
+    if(is(object, "Matrix")){
+        adj_mat_py <- adj_mat_py$todense()
+    }
     adj_mat_py <- adj_mat_py$tolist()
 
     #convert graph structure to a Python compatible object
