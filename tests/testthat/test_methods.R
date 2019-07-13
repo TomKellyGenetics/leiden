@@ -28,7 +28,7 @@ test_that("run graph object with defaults", {
 library("Matrix")
 adj_mat_sparse <- as(adj_mat, "Matrix")
 
-test_that("run dgeMatrix with defaults", {
+test_that("run dsCMatrix with defaults", {
   skip_if_no_python()
   partition <- leiden(adj_mat_sparse)
   expect_length(partition, 100)
@@ -38,6 +38,14 @@ test_that("run dgeMatrix with defaults", {
 adj_mat_sparse <- as(adj_mat, "dgCMatrix")
 
 test_that("run sparse dgCMatrix matrix with defaults", {
+  skip_if_no_python()
+  partition <- leiden(adj_mat_sparse)
+  expect_length(partition, 100)
+})
+
+adj_mat_sparse <- as(adj_mat, "dgeMatrix")
+
+test_that("run sparse dgeMatrix matrix with defaults", {
   skip_if_no_python()
   partition <- leiden(adj_mat_sparse)
   expect_length(partition, 100)
