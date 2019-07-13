@@ -47,3 +47,13 @@ test_that("run with wieghted adjacency matrix", {
   partition <- leiden(snn_graph)
   expect_length(partition, 100)
 })
+
+rownames(adj_mat) <- 1:nrow(adj_mat)
+colnames(adj_mat) <- 1:ncol(adj_mat)
+
+test_that("run with named adjacency matrix", {
+  skip_if_no_python()
+  partition <- leiden(snn_graph)
+  expect_length(partition, 100)
+})
+
