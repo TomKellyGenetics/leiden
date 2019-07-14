@@ -53,8 +53,10 @@ python:
 before_install:
   - chmod +x travis_setup.sh
   - ./travis_setup.sh
-  - pip install --user igraph
+  - pip install --user conda
+  - pip install --user python-igraph
   - pip install --user numpy
+  - pip install --user scipy
   - pip install --user leidenalg
 
 warnings_are_errors: false
