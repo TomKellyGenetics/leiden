@@ -210,6 +210,7 @@ print(py_time)'`
 echo $bash_py_time > bash_py_time
 echo "leiden time:" $bash_py_time "seconds"
 ```
+
 ```{r, eval = module}
 bash_py_time <- as.numeric(readLines("bash_py_time"))
 ```
@@ -684,7 +685,7 @@ Here we can see that the current approach to pass adjacency matrices to Python a
 
 Here we compare the compute time for the Zachary datasets between each method for computing paritions from the leiden clustering algorithm in R or Python.
 
-```{r, fig.align = 'center', fig.height = 3, fig.width = 6, fig.keep = 'last'}
+```{r, fig.align = 'center', fig.height = 3, fig.width = 6, fig.keep = 'last', eval = module}
 barplot(c(bash_py_time, py$py_time, reticulate_time, R_graph_time, 
           R_mat_time, R_sparse_mat_time), 
         names = c("Python (shell)", "Python (Rmd)", "Reticulate", "R igraph",
@@ -696,7 +697,7 @@ abline(h=0)
 
 If we account for time to cast matrices from graph objects. Then these are the time taken to compute partitions from a graph in R.
 
-```{r, fig.align = 'center', fig.height = 3, fig.width = 6, fig.keep = 'last'}
+```{r, fig.align = 'center', fig.height = 3, fig.width = 6, fig.keep = 'last', eval = module}
 barplot(c(bash_py_time, py$py_time, reticulate_time, R_graph_time, R_mat_time+R_mat_cast_time, 
           R_sparse_mat_time+R_sparse_mat_cast_time), 
         names = c("Python (shell)", "Python (Rmd)", "Reticulate", "R igraph",
@@ -714,7 +715,7 @@ abline(h=0)
 
 Similarly, if we account for time to generate graph from an adjaceny matrix. Then these are the time taken to compute partitions from a matrix in R.
 
-```{r, fig.align = 'center', fig.height = 3, fig.width = 6, fig.keep = 'last'}
+```{r, fig.align = 'center', fig.height = 3, fig.width = 6, fig.keep = 'last', eval = module}
 R_graph_create_time = difftime(time4, time3)[[1]]
 barplot(c(bash_py_time, py$py_time+reticulate_create_time*100, reticulate_time+reticulate_create_time*100, R_graph_time+R_graph_create_time*100, R_mat_time, 
           R_sparse_mat_time), 
