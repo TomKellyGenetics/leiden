@@ -130,7 +130,7 @@ leiden.matrix <- function(object,
     ##convert to python numpy.ndarray, then a list
     adj_mat_py <- r_to_py(adj_mat, convert = T)
     if(is(object, "dgCMatrix")){
-        adj_mat_py <- adj_mat_py$todense()
+        adj_mat_py <- adj_mat_py$toarray()
     }
     adj_mat_py <- adj_mat_py$tolist()
 

@@ -30,6 +30,7 @@ We are testing this in the following environment:
 ```{R}
 paste(Sys.info()[c(4, 2, 1)])
 ```
+
 ```{r}
 R.version$version.string
 ```
@@ -47,14 +48,12 @@ It calls the Python functions to run the algorithm and passes all arguments need
 ### Set up the python version to be called in R
 
 
-
-```{r}
+```{r, include=FALSE}
 library("reticulate")
 if(! "r-reticulate" %in% conda_list()$name) reticulate::conda_create("r-reticulate")
 reticulate::use_condaenv("r-reticulate")
-conda_install(env = "r-reticulate", c("leidenalg", "python-igraph"), forge = TRUE, pip = TRUE)
+conda_install(env = "r-reticulate", c("leidenalg", "numpy", "scipy"), forge = TRUE)
 ```
-
 
 
 ## Python implementation
@@ -62,8 +61,8 @@ conda_install(env = "r-reticulate", c("leidenalg", "python-igraph"), forge = TRU
 The python version can be installed with pip or conda:
   
 ```{bash, eval = FALSE}
-#pip3 uninstall -y igraph
-pip3 install -U -q leidenalg python-igraph
+pip uninstall -y igraph
+pip install -U -q leidenalg python-igraph
 ```
 
 ```{bash, eval = FALSE}
@@ -82,7 +81,8 @@ print(sys.version)
 
 First we load the packages:
   
-```{python, warning = T}
+
+```{python, warning = TRUE}
 import igraph as ig
 print("igraph", ig.__version__)
 import leidenalg as la

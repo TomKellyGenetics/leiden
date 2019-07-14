@@ -209,7 +209,8 @@ install:
   #- run_conda_forge_build_setup
   #- conda.exe build recipe --quiet
   #- conda install -n env_name -y q igraph
-  - conda install -y -c vtraag python-igraph
+  - conda install -y numpy scipy
+  - conda install -y python-igraph
   - conda install -y -c vtraag leidenalg
   #- conda install pip numpy scipy
   #- "python -m pip install --upgrade pip"
