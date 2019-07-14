@@ -50,6 +50,7 @@ It calls the Python functions to run the algorithm and passes all arguments need
 
 ```{r}
 library("reticulate")
+if(! "r-reticulate" %in% conda_list()$name) reticulate::conda_create("r-reticulate")
 reticulate::use_condaenv("r-reticulate")
 conda_install(env = "r-reticulate", c("leidenalg", "python-igraph"), forge = TRUE, pip = TRUE)
 ```
