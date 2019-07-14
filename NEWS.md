@@ -23,5 +23,5 @@ node_sizes.
 
 * Adds passing weighted adjacency matrices to derive weight parameters
 
-
+# leiden 0.3.0
 

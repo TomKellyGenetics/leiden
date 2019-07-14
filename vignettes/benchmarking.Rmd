@@ -10,17 +10,30 @@ vignette: >
 ---
   
 ```{r setup, include = FALSE}
+library("reticulate")
+py_available()
+py_config()$python
+
+import("leidenalg", delay_load = TRUE)
+import("igraph", delay_load = TRUE)
+import("scipy", delay_load = TRUE)
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  eval = py_available()
 )
-library("reticulate")
-module <- py_available() && reticulate::py_module_available("leidenalg") && reticulate::py_module_available("igraph")
+# if(py_available()){
+#   use_python(system("whereis pip"))
+#   system("pip install leidenalg python-igraph numpy scipy")
+# }
+module <- py_available() && py_numpy_available() && reticulate::py_module_available("leidenalg") && reticulate::py_module_available("igraph")
+print(py_available())
 
-library("reticulate")
-module <- py_available() && reticulate::py_module_available("leidenalg") && reticulate::py_module_available("igraph")
-
-### suppress evaluation if Python not available
+print(module)
+# library("reticulate")
+# if(! "r-reticulate" %in% conda_list()$name) reticulate::conda_create("r-reticulate")
+# reticulate::use_condaenv("r-reticulate")
+# conda_install(env = "r-reticulate", c("leidenalg", "numpy", "scipy"), forge = TRUE)
 ```
 
 # Benchmarking the Leiden Algorithm
@@ -49,15 +62,6 @@ It calls the Python functions to run the algorithm and passes all arguments need
 
 ### Set up the python version to be called in R
 
-
-```{r, include=FALSE, eval = module}
-library("reticulate")
-if(! "r-reticulate" %in% conda_list()$name) reticulate::conda_create("r-reticulate")
-reticulate::use_condaenv("r-reticulate")
-conda_install(env = "r-reticulate", c("leidenalg", "numpy", "scipy"), forge = TRUE)
-```
-
-
 ## Python implementation
 
 The python version can be installed with pip or conda:
@@ -76,7 +80,7 @@ conda install -c vtraag leidenalg
 
 We are using the following version of Python:
   
-```{python, eval = module}
+```{python}
 import sys
 print(sys.version)
 ```
@@ -84,7 +88,7 @@ print(sys.version)
 First we load the packages:
   
 
-```{python, warning = TRUE, eval = module}
+```{python, warning = TRUE}
 import igraph as ig
 print("igraph", ig.__version__)
 import leidenalg as la
@@ -93,29 +97,28 @@ print("leidenalg", la.__version__)
 
 Then we load the Zachary karate club example data from igraph.
 
-```{python, eval = module}
+```{python}
 G = ig.Graph.Famous('Zachary')
 G.summary()
 ```
-
-```{python, eval = module}
+```{python}
 partition = la.find_partition(G, la.ModularityVertexPartition)
 print(partition)
 partition
 ```
 
-```{python, eval = module}
+```{python}
 partition.membership
 ```
 
-```{r, eval = module}
+```{r}
 partition <- py$partition$membership + 1
 table(partition)
 ```
 
 We can plot the result in R to show it in the network. This reproduces the example in the Python leidenalg documentation.
 
-```{r, eval = module}
+```{r}
 library("igraph")
 library("reticulate")
 library("RColorBrewer")
@@ -127,24 +130,24 @@ plot(graph_object, vertex.color = node.cols, layout=layout_with_kk)
 
 We can reproduce passing arguments in this manner as well.
 
-````{python, eval = module}
+````{python}
 partition = la.find_partition(G, la.CPMVertexPartition, resolution_parameter = 0.05)
 print(partition)
 partition
 ```
 
-```{python, eval = module}
+```{python}
 partition.membership
 ```
 
-```{r, eval = module}
+```{r}
 partition <- py$partition$membership + 1
 table(partition)
 ```
 
 We can plot the result in R to show it in the network. This reproduces the example in the Python leidenalg documentation.
 
-```{r, eval = module}
+```{r}
 graph_object <- graph.famous("Zachary")
 node.cols <- brewer.pal(max(c(3, partition)),"Pastel1")[partition]
 plot(graph_object, vertex.color = node.cols, layout=layout_with_kk)
@@ -152,24 +155,24 @@ plot(graph_object, vertex.color = node.cols, layout=layout_with_kk)
 
 We can run the RBC vertex method which generalises the modularity vertex partition.
 
-````{python, eval = module}
+````{python}
 partition = la.find_partition(G, la.RBConfigurationVertexPartition, resolution_parameter = 1.5)
 print(partition)
 partition
 ```
 
-```{python, eval = module}
+```{python}
 partition.membership
 ```
 
-```{r, eval = module}
+```{r}
 partition <- py$partition$membership + 1
 table(partition)
 ```
 
 We can plot the result in R to show it in the network. 
 
-```{r, eval = module}
+```{r}
 graph_object <- graph.famous("Zachary")
 node.cols <- brewer.pal(max(c(3, partition)),"Pastel1")[partition]
 plot(graph_object, vertex.color = node.cols, layout=layout_with_kk)
@@ -179,7 +182,7 @@ plot(graph_object, vertex.color = node.cols, layout=layout_with_kk)
 
 Now we can time how long the computation of the algorithm takes (for 1000 runs) running within python:
   
-```{python, eval = module}
+```{python}
 import time
 G = ig.Graph.Famous('Zachary')
 G.summary()
@@ -193,7 +196,7 @@ py_time = end - start
 print("leiden time:", py_time, "seconds")
 ```
 
-```{bash, eval = module}
+```{bash}
 bash_py_time=`python -c 'import igraph as ig
 import leidenalg as la
 import time
@@ -210,14 +213,13 @@ print(py_time)'`
 echo $bash_py_time > bash_py_time
 echo "leiden time:" $bash_py_time "seconds"
 ```
-
-```{r, eval = module}
+```{r}
 bash_py_time <- as.numeric(readLines("bash_py_time"))
 ```
 
 We can also run the leiden algorithm in python by calling functions with reticulate:
   
-```{R, eval = module}
+```{R}
 leidenalg <- import("leidenalg", delay_load = TRUE)
 ig <- import("igraph", delay_load = TRUE)
 G = ig$Graph$Famous('Zachary')
@@ -226,7 +228,7 @@ partition = leidenalg$find_partition(G, leidenalg$ModularityVertexPartition)
 partition$membership
 ```
 
-```{r, eval = module}
+```{r}
 leidenalg <- import("leidenalg", delay_load = TRUE)
 ig <- import("igraph", delay_load = TRUE)
 G = ig$Graph$Famous('Zachary')
@@ -263,13 +265,13 @@ We can reproduce these by running the Leiden algorithm in R using the functions 
 
 We are using the following version of R:
   
-```{r}
+```{R}
 R.version.string
 ```
 
 First we load the packages:
   
-```{r}
+```{R}
 library("igraph")
 library("leiden")
 ```
@@ -280,19 +282,18 @@ Then we load the Zachary karate club example data from igraph.
 G <- graph.famous("Zachary")
 summary(G)
 ```
-
-```{R, eval = module}
+```{R}
 partition <- leiden(G, "ModularityVertexPartition")
 partition
 ```
 
-```{r, eval = module}
+```{r}
 table(partition)
 ```
 
 We can plot the result in R to show it in the network. This reproduces the example in the Python leidenalg documentation.
 
-```{r, eval = module}
+```{r}
 library("igraph")
 library("reticulate")
 library("RColorBrewer")
@@ -303,37 +304,37 @@ plot(G, vertex.color = node.cols, layout=layout_with_kk)
 
 We can reproduce passing arguments in this manner as well.
 
-````{r, eval = module}
+````{r}
 partition <- leiden(G, "CPMVertexPartition", resolution_parameter = 0.5)
 partition
 ```
 
 
-```{r, eval = module}
+```{r}
 table(partition)
 ```
 
 We can plot the result in R to show it in the network. This reproduces the example in the Python leidenalg documentation.
 
-```{r, eval = module}
+```{r}
 node.cols <- brewer.pal(max(c(3, partition)),"Pastel1")[partition]
 plot(G, vertex.color = node.cols, layout=layout_with_kk)
 ```
 
 We can run the RBC vertex method which generalises the modularity vertex partition.
 
-````{r, eval = module}
+````{r}
 partition <- leiden(G, "RBConfigurationVertexPartition", resolution_parameter = 1.5)
 partition
 ```
 
-```{r, eval = module}
+```{r}
 table(partition)
 ```
 
 We can plot the result in R to show it in the network. 
 
-```{r, eval = module}
+```{r}
 node.cols <- brewer.pal(max(c(3, partition)),"Pastel1")[partition]
 plot(G, vertex.color = node.cols, layout=layout_with_kk)
 ```
@@ -473,7 +474,7 @@ print(paste(c("leiden time:", R_mat_large_time, "seconds"), collapse = " "))
 
 We compare the processing of adjaceny matrices in the leiden.matrix method to casting to graph in python with reticulate. The current implementation of the R function works as follows. The adjacency matrix is passed to python and the graph object is create in the python-igraph:
 
-```{r, eval = module}
+```{r}
 partition_type <- "RBConfigurationVertexPartition"
 initial_membership <- NULL
 weights <- NULL
@@ -554,7 +555,7 @@ partition
 
 Is it more efficent to pass to create a graph object in R and pass this to python?
 
-```{r, eval = module}
+```{r}
 partition_type <- "RBConfigurationVertexPartition"
 initial_membership <- NULL
 weights <- NULL
@@ -626,7 +627,7 @@ partition
 
 Another approach is to generate a graph in R and pass it to the leiden.igraph method.
 
-```{r, eval = module}
+```{r}
 partition_type <- "RBConfigurationVertexPartition"
 initial_membership <- NULL
 weights <- NULL
@@ -685,7 +686,7 @@ Here we can see that the current approach to pass adjacency matrices to Python a
 
 Here we compare the compute time for the Zachary datasets between each method for computing paritions from the leiden clustering algorithm in R or Python.
 
-```{r, fig.align = 'center', fig.height = 3, fig.width = 6, fig.keep = 'last', eval = module}
+```{r, fig.align = 'center', fig.height = 3, fig.width = 6, fig.keep = 'last'}
 barplot(c(bash_py_time, py$py_time, reticulate_time, R_graph_time, 
           R_mat_time, R_sparse_mat_time), 
         names = c("Python (shell)", "Python (Rmd)", "Reticulate", "R igraph",
@@ -697,7 +698,7 @@ abline(h=0)
 
 If we account for time to cast matrices from graph objects. Then these are the time taken to compute partitions from a graph in R.
 
-```{r, fig.align = 'center', fig.height = 3, fig.width = 6, fig.keep = 'last', eval = module}
+```{r, fig.align = 'center', fig.height = 3, fig.width = 6, fig.keep = 'last'}
 barplot(c(bash_py_time, py$py_time, reticulate_time, R_graph_time, R_mat_time+R_mat_cast_time, 
           R_sparse_mat_time+R_sparse_mat_cast_time), 
         names = c("Python (shell)", "Python (Rmd)", "Reticulate", "R igraph",
@@ -715,7 +716,7 @@ abline(h=0)
 
 Similarly, if we account for time to generate graph from an adjaceny matrix. Then these are the time taken to compute partitions from a matrix in R.
 
-```{r, fig.align = 'center', fig.height = 3, fig.width = 6, fig.keep = 'last', eval = module}
+```{r, fig.align = 'center', fig.height = 3, fig.width = 6, fig.keep = 'last'}
 R_graph_create_time = difftime(time4, time3)[[1]]
 barplot(c(bash_py_time, py$py_time+reticulate_create_time*100, reticulate_time+reticulate_create_time*100, R_graph_time+R_graph_create_time*100, R_mat_time, 
           R_sparse_mat_time), 
