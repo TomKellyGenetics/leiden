@@ -10,30 +10,43 @@ vignette: >
 ---
   
 ```{r setup, include = FALSE}
+library("leiden")
 library("reticulate")
 py_available()
-py_config()$python
+```
 
-import("leidenalg", delay_load = TRUE)
-import("igraph", delay_load = TRUE)
-import("scipy", delay_load = TRUE)
+```{r}
+module <- py_available() && py_numpy_available() && py_module_available("leidenalg") && py_module_available("igraph")
+```
+
+```{r}
+if(py_available()){
+  py_config()$python
+  py_install("numpy")
+  py_install("scipy")
+  py_install("python-igraph")
+  py_install("leidenalg")
+  module <- py_module_available("leidenalg") && py_module_available("igraph")
+}
+```
+
+```{r}
+if(module){
+  leidenalg <- import("leidenalg", delay_load = TRUE)
+  ig <- import("igraph", delay_load = TRUE)
+}
+```
+
+```{r}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  eval = py_available()
+  eval = module
 )
-# if(py_available()){
-#   use_python(system("whereis pip"))
-#   system("pip install leidenalg python-igraph numpy scipy")
-# }
-module <- py_available() && py_numpy_available() && reticulate::py_module_available("leidenalg") && reticulate::py_module_available("igraph")
-print(py_available())
+```
 
+```{r}
 print(module)
-# library("reticulate")
-# if(! "r-reticulate" %in% conda_list()$name) reticulate::conda_create("r-reticulate")
-# reticulate::use_condaenv("r-reticulate")
-# conda_install(env = "r-reticulate", c("leidenalg", "numpy", "scipy"), forge = TRUE)
 ```
 
 # Benchmarking the Leiden Algorithm
@@ -54,9 +67,9 @@ R.version$version.string
 
 This package allows calling the Leiden algorithm for clustering on an igraph object from R. See the Python and Java implementations for more details: 
   
-  https://github.com/CWTSLeiden/networkanalysis
+[https://github.com/CWTSLeiden/networkanalysis](https://github.com/CWTSLeiden/networkanalysis)
 
-https://github.com/vtraag/leidenalg
+[https://github.com/vtraag/leidenalg](https://github.com/vtraag/leidenalg)
 
 It calls the Python functions to run the algorithm and passes all arguments need to them.
 
@@ -68,13 +81,23 @@ The python version can be installed with pip or conda:
   
 ```{bash, eval = FALSE}
 pip uninstall -y igraph
-pip install -U -q leidenalg python-igraph
+```
+
+```{bash, eval = FALSE}
+pip install -U -q leidenalg
 ```
 
 ```{bash, eval = FALSE}
 conda install -c vtraag leidenalg
 ```
 
+It is also possible to install the python dependencies with reticulate in R.
+
+```{r, include=FALSE}
+library("reticulate")
+py_install("python-igraph")
+py_install("leidenalg", forge = TRUE)
+```
 
 ### Running in Python
 
@@ -101,6 +124,7 @@ Then we load the Zachary karate club example data from igraph.
 G = ig.Graph.Famous('Zachary')
 G.summary()
 ```
+
 ```{python}
 partition = la.find_partition(G, la.ModularityVertexPartition)
 print(partition)

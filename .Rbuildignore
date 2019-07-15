@@ -17,6 +17,8 @@
 ^build.cmd$
 ^\.revdep$
 ^\ .DS_Store$
+revdep
+images
 ## Files to ignore when building package
 
 ## For github checks
@@ -39,3 +41,4 @@
 ^vignettes/.*png$
 ^circle\.yml$
 ^vignettes/bash_py_time$
+^revdep$

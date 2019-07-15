@@ -15,9 +15,9 @@
 
 This package allows calling the Leiden algorithm for clustering on an igraph object from R. See the Python and Java implementations for more details: 
 
-https://github.com/CWTSLeiden/networkanalysis
+[https://github.com/CWTSLeiden/networkanalysis](https://github.com/CWTSLeiden/networkanalysis)
 
-https://github.com/vtraag/leidenalg
+[https://github.com/vtraag/leidenalg](https://github.com/vtraag/leidenalg)
 
 ## Install
 
@@ -35,6 +35,26 @@ Note you may need to uninstall the igraph 0.1.11 (now deprecated to jgraph) and 
 pip uninstall igraph
 pip install leidenalg python-igraph
 ```
+
+The python version can be installed with pip or conda:
+  
+```
+pip uninstall -y igraph
+pip install -U -q leidenalg python-igraph
+```
+
+```
+conda install -c vtraag leidenalg
+```
+
+It is also possible to install the python dependencies with reticulate in R.
+
+```{r, eval = FALSE}
+library("reticulate")
+py_install("python-igraph")
+py_install("leidenalg", forge = TRUE)
+```
+
 
 If you do not have root access, you can use `pip install --user` or `pip install --prefix` to install these in your user directory (which you have write permissions for) and ensure that this directory is in your PATH so that Python can find it.
 
