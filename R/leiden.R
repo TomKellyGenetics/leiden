@@ -167,6 +167,7 @@ leiden.matrix <- function(object,
 leiden.data.frame <- leiden.matrix
 #' @export
 #' @importFrom igraph graph_from_adjacency_matrix
+#' @importFrom methods as
 #' @importClassesFrom Matrix dgCMatrix dgeMatrix
 leiden.Matrix <- function(object,
                           partition_type = c(
