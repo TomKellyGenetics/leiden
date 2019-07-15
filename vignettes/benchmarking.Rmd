@@ -13,13 +13,7 @@ vignette: >
 library("leiden")
 library("reticulate")
 py_available()
-```
-
-```{r}
 module <- py_available() && py_numpy_available() && py_module_available("leidenalg") && py_module_available("igraph")
-```
-
-```{r}
 if(py_available()){
   py_config()$python
   py_install("numpy")
@@ -28,9 +22,6 @@ if(py_available()){
   py_install("leidenalg")
   module <- py_module_available("leidenalg") && py_module_available("igraph")
 }
-```
-
-```{r}
 if(module){
   leidenalg <- import("leidenalg", delay_load = TRUE)
   ig <- import("igraph", delay_load = TRUE)
