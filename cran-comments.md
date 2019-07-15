@@ -10,7 +10,7 @@
 
 ## Python integration
 
-Vignettes are disabled when python is not available
+Vignettes are disabled when python is not available. This works on Linux test environments (with python available) and windows test environments (without python or pip packages).
 
 ## Updates
 
