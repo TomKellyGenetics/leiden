@@ -1,6 +1,6 @@
 # Leiden Algorithm
 
-## leiden version 0.2.3
+## leiden version 0.3.0
 
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/leiden)](https://cran.r-project.org/package=leiden)
 [![Travis Build Status](https://travis-ci.org/TomKellyGenetics/leiden.svg?branch=master)](https://travis-ci.org/TomKellyGenetics/leiden)
@@ -54,7 +54,6 @@ library("reticulate")
 py_install("python-igraph")
 py_install("leidenalg", forge = TRUE)
 ```
-
 
 If you do not have root access, you can use `pip install --user` or `pip install --prefix` to install these in your user directory (which you have write permissions for) and ensure that this directory is in your PATH so that Python can find it.
 
@@ -115,6 +114,14 @@ adjacency_matrix <- igraph::as_adjacency_matrix(graph)
 partition <- leiden(adjacency_matrix)
 ```
 
+Calling leiden directly on a graph object is also avaible:
+
+```R
+partition <- leiden(graph_object)
+```
+
+See the benchmarking vignette on details of performance.
+
 ### Computing partitions on data matrices or dimension reductions
 
 To generate an adjacency matrix from a dataset, we can compute the shared nearest neighbours (SNN) from the data. For example, for a dataset `data_mat` with `n` features (rows) by `m` samples or cells (columns), we generate an adjacency matrix of nearest neighbours between samples.
@@ -151,17 +158,54 @@ This is compatible with PCA, tSNE, or UMAP results.
 
 ### Use with Seurat
 
+#### Seurat version 2
+
 To use Leiden with the Seurat pipeline for a Seurat Object `object` that has an SNN computed (for example with `Seurat::FindClusters` with `save.SNN = TRUE`). This will compute the Leiden clusters and add them to the Seurat Object Class.
 
 ```R
-adjacency_matrix <- as.matrix(object@snn)
+library("Seurat")
+FindClusters(pbmc_small)
+adjacency_matrix <- as.matrix(pbmc_small@snn)
 partition <- leiden(adjacency_matrix)
-object@ident <- as.factor(partition)
+pbmc_small@ident <- as.factor(partition)
 names(test@ident) <- rownames(test@meta.data)
-object@meta.data$ident <- as.factor(partition)
+pbmc_small@meta.data$ident <- as.factor(partition)
 ```
 
+Suerat objects contain an SNN graph that can be passed directly to the igraph method. For example
+
+```R
+library("Seurat")
+FindClusters(pbmc_small)
+membership <- leiden(pbmc_small@snn)
+table(membership)
+pbmc_small@ident <- as.factor(membership)
+names(pbmc_small@ident) <- rownames(pbmc_small@meta.data)
+pbmc_small@meta.data$ident <- as.factor(membership)
+```
+
+```R
+library("RColorBrewer")
+colourPal <- function(groups) colorRampPalette(brewer.pal(min(length(names(table(groups))), 11), "Set3"))(length(names(table(groups))))
+
+pbmc_small <- RunPCA(object = pbmc_small, do.print = TRUE, pcs.print = 1:5, genes.print = 5)
+PCAPlot(object = pbmc_small, colors.use = colourPal(pbmc_small@ident), group.by = "ident")
+
+pbmc_small <- RunTSNE(object = pbmc_small, dims.use = 1:20, do.fast = TRUE, dim.embed = 2)
+TSNEPlot(object = pbmc_small, colors.use = colourPal(pbmc_small@ident), group.by = "ident")
+
+pbmc_small <- RunUMAP(object = pbmc_small, dims.use = 1:20, metric = "correlation", max.dim = 2)
+DimPlot(pbmc_small, reduction.use = "umap", colors.use = colourPal(pbmc_small@ident), group.by = "ident")
+```
+
+#### Seurat version 3 (or higher)
+
 Note that this code is designed for Seurat version 2 releases. For Seurat version 3 objects, the Leiden algorithm will be implemented in the Seurat version 3 package with `Seurat::FindClusters` and `algorithm = "leiden"`).  
+
+```R
+library("Seurat")
+FindClusters(pbmc_small, algorithm = 4)
+```
 
 These clusters can then be plotted with:
 
@@ -169,14 +213,12 @@ These clusters can then be plotted with:
 library("RColorBrewer")
 colourPal <- function(groups) colorRampPalette(brewer.pal(min(length(names(table(groups))), 11), "Set3"))(length(names(table(groups))))
 
-object <- RunPCA(object = object, do.print = TRUE, pcs.print = 1:5, genes.print = 5)
-PCAPlot(object = object, colors.use = colourPal(object@ident), group.by = "ident")
+PCAPlot(object = pbmc_small, colors.use = colourPal(pbmc_small@active.ident), group.by = "ident")
 
-object <- RunTSNE(object = object, dims.use = 1:20, do.fast = TRUE, dim.embed = 2)
-TSNEPlot(object = object, colors.use = colourPal(object@ident), group.by = "ident")
+TSNEPlot(object = pbmc_small, colors.use = colourPal(pbmc_small@active.ident), group.by = "ident")
 
-object <- RunUMAP(object = object, dims.use = 1:20, metric = "correlation", max.dim = 2)
-DimPlot(object, reduction.use = "umap", colors.use = colourPal(object@ident), group.by = "ident")
+pbmc_small <- RunUMAP(object = pbmc_small, reduction.use = "pca", dims.use = 1:20, metric = "correlation", max.dim = 2)
+DimPlot(pbmc_small, reduction.use = "umap", colors.use = colourPal(pbmc_small@active.ident), group.by = "ident")
 ```
 
 ### Example
@@ -209,9 +251,19 @@ plot_directed(graph_object, cex.arrow = 0.3, col.arrow = "grey50", fill.node = n
 
 ### Vignette
 
-For more details see the follow vignette:
+For more details see the follow vignettes:
+
+* running leiden on an adjacency matrix
 
 [https://github.com/TomKellyGenetics/leiden/blob/master/vignettes/run_leiden.html](https://github.com/TomKellyGenetics/leiden/blob/master/vignettes/run_leiden.html)
+
+* running leiden on an igraph object
+
+[https://github.com/TomKellyGenetics/leiden/blob/master/vignettes/run_igraph.html](https://github.com/TomKellyGenetics/leiden/blob/master/vignettes/run_igraph.html)
+
+* comparing running leiden in Python to various methods in R
+
+[https://github.com/TomKellyGenetics/leiden/blob/master/vignettes/benchmarking.html](https://github.com/TomKellyGenetics/leiden/blob/master/vignettes/run_benchmarking.html)
 
 
 ### Citation
