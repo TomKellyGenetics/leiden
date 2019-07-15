@@ -22,9 +22,9 @@ module <- py_available() && reticulate::py_module_available("leidenalg") && reti
 
 This package allows calling the Leiden algorthm for clustering on an igraph object from R. See the Python and Java implementations for more details: 
 
-https://github.com/CWTSLeiden/networkanalysis
+[https://github.com/CWTSLeiden/networkanalysis](https://github.com/CWTSLeiden/networkanalysis)
 
-https://github.com/vtraag/leidenalg
+[https://github.com/vtraag/leidenalg](https://github.com/vtraag/leidenalg)
 
 ## Install
 

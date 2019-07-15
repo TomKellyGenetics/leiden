@@ -231,8 +231,8 @@ ig <- NULL
 .onLoad = function(libname, pkgname) {
     if(reticulate::py_available()){
         install_python_modules <- function(method = "auto", conda = "auto") {
-            reticulate::py_install("leidenalg", method = method, conda = conda)
-            reticulate::py_install("igraph", method = method, conda = conda)
+            reticulate::py_install("python-igraph", method = method, conda = conda)
+            reticulate::py_install("leidenalg", method = method, conda = conda, forge = TRUE)
         }
     }
     if (suppressWarnings(suppressMessages(requireNamespace("reticulate")))) {
