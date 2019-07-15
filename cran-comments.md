@@ -12,7 +12,13 @@
 
 Vignettes are disabled when python is not available
 
+## Updates
+
+New features implemented in response to issues raised on github.
+
+Added flexbility (S3 methods) make calling by dependencies easier to maintain.
+
 ## Change of maintainer details
 
 I will continue as maintainer (but have added the Python author as a contributor)
-and have updated my name to match other package submission and publications.
+and have updated my name to match other planned package submissions and publications.
