@@ -14,7 +14,7 @@ library("leiden")
 library("reticulate")
 py_available()
 module <- py_available() && py_numpy_available() && py_module_available("leidenalg") && py_module_available("igraph")
-if(py_available()){
+if(module){
   py_config()$python
   py_install("numpy")
   py_install("scipy")
