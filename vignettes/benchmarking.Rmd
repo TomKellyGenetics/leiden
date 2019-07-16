@@ -84,10 +84,10 @@ conda install -c vtraag leidenalg
 
 It is also possible to install the python dependencies with reticulate in R.
 
-```{r, include=FALSE}
+```{r, eval=FALSE}
 library("reticulate")
 py_install("python-igraph")
-py_install("leidenalg", forge = TRUE)
+py_install("leidenalg")
 ```
 
 ### Running in Python
