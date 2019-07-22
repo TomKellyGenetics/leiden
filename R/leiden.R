@@ -306,6 +306,8 @@ find_partition <- function(snn_graph, partition_type = c(
                           n_iterations = 2L
 ) {
     partition_type <- match.arg(partition_type)
+    if(!is.null(seed)) seed <- as.integer(seed)
+    if (is.integer(n_iterations)) n_iterations <- as.integer(n_iterations)
     part <- switch(
         EXPR = partition_type,
         'RBConfigurationVertexPartition' = leidenalg$find_partition(
