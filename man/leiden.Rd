@@ -8,7 +8,8 @@ leiden(object, partition_type = c("RBConfigurationVertexPartition",
   "ModularityVertexPartition", "RBERVertexPartition", "CPMVertexPartition",
   "MutableVertexPartition", "SignificanceVertexPartition",
   "SurpriseVertexPartition"), initial_membership = NULL,
-  weights = NULL, node_sizes = NULL, resolution_parameter = 1)
+  weights = NULL, node_sizes = NULL, resolution_parameter = 1,
+  seed = NULL, n_iterations = 2L)
 }
 \arguments{
 \item{object}{An adjacency matrix compatible with \code{\link[igraph]{igraph}} object or an input graph as an \code{\link[igraph]{igraph}} object (e.g., shared nearest neighbours).}
@@ -18,6 +19,10 @@ leiden(object, partition_type = c("RBConfigurationVertexPartition",
 \item{initial_membership, weights, node_sizes}{Parameters to pass to the Python leidenalg function (defaults initial_membership=None, weights=None).}
 
 \item{resolution_parameter}{A parameter controlling the coarseness of the clusters}
+
+\item{seed}{Seed for the random number generator. By default uses a random seed if nothing is specified.}
+
+\item{n_iterations}{Number of iterations to run the Leiden algorithm. By default, 2 iterations are run. If the number of iterations is negative, the Leiden algorithm is run until an iteration in which there was no improvement.}
 
 \item{...}{Arguments to be passed to methods}
 }

@@ -1,3 +1,9 @@
+# leiden 0.3.1
+
+* method for sparse matrices that passes to igraph without casting to dense
+
+* added seed and n_iterations to find_partitions
+
 # leiden 0.3.0
 
 * Implements calling leiden directly on an igraph object
