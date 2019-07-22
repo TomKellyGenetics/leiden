@@ -5,6 +5,8 @@
 ##' @param partition_type Type of partition to use. Defaults to RBConfigurationVertexPartition. Options include: ModularityVertexPartition, RBERVertexPartition, CPMVertexPartition, MutableVertexPartition, SignificanceVertexPartition, SurpriseVertexPartition (see the Leiden python module documentation for more details)
 ##' @param initial_membership,weights,node_sizes Parameters to pass to the Python leidenalg function (defaults initial_membership=None, weights=None).
 ##' @param resolution_parameter A parameter controlling the coarseness of the clusters
+##' @param seed Seed for the random number generator. By default uses a random seed if nothing is specified.
+##' @param n_iterations Number of iterations to run the Leiden algorithm. By default, 2 iterations are run. If the number of iterations is negative, the Leiden algorithm is run until an iteration in which there was no improvement.
 ##' @param ... 	Arguments to be passed to methods
 ##' @return A partition of clusters as a vector of integers
 ##' @examples
@@ -85,7 +87,9 @@ leiden <- function(object,
                    initial_membership = NULL,
                    weights = NULL,
                    node_sizes = NULL,
-                   resolution_parameter = 1) {
+                   resolution_parameter = 1,
+                   seed = NULL,
+                   n_iterations = 2L) {
     UseMethod("leiden", object)
 }
 
@@ -104,7 +108,9 @@ leiden.matrix <- function(object,
                           initial_membership = NULL,
                           weights = NULL,
                           node_sizes = NULL,
-                          resolution_parameter = 1
+                          resolution_parameter = 1,
+                          seed = NULL,
+                          n_iterations = 2L
 ) {
     #import python modules with reticulate
     leidenalg <- import("leidenalg", delay_load = TRUE)
@@ -150,7 +156,9 @@ leiden.matrix <- function(object,
                                 initial_membership = initial_membership ,
                                 weights = weights,
                                 node_sizes = node_sizes,
-                                resolution_parameter = resolution_parameter
+                                resolution_parameter = resolution_parameter,
+                                seed = seed,
+                                n_iterations = n_iterations
     )
     partition
 }
@@ -158,8 +166,40 @@ leiden.matrix <- function(object,
 #' @export
 leiden.data.frame <- leiden.matrix
 #' @export
-#' @importClassesFrom Matrix dgCMatrix
-leiden.Matrix <- leiden.matrix
+#' @importFrom igraph graph_from_adjacency_matrix
+#' @importClassesFrom Matrix dgCMatrix dgeMatrix
+leiden.Matrix <- function(object,
+                          partition_type = c(
+                              'RBConfigurationVertexPartition',
+                              'ModularityVertexPartition',
+                              'RBERVertexPartition',
+                              'CPMVertexPartition',
+                              'MutableVertexPartition',
+                              'SignificanceVertexPartition',
+                              'SurpriseVertexPartition'
+                          ),
+                          initial_membership = NULL,
+                          weights = NULL,
+                          node_sizes = NULL,
+                          resolution_parameter = 1,
+                          seed = NULL,
+                          n_iterations = 2L
+) {
+    #cast to sparse matrix
+    adj_mat <- as(object, "dgCMatrix")
+    #run as igraph object (passes to reticulate)
+    object <- graph_from_adjacency_matrix(adjmatrix = adj_mat)
+
+    leiden.igraph(object,
+        partition_type = partition_type,
+        weights = weights,
+        node_sizes = node_sizes,
+        resolution_parameter = resolution_parameter,
+        seed = seed,
+        n_iterations = n_iterations
+    )
+}
+
 #' @export
 leiden.default <- leiden.matrix
 
@@ -178,7 +218,9 @@ leiden.igraph <- function(object,
                           initial_membership = NULL,
                           weights = NULL,
                           node_sizes = NULL,
-                          resolution_parameter = 1
+                          resolution_parameter = 1,
+                          seed = NULL,
+                          n_iterations = 2L
 ) {
     #import python modules with reticulate
     leidenalg <- import("leidenalg", delay_load = TRUE)
@@ -217,7 +259,9 @@ leiden.igraph <- function(object,
                                 initial_membership = initial_membership ,
                                 weights = weights,
                                 node_sizes = node_sizes,
-                                resolution_parameter = resolution_parameter
+                                resolution_parameter = resolution_parameter,
+                                seed = seed,
+                                n_iterations = n_iterations
     )
     partition
 }
@@ -257,7 +301,9 @@ find_partition <- function(snn_graph, partition_type = c(
                           initial_membership = NULL,
                           weights = NULL,
                           node_sizes = NULL,
-                          resolution_parameter = 1
+                          resolution_parameter = 1,
+                          seed = NULL,
+                          n_iterations = 2L
 ) {
     partition_type <- match.arg(partition_type)
     part <- switch(
