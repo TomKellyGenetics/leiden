@@ -30,6 +30,16 @@ test_that("run with resolution parameter", {
   expect_length(partition, 100)
 })
 
+test_that("run on adjacency matrix with random seed", {
+  skip_if_no_python()
+  partition <- leiden(adj_mat, seed = 42L, weights = NULL)
+  expect_length(partition, 100)
+  # test if gives same output with same seed
+  expect_identical( leiden(adj_mat, seed = 42L, weights = NULL),
+                    leiden(adj_mat, seed = 42L, weights = NULL))
+})
+
+
 weights <- sample(1:10, sum(adj_mat!=0), replace=TRUE)
 
 test_that("run with non-wieghted adjacency matrix and weights vector", {
@@ -45,3 +55,5 @@ test_that("run with wieghted adjacency matrix", {
   partition <- leiden(adj_mat)
   expect_length(partition, 100)
 })
+
+
