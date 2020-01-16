@@ -4,12 +4,18 @@
 \alias{leiden}
 \title{Run Leiden clustering algorithm}
 \usage{
-leiden(object, partition_type = c("RBConfigurationVertexPartition",
-  "ModularityVertexPartition", "RBERVertexPartition", "CPMVertexPartition",
-  "MutableVertexPartition", "SignificanceVertexPartition",
-  "SurpriseVertexPartition"), initial_membership = NULL,
-  weights = NULL, node_sizes = NULL, resolution_parameter = 1,
-  seed = NULL, n_iterations = 2L)
+leiden(
+  object,
+  partition_type = c("RBConfigurationVertexPartition", "ModularityVertexPartition",
+    "RBERVertexPartition", "CPMVertexPartition", "MutableVertexPartition",
+    "SignificanceVertexPartition", "SurpriseVertexPartition"),
+  initial_membership = NULL,
+  weights = NULL,
+  node_sizes = NULL,
+  resolution_parameter = 1,
+  seed = NULL,
+  n_iterations = 2L
+)
 }
 \arguments{
 \item{object}{An adjacency matrix compatible with \code{\link[igraph]{igraph}} object or an input graph as an \code{\link[igraph]{igraph}} object (e.g., shared nearest neighbours).}
