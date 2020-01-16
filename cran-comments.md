@@ -12,9 +12,9 @@
 
 ## Updates
 
-Minor update to include parameters for find_partitions (python module).
+Minor update to include support for weighted igraph objects.
 
-This release is compatible with proposed changes to the Seurat (v3.0.3) package. This version will be a dependency of Seurat. This version of Seurat is not available for checking with revdep but has been checked locally after installing the develop version from GitHub.
+This release is compatible with proposed changes to the Seurat (v3.1.2) package. This version will be a dependency of Seurat. This version of Seurat is not available for checking with revdep but has been checked locally after installing the develop version from GitHub.
 
 ## Python integration
 
