@@ -1,3 +1,9 @@
+# leiden 0.3.2
+
+* added support for passing weighted igraph objects
+
+* bug fixes to ensure same results from matrix and igraph methods
+
 # leiden 0.3.1
 
 * method for sparse matrices that passes to igraph without casting to dense
