@@ -70,10 +70,8 @@
 ##'
 ##' @keywords graph network igraph mvtnorm simulation
 ##' @importFrom reticulate import r_to_py
+##' @rdname leiden
 ##' @export
-##'
-#' @export
-#' @rdname leiden
 leiden <- function(object,
                    partition_type = c(
                        'RBConfigurationVertexPartition',
@@ -93,8 +91,8 @@ leiden <- function(object,
     UseMethod("leiden", object)
 }
 
-#' @export
-#' @importFrom methods is
+##' @export
+##' @importFrom methods is
 leiden.matrix <- function(object,
                           partition_type = c(
                               'RBConfigurationVertexPartition',
@@ -132,6 +130,7 @@ leiden.matrix <- function(object,
         weights <- t_mat[t_mat!=0]
         #remove zeroes from rows of matrix and return vector of length edges
     }
+    #print(weights)
 
     ##convert to python numpy.ndarray, then a list
     adj_mat_py <- r_to_py(adj_mat, convert = T)
@@ -163,12 +162,13 @@ leiden.matrix <- function(object,
     partition
 }
 
-#' @export
+##' @export
 leiden.data.frame <- leiden.matrix
-#' @export
-#' @importFrom igraph graph_from_adjacency_matrix
-#' @importFrom methods as
-#' @importClassesFrom Matrix dgCMatrix dgeMatrix
+
+##' @importFrom igraph graph_from_adjacency_matrix
+##' @importFrom methods as
+##' @importClassesFrom Matrix dgCMatrix dgeMatrix
+##' @export
 leiden.Matrix <- function(object,
                           partition_type = c(
                               'RBConfigurationVertexPartition',
@@ -201,11 +201,11 @@ leiden.Matrix <- function(object,
     )
 }
 
-#' @export
+##' @export
 leiden.default <- leiden.matrix
 
-#' @importFrom igraph V as_edgelist is.weighted is.named
-#' @export
+##' @importFrom igraph V as_edgelist is.weighted is.named edge.attributes
+##' @export
 leiden.igraph <- function(object,
                           partition_type = c(
                               'RBConfigurationVertexPartition',
@@ -248,9 +248,10 @@ leiden.igraph <- function(object,
     #compute weights if weighted graph given
     if (is.weighted(object)) {
         #assign weights to edges (without dependancy on igraph)
-        weights <- r_to_py(weights(object))
+        weights <- r_to_py(edge.attributes(object)$weight)
         snn_graph$es$set_attribute_values('weight', weights)
     }
+    #print(weights)
 
     # from here is the same as method for matrix
     # would be better to refactor to call from matrix methof
@@ -267,6 +268,7 @@ leiden.igraph <- function(object,
     partition
 }
 
+##' @export
 leiden.default <- leiden.matrix
 
 # global reference to python modules (will be initialized in .onLoad)
