@@ -14,17 +14,17 @@ library("leiden")
 library("reticulate")
 py_available()
 module <- py_available() && py_numpy_available() && py_module_available("leidenalg") && py_module_available("igraph")
-if(py_available() && !module){
-  reticulate::install_miniconda()
-  py_config()$python
-  reticulate::conda_create("r-reticulate")
-  reticulate::use_condaenv("r-reticulate")
-  conda_install("r-reticulate", "numpy")
-  conda_install("r-reticulate", "scipy")
-  reticulate::conda_install("r-reticulate", "python-igraph")
-  reticulate::py_install("r-reticulate", "leidenalg")
-  module <- py_module_available("leidenalg") && py_module_available("igraph")
-}
+# if(module){
+#   reticulate::install_miniconda()
+#   py_config()$python
+#   reticulate::conda_create("r-reticulate")
+#   reticulate::use_condaenv("r-reticulate")
+#   conda_install("r-reticulate", "numpy")
+#   conda_install("r-reticulate", "scipy")
+#   reticulate::conda_install("r-reticulate", "python-igraph")
+#   reticulate::py_install("r-reticulate", "leidenalg")
+#   module <- py_module_available("leidenalg") && py_module_available("igraph")
+# }
 if(module){
   leidenalg <- import("leidenalg", delay_load = TRUE)
   ig <- import("igraph", delay_load = TRUE)
