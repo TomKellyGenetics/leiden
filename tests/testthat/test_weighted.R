@@ -45,6 +45,7 @@ test_that("run with unweighted graph object", {
 })
 
 test_that("same output with different input class", {
+  skip_if_no_python()
   part_mat0 <- leiden::leiden(mat, seed = 9000)
   part_graph0 <- leiden::leiden(graph, seed = 9000)
   expect_equivalent(part_mat0, c(1, 2, 2, 2, 1, 2, 2, 1, 1, 1))
@@ -124,6 +125,7 @@ test_that("run with weighted graph object", {
 })
 
 test_that("same output with different input class", {
+  skip_if_no_python()
   part_mat1 <- leiden::leiden(mat, seed = 9000)
   part_graph1 <- leiden::leiden(graph, seed = 9000)
   expect_equivalent(part_mat1, c(2, 1, 1, 1, 2, 1, 1, 2, 2, 2))
