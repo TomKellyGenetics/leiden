@@ -14,12 +14,14 @@ library("leiden")
 library("reticulate")
 py_available()
 module <- py_available() && py_numpy_available() && py_module_available("leidenalg") && py_module_available("igraph")
-if(module){
+if(py_available() && !module){
   py_config()$python
-  py_install("numpy")
-  py_install("scipy")
-  py_install("python-igraph")
-  py_install("leidenalg")
+  reticulate::conda_create("r-reticulate")
+  reticulate::use_condaenv("r-reticulate")
+  conda_install("r-reticulate", "numpy")
+  conda_install("r-reticulate", "scipy")
+  reticulate::conda_install("r-reticulate", "python-igraph")
+  reticulate::py_install("r-reticulate", "leidenalg")
   module <- py_module_available("leidenalg") && py_module_available("igraph")
 }
 if(module){

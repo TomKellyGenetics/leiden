@@ -22,7 +22,7 @@ leiden(
 
 \item{partition_type}{Type of partition to use. Defaults to RBConfigurationVertexPartition. Options include: ModularityVertexPartition, RBERVertexPartition, CPMVertexPartition, MutableVertexPartition, SignificanceVertexPartition, SurpriseVertexPartition (see the Leiden python module documentation for more details)}
 
-\item{initial_membership, weights, node_sizes}{Parameters to pass to the Python leidenalg function (defaults initial_membership=None, weights=None).}
+\item{initial_membership, weights, node_sizes}{Parameters to pass to the Python leidenalg function (defaults initial_membership=None, weights=None). Weights are derived from weighted igraph objects and non-zero integer values of adjacency matrices.}
 
 \item{resolution_parameter}{A parameter controlling the coarseness of the clusters}
 

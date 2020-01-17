@@ -3,7 +3,7 @@
 ##' @description Implements the Leiden clustering algorithm in R using reticulate to run the Python version. Requires the python "leidenalg" and "igraph" modules to be installed. Returns a vector of partition indices.
 ##' @param object An adjacency matrix compatible with \code{\link[igraph]{igraph}} object or an input graph as an \code{\link[igraph]{igraph}} object (e.g., shared nearest neighbours).
 ##' @param partition_type Type of partition to use. Defaults to RBConfigurationVertexPartition. Options include: ModularityVertexPartition, RBERVertexPartition, CPMVertexPartition, MutableVertexPartition, SignificanceVertexPartition, SurpriseVertexPartition (see the Leiden python module documentation for more details)
-##' @param initial_membership,weights,node_sizes Parameters to pass to the Python leidenalg function (defaults initial_membership=None, weights=None).
+##' @param initial_membership,weights,node_sizes Parameters to pass to the Python leidenalg function (defaults initial_membership=None, weights=None). Weights are derived from weighted igraph objects and non-zero integer values of adjacency matrices.
 ##' @param resolution_parameter A parameter controlling the coarseness of the clusters
 ##' @param seed Seed for the random number generator. By default uses a random seed if nothing is specified.
 ##' @param n_iterations Number of iterations to run the Leiden algorithm. By default, 2 iterations are run. If the number of iterations is negative, the Leiden algorithm is run until an iteration in which there was no improvement.
@@ -130,7 +130,6 @@ leiden.matrix <- function(object,
         weights <- t_mat[t_mat!=0]
         #remove zeroes from rows of matrix and return vector of length edges
     }
-    #print(weights)
 
     ##convert to python numpy.ndarray, then a list
     adj_mat_py <- r_to_py(adj_mat, convert = T)
@@ -165,7 +164,7 @@ leiden.matrix <- function(object,
 ##' @export
 leiden.data.frame <- leiden.matrix
 
-##' @importFrom igraph graph_from_adjacency_matrix
+##' @importFrom igraph graph_from_adjacency_matrix edge.attributes set.edge.attribute E
 ##' @importFrom methods as
 ##' @importClassesFrom Matrix dgCMatrix dgeMatrix
 ##' @export
@@ -189,7 +188,13 @@ leiden.Matrix <- function(object,
     #cast to sparse matrix
     adj_mat <- as(object, "dgCMatrix")
     #run as igraph object (passes to reticulate)
-    object <- graph_from_adjacency_matrix(adjmatrix = adj_mat)
+    if(is.null(weights)){
+        object <- graph_from_adjacency_matrix(adjmatrix = adj_mat, weighted = TRUE)
+        weights <- edge.attributes(object)$weight
+    } else {
+        object <- graph_from_adjacency_matrix(adjmatrix = adj_mat, weighted = TRUE)
+        object <- set.edge.attribute(object, "weight", index=E(object), weights)
+    }
 
     leiden.igraph(object,
         partition_type = partition_type,
@@ -251,7 +256,6 @@ leiden.igraph <- function(object,
         weights <- r_to_py(edge.attributes(object)$weight)
         snn_graph$es$set_attribute_values('weight', weights)
     }
-    #print(weights)
 
     # from here is the same as method for matrix
     # would be better to refactor to call from matrix methof
@@ -268,8 +272,6 @@ leiden.igraph <- function(object,
     partition
 }
 
-##' @export
-leiden.default <- leiden.matrix
 
 # global reference to python modules (will be initialized in .onLoad)
 leidenalg <- NULL
@@ -278,8 +280,15 @@ ig <- NULL
 .onLoad = function(libname, pkgname) {
     if(reticulate::py_available()){
         install_python_modules <- function(method = "auto", conda = "auto") {
-            reticulate::py_install("python-igraph", method = method, conda = conda)
-            reticulate::py_install("leidenalg", method = method, conda = conda, forge = TRUE)
+            if(!is.null(reticulate::conda_binary())){
+                reticulate::conda_create("r-reticulate")
+                reticulate::use_condaenv("r-reticulate")
+                reticulate::conda_install("r-reticulate", "python-igraph")
+                reticulate::conda_install("r-reticulate", "leidenalg", forge = TRUE)
+            } else {
+                reticulate::py_install("python-igraph", method = method, conda = conda)
+                reticulate::py_install("leidenalg", method = method, conda = conda, forge = TRUE)
+            }
         }
     }
     if (suppressWarnings(suppressMessages(requireNamespace("reticulate")))) {
