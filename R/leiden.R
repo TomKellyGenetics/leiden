@@ -164,7 +164,7 @@ leiden.matrix <- function(object,
 ##' @export
 leiden.data.frame <- leiden.matrix
 
-##' @importFrom igraph graph_from_adjacency_matrix edge.attributes
+##' @importFrom igraph graph_from_adjacency_matrix edge.attributes set.edge.attribute E
 ##' @importFrom methods as
 ##' @importClassesFrom Matrix dgCMatrix dgeMatrix
 ##' @export
@@ -193,7 +193,7 @@ leiden.Matrix <- function(object,
         weights <- edge.attributes(object)$weight
     } else {
         object <- graph_from_adjacency_matrix(adjmatrix = adj_mat, weighted = TRUE)
-        edge.attributes(object)$weight <- weights
+        object <- set.edge.attribute(object, "weight", index=E(object), weights)
     }
 
     leiden.igraph(object,
