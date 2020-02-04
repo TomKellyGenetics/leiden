@@ -1,3 +1,9 @@
+# leiden 0.3.3
+
+* bug fixes for documentation in response to changes to R
+
+see development version: https://bugs.r-project.org/bugzilla/show_bug.cgi?id=16223
+
 # leiden 0.3.2
 
 * added support for passing weighted igraph objects

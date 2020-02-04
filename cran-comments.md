@@ -12,9 +12,9 @@
 
 ## Updates
 
-Minor update to include support for weighted igraph objects.
+Minor update to include resolve issues with documentation on development version of R.
 
-This release is compatible with proposed changes to the Seurat (v3.1.2) package. This version will be a dependency of Seurat. This version of Seurat is not available for checking with revdep but has been checked locally after installing the develop version from GitHub.
+See development version: https://bugs.r-project.org/bugzilla/show_bug.cgi?id=16223
 
 ## Python integration
 
