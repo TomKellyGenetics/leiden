@@ -1,7 +1,7 @@
 Package: leiden
 Type: Package
 Title: R Implementation of Leiden Clustering Algorithm
-Version: 0.3.2.9001
+Version: 0.3.3
 Date: 2020-01-17
 Authors@R: c(person("S. Thomas", "Kelly", email = "tom.kelly@riken.jp", role = c("aut", "cre", "trl")),
            person("Vincent A.", "Traag", email = "v.a.traag@cwts.leidenuniv.nl", role = c("com")))
