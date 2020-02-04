@@ -29,8 +29,6 @@ leiden(
 \item{seed}{Seed for the random number generator. By default uses a random seed if nothing is specified.}
 
 \item{n_iterations}{Number of iterations to run the Leiden algorithm. By default, 2 iterations are run. If the number of iterations is negative, the Leiden algorithm is run until an iteration in which there was no improvement.}
-
-\item{...}{Arguments to be passed to methods}
 }
 \value{
 A partition of clusters as a vector of integers
