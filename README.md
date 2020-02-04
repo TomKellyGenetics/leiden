@@ -273,7 +273,7 @@ Please cite this implementation R in if you use it:
 ```
 To cite the leiden package in publications use:
 
-  S. Thomas Kelly (2019). leiden: R implementation of the Leiden algorithm. R
+  S. Thomas Kelly (2020). leiden: R implementation of the Leiden algorithm. R
   package version 0.3.3 https://github.com/TomKellyGenetics/leiden
 
 A BibTeX entry for LaTeX users is
@@ -281,7 +281,7 @@ A BibTeX entry for LaTeX users is
   @Manual{,
     title = {leiden: R implementation of the Leiden algorithm},
     author = {S. Thomas Kelly},
-    year = {2018},
+    year = {2020},
     note = {R package version 0.3.3},
     url = {https://github.com/TomKellyGenetics/leiden},
   }
