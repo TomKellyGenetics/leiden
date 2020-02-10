@@ -1,101 +1,81 @@
-#module Leiden
-
-# using Random:
-#   shuffle,
-# shuffle!
-
-##' @importFrom permute shuffle
-
-#   using SparseArrays:
-#   sparse,
-
-
-##' @importFrom Matrix sparseMatrix
-##' @importClassesFrom Matrix sparseMatrix
-# spzeros
-# sparseMatrix(i, j)
-
-# using StatsFuns:
-#   logsumexp
-#log(sum(exp(x)))
-
-#source("src/PartitionedGraphs.R")
-# using .PartitionedGraphs:
-#   PartitionedGraph,
-# Partition,
-# WeightMatrix,
-# nv, nc,
-# neighbors,
-# move_node!,
-# drop_empty_communities!,
-# reset_partition!,
-# create_singleton_partition
-
-
 # The Leiden algorithm
 # --------------------
 
-##' @param resolution numeric 1.0,
-##' @param randomness numeric 0.01,
-##' @param partition Partition Object
-
-library("Matrix")
-A <- as(matrix(0, 6, 6), "dgCMatrix")
-edges <- rbind(
-  c(1, 2),
-  c(2, 3),
-  c(3, 1),
-  c(4, 5),
-  c(5, 6),
-  c(6, 4),
-  c(1, 4)
-)
-apply(edges, 1, function(edge){
-  u <- edge[1]
-  v <- edge[2]
-  A[u, v] <<- A[v, u] <<- 1
-})
-set.seed(1234)
-# leiden_naive(A, resolution = 0.25)
-set.seed(1234)
-# louvain_naive(A, resolution = 0.25)
-
-# ig <- graph_from_adjacency_matrix(A)
-# ig <- as.undirected(ig)
-# cluster_louvain(ig)
+##' Run Leiden clustering algorithm natively in R
+##'
+##' @description Implements the Leiden clustering algorithm in R using a native R implementation. Calling reticulate to run the Python version is recommended if the python "leidenalg" and "igraph" has been installed. Returns a vector of partition indices.
+##' @param graph,adjmat An adjacency matrix compatible with \code{\link[igraph]{igraph}} object or an input graph as an \code{\link[PartitionedGraph]{leiden}} object (e.g., shared nearest neighbours).
+##' @param resolution,γ A parameter controlling the coarseness of the clusters
+##' @param randomness,θ A parameter controlling the refinement of the clusters
+##' @param seed Seed for the random number generator. By default uses a random seed if nothing is specified.
+##' @param n_iterations,n Number of iterations to run the Leiden algorithm. By default, 2 iterations are run.
+############If the number of iterations is negative, the Leiden algorithm is run until an iteration in which there was no improvement.
+##' @return A partition of clusters as a vector of integers
+##' @examples
+##' library("Matrix")
+##' A <- as(matrix(0, 6, 6), "dgCMatrix")
+##' edges <- rbind(
+##'   c(1, 2),
+##'   c(2, 3),
+##'   c(3, 1),
+##'   c(4, 5),
+##'   c(5, 6),
+##'   c(6, 4),
+##'   c(1, 4)
+##' )
+##' apply(edges, 1, function(edge){
+##'   u <- edge[1]
+##'   v <- edge[2]
+##'   A[u, v] <<- A[v, u] <<- 1
+##' })
+##' set.seed(1234)
+##' partition <- leiden_naive(A, resolution = 0.25)$community
+##' table(partition)
+##'
+##' @keywords graph network igraph mvtnorm simulation
+##' @importFrom reticulate import r_to_py
+##' @rdname leiden_naive
+##' @export
 
 leiden_naive <- function(adjmat,
                          resolution = 1.0,
                          randomness = 0.01,
+                         n_iterations = 2L,
                          partition = create_singleton_partition(nrow(adjmat))){
   UseMethod("leiden_naive", adjmat)
 }
 
+##' @importFrom methods as
+##' @export
 leiden_naive.matrix <- function(adjmat,
                                 resolution = 1.0,
                                 randomness = 0.01,
+                                n_iterations = 2L,
                                 partition = create_singleton_partition(nrow(adjmat))){
   adjmat <- as(adjmat, "dgCMatrix")
   graph <- PartitionedGraph$new(adjmat, partition = partition)
-  return(leiden_naive.default(graph, as.numeric(resolution), as.numeric(randomness)))
+  return(leiden_naive.default(graph, as.numeric(resolution), as.numeric(randomness), n_iterations))
 }
 
+
+##' @importFrom Matrix sparseMatrix
+##' @importClassesFrom Matrix sparseMatrix
+##' @importClassesFrom Matrix dgCMatrix
+##' @export
 leiden_naive.Matrix <- function(adjmat,
                                 resolution = 1.0,
                                 randomness = 0.01,
+                                n_iterations = 2L,
                                 partition = create_singleton_partition(nrow(adjmat))){
   graph <- PartitionedGraph$new(adjmat, partition = partition)
-  return(leiden_naive.default(graph, as.numeric(resolution), as.numeric(randomness)))
+  return(leiden_naive.default(graph, as.numeric(resolution), as.numeric(randomness), n_iterations))
 }
 
-
-##' @param graph PartitionedGraph Object
-##' @param  γ numeric
-##' @param θ numeric
-leiden_naive.default <- function(graph, γ, θ){
+##' @export
+leiden_naive.default <- function(graph, γ, θ, n){
   stack <- Partition()
   loop <- 0
-  while(loop < 1){
+  while(loop < n){
     # loop <- FALSE
     graph <- move_nodes_fast(graph, γ)
     print(paste0("nv = ", nv(graph),"; nc = ", nc(graph), "; H = ", H(graph, γ)))
@@ -104,65 +84,100 @@ leiden_naive.default <- function(graph, γ, θ){
       if(nc(refined) == nv(refined)){
         warning(paste("not refined",  nc(refined)))
       } else {
-      stack <- list(stack, refined$partition)
-      graph_prime <- aggregate_graph(refined)
-      partition <- as.list(as.integer(rep(NA, nc(graph))))
-      for(i in 1:length(refined$partition)){
-        community <- refined$partition[[i]]
-        u <- community[1]
-        j <- graph$membership[u]
-        partition[[j]]<-i
-      }
-      graph_prime <- reset_partition(graph_prime, partition)
-      graph <- graph_prime
+        stack <- list(stack, refined$partition)
+        graph_prime <- aggregate_graph(refined)
+        partition <- as.list(as.integer(rep(NA, nc(graph))))
+        for(i in 1:length(refined$partition)){
+          community <- refined$partition[[i]]
+          u <- community[1]
+          j <- graph$membership[u]
+          partition[[j]]<-i
+        }
+        graph_prime <- reset_partition(graph_prime, partition)
+        graph <- graph_prime
       }
       loop <- loop + 1
     }
   }
   stack <- list(stack, graph$partition)
-  return(list(quality = H(graph, γ), partition = flatten(stack), community = graph$membership))
+  return(list(quality = H(graph, γ), partition = flatten(stack), community = unlist(graph$membership)))
 }
-
 
 # The Louvain algorithm
 # ---------------------
 
-##' @param resolution numeric 1.0,
-##' @param randomness numeric 0.01,
-##' @param partition Partition Object
+##' Run Louvain clustering algorithm natively in R
 ##'
-
-
+##' @description Implements the Louvain clustering algorithm in R using a native R implementation. For comparison to the igraph implementation and native Leiden clustering algorithm.
+##' @param graph,adjmat An adjacency matrix compatible with \code{\link[igraph]{igraph}} object or an input graph as an \code{\link[PartitionedGraph]{leiden}} object (e.g., shared nearest neighbours).
+##' @param randomness,θ A parameter controlling the refinement of the clusters
+##' @param seed Seed for the random number generator. By default uses a random seed if nothing is specified.
+##' @param n_iterations,n Number of iterations to run the Leiden algorithm. By default, 2 iterations are run.
+############If the number of iterations is negative, the Leiden algorithm is run until an iteration in which there was no improvement.
+##' @return A partition of clusters as a vector of integers
+##' @examples
+##' library("Matrix")
+##' A <- as(matrix(0, 6, 6), "dgCMatrix")
+##' edges <- rbind(
+##'   c(1, 2),
+##'   c(2, 3),
+##'   c(3, 1),
+##'   c(4, 5),
+##'   c(5, 6),
+##'   c(6, 4),
+##'   c(1, 4)
+##' )
+##' apply(edges, 1, function(edge){
+##'   u <- edge[1]
+##'   v <- edge[2]
+##'   A[u, v] <<- A[v, u] <<- 1
+##' })
+##' set.seed(1234)
+##' partition <- louvain_naive(A, resolution = 0.25)$community
+##' table(partition)
+##'
+##' @keywords graph network igraph mvtnorm simulation
+##' @importFrom reticulate import r_to_py
+##' @rdname louvain_naive
+##' @export
 louvain_naive <- function(adjmat,
                           resolution = 1.0,
                           randomness = 0.01,
+                          n_iterations = 2L,
                           partition = create_singleton_partition(nrow(adjmat))){
   UseMethod("louvain_naive", adjmat)
 }
 
+##' @importFrom methods as
+##' @export
 louvain_naive.matrix <- function(adjmat,
                                  resolution = 1.0,
                                  randomness = 0.01,
+                                 n_iterations = 2L,
                                  partition = create_singleton_partition(nrow(adjmat))){
   adjmat <- as(adjmat, "dgCMatrix")
   graph <- PartitionedGraph$new(adjmat, partition = partition)
-  return(louvain_naive.default(graph, as.numeric(resolution)))
+  return(louvain_naive.default(graph, as.numeric(resolution), n_iterations))
 }
 
+##' @importFrom Matrix sparseMatrix
+##' @importClassesFrom Matrix sparseMatrix
+##' @importClassesFrom Matrix dgCMatrix
+##' @export
 louvain_naive.Matrix <- function(adjmat,
                                  resolution = 1.0,
                                  randomness = 0.01,
+                                 n_iterations = 2L,
                                  partition = create_singleton_partition(nrow(adjmat))){
   graph <- PartitionedGraph$new(adjmat, partition = partition)
-  return(louvain_naive.default(graph, as.numeric(resolution)))
+  return(louvain_naive.default(graph, as.numeric(resolution), n_iterations))
 }
 
-##' @param graph PartitionedGraph Object
-##' @param  γ numeric
-louvain_naive.default <- function(graph, γ){
+##' @export
+louvain_naive.default <- function(graph, γ, n){
   stack <- Partition()
   loop <- 0
-  while(loop < 5){
+  while(loop < n){
     graph <- move_nodes(graph, γ)
     print(paste0("nv = ", nv(graph),"; nc = ", nc(graph), "; H = ", H(graph, γ)))
     stack <- list(stack, graph$partition)
@@ -171,12 +186,16 @@ louvain_naive.default <- function(graph, γ){
       loop <- loop + 1
     }
   }
-  return(list(quality = H(graph, γ), partition = flatten(stack), community = graph$membership))
+  return(list(quality = H(graph, γ), partition = flatten(stack), community = unlist(graph$membership)))
 }
 
-##' @param graph PartitionedGraph Object
-##' @param  γ numeric
 
+# Internal functions
+# ---------------------
+
+# @param graph PartitionedGraph Object
+# @param  γ numeric
+##' @importFrom permute shuffle
 move_nodes <- function(graph, γ){
   H_old <- H(graph, γ)
   nodes <- 1:nv(graph)
