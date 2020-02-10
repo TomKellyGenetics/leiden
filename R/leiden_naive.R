@@ -4,7 +4,7 @@
 #   shuffle,
 # shuffle!
 
-##' @importFrom permute shuffleparseMatrix
+##' @importFrom permute shuffle
 
 #   using SparseArrays:
 #   sparse,
@@ -19,7 +19,7 @@
 #   logsumexp
 #log(sum(exp(x)))
 
-source("src/PartitionedGraphs.R")
+#source("src/PartitionedGraphs.R")
 # using .PartitionedGraphs:
 #   PartitionedGraph,
 # Partition,
