@@ -133,8 +133,14 @@ leiden_naive.default <- function(graph, γ, θ, n){
 ##'   A[u, v] <<- A[v, u] <<- 1
 ##' })
 ##' set.seed(1234)
-##' partition <- louvain_naive(A, resolution = 0.25)$community
+##' partition <- louvain_naive(A, resolution = 0.25)$membership
 ##' table(partition)
+##'
+##' #compare to igraph version
+##' library("igraph")
+##' lobject <- graph_from_adjacency_matrix(A, mode = "undirected")
+##' lpartition <- cluster_louvain(object)$membership
+##' ltable(partition)
 ##'
 ##' @keywords graph network igraph mvtnorm simulation
 ##' @importFrom reticulate import r_to_py
@@ -186,7 +192,7 @@ louvain_naive.default <- function(graph, γ, n){
       loop <- loop + 1
     }
   }
-  return(list(quality = H(graph, γ), partition = flatten(stack), community = unlist(graph$membership)))
+  return(list(quality = H(graph, γ), partition = flatten(stack), membership = unlist(graph$membership)))
 }
 
 

@@ -45,8 +45,14 @@ apply(edges, 1, function(edge){
   A[u, v] <<- A[v, u] <<- 1
 })
 set.seed(1234)
-partition <- louvain_naive(A, resolution = 0.25)$community
+partition <- louvain_naive(A, resolution = 0.25)$membership
 table(partition)
+
+#compare to igraph version
+library("igraph")
+lobject <- graph_from_adjacency_matrix(A, mode = "undirected")
+lpartition <- cluster_louvain(object)$membership
+ltable(partition)
 
 }
 \keyword{graph}
