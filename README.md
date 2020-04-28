@@ -10,6 +10,7 @@
 [![codecov](https://codecov.io/gh/TomKellyGenetics/leiden/branch/master/graph/badge.svg)](https://codecov.io/gh/TomKellyGenetics/leiden)
 [![Downloads](https://cranlogs.r-pkg.org/badges/leiden)](https://CRAN.R-project.org/package=leiden)
 [![Total Downloads](https://cranlogs.r-pkg.org/badges/grand-total/leiden?color=orange)](https://CRAN.R-project.org/package=leiden)
+[![GitHub Views](http://hits.dwyl.com/tomkellygenetics/leiden.svg)](http://hits.dwyl.com/tomkellygenetics/leiden)
 
 ## Clustering with the Leiden Algorithm in R
 
