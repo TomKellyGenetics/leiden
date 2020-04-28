@@ -1,3 +1,9 @@
+# leiden 0.3.4
+
+* changes to install python leidenalg from vtraag channel on Windows
+
+* bug fixes to install documentation
+
 # leiden 0.3.3
 
 * bug fixes for documentation in response to changes to R
