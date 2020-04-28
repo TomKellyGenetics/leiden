@@ -14,7 +14,8 @@ leiden(
   node_sizes = NULL,
   resolution_parameter = 1,
   seed = NULL,
-  n_iterations = 2L
+  n_iterations = 2L,
+  laplacian = FALSE
 )
 }
 \arguments{
