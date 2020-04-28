@@ -87,7 +87,8 @@ leiden <- function(object,
                    node_sizes = NULL,
                    resolution_parameter = 1,
                    seed = NULL,
-                   n_iterations = 2L) {
+                   n_iterations = 2L,
+                   laplacian = FALSE) {
     UseMethod("leiden", object)
 }
 
@@ -108,7 +109,8 @@ leiden.matrix <- function(object,
                           node_sizes = NULL,
                           resolution_parameter = 1,
                           seed = NULL,
-                          n_iterations = 2L
+                          n_iterations = 2L,
+                          laplacian = FALSE
 ) {
     #import python modules with reticulate
     leidenalg <- import("leidenalg", delay_load = TRUE)
@@ -156,7 +158,8 @@ leiden.matrix <- function(object,
                                 node_sizes = node_sizes,
                                 resolution_parameter = resolution_parameter,
                                 seed = seed,
-                                n_iterations = n_iterations
+                                n_iterations = n_iterations,
+                                laplacian = laplacian
     )
     partition
 }
@@ -183,7 +186,8 @@ leiden.Matrix <- function(object,
                           node_sizes = NULL,
                           resolution_parameter = 1,
                           seed = NULL,
-                          n_iterations = 2L
+                          n_iterations = 2L,
+                          laplacian = FALSE
 ) {
     #cast to sparse matrix
     adj_mat <- as(object, "dgCMatrix")
@@ -202,14 +206,15 @@ leiden.Matrix <- function(object,
         node_sizes = node_sizes,
         resolution_parameter = resolution_parameter,
         seed = seed,
-        n_iterations = n_iterations
+        n_iterations = n_iterations,
+        laplacian = laplacian
     )
 }
 
 ##' @export
 leiden.default <- leiden.matrix
 
-##' @importFrom igraph V as_edgelist is.weighted is.named edge.attributes
+##' @importFrom igraph V as_edgelist is.weighted is.named edge.attributes as_adjacency_matrix laplacian_matrix
 ##' @export
 leiden.igraph <- function(object,
                           partition_type = c(
@@ -226,7 +231,8 @@ leiden.igraph <- function(object,
                           node_sizes = NULL,
                           resolution_parameter = 1,
                           seed = NULL,
-                          n_iterations = 2L
+                          n_iterations = 2L,
+                          laplacian = FALSE
 ) {
     #import python modules with reticulate
     leidenalg <- import("leidenalg", delay_load = TRUE)
@@ -249,6 +255,11 @@ leiden.igraph <- function(object,
     snn_graph <- ig$Graph()
     snn_graph$add_vertices(r_to_py(vertices))
     snn_graph$add_edges(r_to_py(edgelist))
+
+    #derive Laplacian
+    if(laplacian == TRUE){
+        laplacian <- laplacian_matrix(object)
+    }
 
     #compute weights if weighted graph given
     if (is.weighted(object)) {
