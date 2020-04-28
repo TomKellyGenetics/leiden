@@ -1,4 +1,4 @@
-# leiden
+# leiden 0.3.4
 
 * changes to install python leidenalg from vtraag channel on Windows
 
