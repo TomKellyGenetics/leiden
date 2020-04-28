@@ -460,7 +460,7 @@ refine_partition <- function(graph, γ, θ){
 # return lastindex(probs)
 # end
 
-##' @param graph::PartitionedGraph
+##' @param graph PartitionedGraph
 aggregate_graph <- function(graph){
   n <- nv(graph)
   I <- as.integer(c())

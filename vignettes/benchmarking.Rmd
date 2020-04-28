@@ -115,7 +115,8 @@ print("leidenalg", la.__version__)
 Then we load the Zachary karate club example data from igraph.
 
 ```{python, eval=module}
-G = ig.Graph.Famous('Zachary')
+G = ig.Graph.Famous(
+'Zachary')
 G.summary()
 ```
 
