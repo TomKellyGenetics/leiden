@@ -7,7 +7,7 @@ cache: packages
 matrix:
   include:
     - os: linux
-    - os:  osx
+    - os: osx
 
     #osx_image: xcode10.1
     #disable_homebrew: true
@@ -50,15 +50,85 @@ env:
 
 matrix:
   include:
-    - python: 2.7
+    - os: linux
+      r: release
+      python: 2.7
       env: PYENV="py27"
-    - python: 3.5
+    - os: linux
+      r: release
+      python: 3.5
       env: PYENV="py35"
-    - python: 3.6
+    - os: linux
+      r: release
+      python: 3.6
       env: PYENV="py36"
-    - python: 3.7
+    - os: linux
+      r: release
+      python: 3.7
       env: PYENV="py37"
-    - python: 3.8
+    - os: linux
+      r: release
+      python: 3.8
+      env: PYENV="py38"
+    - os: osx
+      r: release
+      python: 2.7
+      env: PYENV="py27"
+    - os: osx
+      r: release
+      python: 3.5
+      env: PYENV="py35"
+    - os: osx
+      r: release
+      python: 3.6
+      env: PYENV="py36"
+    - os: osx
+      r: release
+      python: 3.7
+      env: PYENV="py37"
+    - os: osx
+      r: release
+      python: 3.8
+      env: PYENV="py38"
+    - os: linux
+      r: devel
+      python: 2.7
+      env: PYENV="py27"
+    - os: linux
+      r: devel
+      python: 3.5
+      env: PYENV="py35"
+    - os: linux
+      r: devel
+      python: 3.6
+      env: PYENV="py36"
+    - os: linux
+      r: devel
+      python: 3.7
+      env: PYENV="py37"
+    - os: linux
+      r: devel
+      python: 3.8
+      env: PYENV="py38"
+    - os: osx
+      r: devel
+      python: 2.7
+      env: PYENV="py27"
+    - os: osx
+      r: devel
+      python: 3.5
+      env: PYENV="py35"
+    - os: osx
+      r: devel
+      python: 3.6
+      env: PYENV="py36"
+    - os: osx
+      r: devel
+      python: 3.7
+      env: PYENV="py37"
+    - os: osx
+      r: devel
+      python: 3.8
       env: PYENV="py38"
 
 before_install:
