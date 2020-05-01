@@ -6,7 +6,7 @@ cache: packages
 
 matrix:
   include:
-    - os: linus
+    - os: linux
     - os:  osx
 
     #osx_image: xcode10.1
