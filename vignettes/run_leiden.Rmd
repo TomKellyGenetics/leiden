@@ -50,6 +50,7 @@ install.packages("leiden")
 
 ```{r, eval=TRUE, include=FALSE}
 install.packages("leiden",  quiet = TRUE, repos = 1)
+devtools::install_github("TomKellyGenetics/leiden")
 ```
 
 ```{r}
