@@ -51,6 +51,46 @@ env:
 matrix:
   include:
     - os: linux
+      r: oldrel
+      python: 2.7
+      env: PYENV="py27"
+    - os: linux
+      r: oldrel
+      python: 3.5
+      env: PYENV="py35"
+    - os: linux
+      r: oldrel
+      python: 3.6
+      env: PYENV="py36"
+    - os: linux
+      r: oldrel
+      python: 3.7
+      env: PYENV="py37"
+    - os: linux
+      r: oldrel
+      python: 3.8
+      env: PYENV="py38"
+    - os: osx
+      r: oldrel
+      python: 2.7
+      env: PYENV="py27"
+    - os: osx
+      r: oldrel
+      python: 3.5
+      env: PYENV="py35"
+    - os: osx
+      r: oldrel
+      python: 3.6
+      env: PYENV="py36"
+    - os: osx
+      r: oldrel
+      python: 3.7
+      env: PYENV="py37"
+    - os: osx
+      r: oldrel
+      python: 3.8
+      env: PYENV="py38"
+    - os: linux
       r: release
       python: 2.7
       env: PYENV="py27"
