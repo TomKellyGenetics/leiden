@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # install python
-if [[ $PYENV == "py27"]]; then
+if [[ $PYENV == "py27" ]]; then
     version = "2.7"
     if [[ $TRAVIS_OS_NAME == "linux" ]]; then
     wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O miniconda.sh
@@ -9,7 +9,7 @@ if [[ $PYENV == "py27"]]; then
     wget https://repo.continuum.io/miniconda/Miniconda2-latest-MacOSX-x86_64.sh -O miniconda.sh
    fi
 fi
-if [[ $PYENV == "py35"]]; then
+if [[ $PYENV == "py35" ]]; then
     version "3.5"
     if [[ $TRAVIS_OS_NAME == "linux" ]]; then
     wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh-O miniconda.sh
@@ -17,7 +17,7 @@ if [[ $PYENV == "py35"]]; then
     wget https://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh-O miniconda.sh
    fi
 fi
-if [[ $PYENV == "py36"]]; then
+if [[ $PYENV == "py36" ]]; then
     version "3.6"
     if [[ $TRAVIS_OS_NAME == "linux" ]]; then
     wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
@@ -25,7 +25,7 @@ if [[ $PYENV == "py36"]]; then
     wget https://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh -O miniconda.sh
    fi
 fi
-if [[ $PYENV == "py37"]]; then
+if [[ $PYENV == "py37" ]]; then
     version "3.7"
     if [[ $TRAVIS_OS_NAME == "linux" ]]; then
     wget https://repo.continuum.io/miniconda/Miniconda3-py37_4.8.2-Linux-x86_64.sh -O miniconda.sh
@@ -33,7 +33,7 @@ if [[ $PYENV == "py37"]]; then
     wget https://repo.continuum.io/miniconda/Miniconda3-py37_4.8.2-MacOSX-x86_64.sh -O miniconda.sh
    fi
 fi
-if [[ $PYENV == "py38"]]; then
+if [[ $PYENV == "py38" ]]; then
     version "3.8"
     if [[ $TRAVIS_OS_NAME == "linux" ]]; then
     wget https://repo.continuum.io/miniconda/Miniconda3-py38_4.8.2-Linux-x86_64.sh -O miniconda.sh
