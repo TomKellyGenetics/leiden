@@ -51,7 +51,7 @@ conda update --user -q conda
 conda info -a
 
 conda init $0
-conda create -y -n r-reticulate r-base igraph python=$version
+conda create -y -n r-reticulate r-base igraph conda python=$version
 conda activate r-reticulate
 pip install --user --upgrade pip
 pip install --user igraph leidenalg
