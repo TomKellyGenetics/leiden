@@ -158,8 +158,7 @@ leiden.matrix <- function(object,
                                 node_sizes = node_sizes,
                                 resolution_parameter = resolution_parameter,
                                 seed = seed,
-                                n_iterations = n_iterations,
-                                laplacian = laplacian
+                                n_iterations = n_iterations
     )
     partition
 }
