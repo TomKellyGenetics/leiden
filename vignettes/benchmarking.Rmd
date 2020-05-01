@@ -265,7 +265,7 @@ print(paste(c("leiden time:", reticulate_time, "seconds"), collapse = " "))
 
 The R version can be installed with devtools or from CRAN:
   
-```{R, eval = FALSE}
+```{R, eval = TRUE}
 install.packages("leiden")
 ```
 
