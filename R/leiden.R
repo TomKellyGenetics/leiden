@@ -302,6 +302,8 @@ ig <- NULL
                     reticulate::conda_install(envname = "r-reticulate", packages = "mkl", channel = "intel")
                     reticulate::conda_install(envname = "r-reticulate", packages = "leidenalg", channel = "conda-forge")
                     install.packages("reticulate",  quiet = TRUE)
+                    reticulate::conda_install(envname = "r-reticulate", packages = "leidenalg") #, channel = "conda-forge")
+                    utils::install.packages("reticulate",  quiet = TRUE)
                 } else {
                     reticulate::conda_install("r-reticulate", "python-igraph")
                     reticulate::conda_install("r-reticulate", "leidenalg", forge = TRUE)
