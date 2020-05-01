@@ -4,9 +4,11 @@ language: R
 sudo: true
 cache: packages
 
-os:
-  - linux
-  #- os: osx
+matrix:
+  include:
+    - os: linux
+    - os: osx
+
     #osx_image: xcode10.1
     #disable_homebrew: true
     #r_build_args: '--no-build-vignettes'
@@ -31,9 +33,10 @@ addons:
       #- python3
     #update: true
 
-r:
-  - release
-  - devel
+matrix:
+  include:
+    - r: release
+    - r: devel
 
 r-packages:
   - reticulate
@@ -45,10 +48,128 @@ env:
     - R_CHECK_ARGS="--no-build-vignettes --no-manual --ignore-vignettes --no-examples"
     - R_BUILD_ARGS="--no-build-vignettes"
 
-python:
-  - "3.5"
-  - "3.6"
-  - "3.7"
+matrix:
+  include:
+    - os: linux
+      r: oldrel
+      python: 2.7
+      env: PYENV="py27"
+    - os: linux
+      r: oldrel
+      python: 3.5
+      env: PYENV="py35"
+    - os: linux
+      r: oldrel
+      python: 3.6
+      env: PYENV="py36"
+    - os: linux
+      r: oldrel
+      python: 3.7
+      env: PYENV="py37"
+    - os: linux
+      r: oldrel
+      python: 3.8
+      env: PYENV="py38"
+    - os: osx
+      r: oldrel
+      python: 2.7
+      env: PYENV="py27"
+    - os: osx
+      r: oldrel
+      python: 3.5
+      env: PYENV="py35"
+    - os: osx
+      r: oldrel
+      python: 3.6
+      env: PYENV="py36"
+    - os: osx
+      r: oldrel
+      python: 3.7
+      env: PYENV="py37"
+    - os: osx
+      r: oldrel
+      python: 3.8
+      env: PYENV="py38"
+    - os: linux
+      r: release
+      python: 2.7
+      env: PYENV="py27"
+    - os: linux
+      r: release
+      python: 3.5
+      env: PYENV="py35"
+    - os: linux
+      r: release
+      python: 3.6
+      env: PYENV="py36"
+    - os: linux
+      r: release
+      python: 3.7
+      env: PYENV="py37"
+    - os: linux
+      r: release
+      python: 3.8
+      env: PYENV="py38"
+    - os: osx
+      r: release
+      python: 2.7
+      env: PYENV="py27"
+    - os: osx
+      r: release
+      python: 3.5
+      env: PYENV="py35"
+    - os: osx
+      r: release
+      python: 3.6
+      env: PYENV="py36"
+    - os: osx
+      r: release
+      python: 3.7
+      env: PYENV="py37"
+    - os: osx
+      r: release
+      python: 3.8
+      env: PYENV="py38"
+    - os: linux
+      r: devel
+      python: 2.7
+      env: PYENV="py27"
+    - os: linux
+      r: devel
+      python: 3.5
+      env: PYENV="py35"
+    - os: linux
+      r: devel
+      python: 3.6
+      env: PYENV="py36"
+    - os: linux
+      r: devel
+      python: 3.7
+      env: PYENV="py37"
+    - os: linux
+      r: devel
+      python: 3.8
+      env: PYENV="py38"
+    - os: osx
+      r: devel
+      python: 2.7
+      env: PYENV="py27"
+    - os: osx
+      r: devel
+      python: 3.5
+      env: PYENV="py35"
+    - os: osx
+      r: devel
+      python: 3.6
+      env: PYENV="py36"
+    - os: osx
+      r: devel
+      python: 3.7
+      env: PYENV="py37"
+    - os: osx
+      r: devel
+      python: 3.8
+      env: PYENV="py38"
 
 before_install:
   - chmod +x travis_setup.sh
