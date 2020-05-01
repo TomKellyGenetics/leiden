@@ -56,10 +56,6 @@ matrix:
       env: PYENV="py27"
     - os: linux
       r: oldrel
-      python: 3.5
-      env: PYENV="py35"
-    - os: linux
-      r: oldrel
       python: 3.6
       env: PYENV="py36"
     - os: linux
@@ -74,10 +70,6 @@ matrix:
       r: oldrel
       python: 2.7
       env: PYENV="py27"
-    - os: osx
-      r: oldrel
-      python: 3.5
-      env: PYENV="py35"
     - os: osx
       r: oldrel
       python: 3.6
@@ -96,10 +88,6 @@ matrix:
       env: PYENV="py27"
     - os: linux
       r: release
-      python: 3.5
-      env: PYENV="py35"
-    - os: linux
-      r: release
       python: 3.6
       env: PYENV="py36"
     - os: linux
@@ -114,10 +102,6 @@ matrix:
       r: release
       python: 2.7
       env: PYENV="py27"
-    - os: osx
-      r: release
-      python: 3.5
-      env: PYENV="py35"
     - os: osx
       r: release
       python: 3.6
@@ -136,10 +120,6 @@ matrix:
       env: PYENV="py27"
     - os: linux
       r: devel
-      python: 3.5
-      env: PYENV="py35"
-    - os: linux
-      r: devel
       python: 3.6
       env: PYENV="py36"
     - os: linux
@@ -154,10 +134,6 @@ matrix:
       r: devel
       python: 2.7
       env: PYENV="py27"
-    - os: osx
-      r: devel
-      python: 3.5
-      env: PYENV="py35"
     - os: osx
       r: devel
       python: 3.6
