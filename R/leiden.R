@@ -292,6 +292,7 @@ ig <- NULL
     if(reticulate::py_available()){
         install_python_modules <- function(method = "auto", conda = "auto") {
             if(!is.null(reticulate::conda_binary())){
+                reticulate::conda_install("conda")
                 reticulate::conda_create("r-reticulate")
                 reticulate::use_condaenv("r-reticulate")
                 if(.Platform$OS.type == "windows"){
