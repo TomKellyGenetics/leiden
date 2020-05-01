@@ -15,20 +15,10 @@ environment:
     USE_RTOOLS: true
     _R_CHECK_FORCE_SUGGESTS_: false
   matrix:
-    - PYTHON: "C:\\Python38"
-      RETICULATE_PYTHON: "C:\\Python38"
-      MINICONDA: C:\Miniconda38-x64
-      CONDA_INSTALL_LOCN: C:\Miniconda38-x64
-      DISTUTILS_USE_SDK: "1"
-      R_VERSION: devel
-      R_ARCH: x64
-      platform: x64
-      PYTHON_ARCH: "64"
-      GCC_PATH: mingw_64
-    - PYTHON: "C:\\Python37"
-      RETICULATE_PYTHON: "C:\\Python37"
-      MINICONDA: C:\Miniconda37-x64
-      CONDA_INSTALL_LOCN: C:\Miniconda37-x64
+    - PYTHON: "C:\\Python35"
+      RETICULATE_PYTHON: "C:\\Python35"
+      MINICONDA: C:\Miniconda35-x64
+      CONDA_INSTALL_LOCN: C:\Miniconda35-x64
       DISTUTILS_USE_SDK: "1"
       R_VERSION: devel
       R_ARCH: x64
@@ -45,10 +35,10 @@ environment:
       platform: x64
       PYTHON_ARCH: "64"
       GCC_PATH: mingw_64
-    - PYTHON: "C:\\Python35"
-      RETICULATE_PYTHON: "C:\\Python35"
-      MINICONDA: C:\Miniconda35-x64
-      CONDA_INSTALL_LOCN: C:\Miniconda35-x64
+    - PYTHON: "C:\\Python37"
+      RETICULATE_PYTHON: "C:\\Python37"
+      MINICONDA: C:\Miniconda37-x64
+      CONDA_INSTALL_LOCN: C:\Miniconda37-x64
       DISTUTILS_USE_SDK: "1"
       R_VERSION: devel
       R_ARCH: x64
@@ -60,14 +50,15 @@ environment:
       MINICONDA: C:\Miniconda38-x64
       CONDA_INSTALL_LOCN: C:\Miniconda38-x64
       DISTUTILS_USE_SDK: "1"
-      R_VERSION: release
+      R_VERSION: devel
       R_ARCH: x64
       platform: x64
       PYTHON_ARCH: "64"
-    - PYTHON: "C:\\Python37"
-      RETICULATE_PYTHON: "C:\\Python37"
-      MINICONDA: C:\Miniconda37-x64
-      CONDA_INSTALL_LOCN: C:\Miniconda37-x64
+      GCC_PATH: mingw_64
+    - PYTHON: "C:\\Python35"
+      RETICULATE_PYTHON: "C:\\Python35"
+      MINICONDA: C:\Miniconda35-x64
+      CONDA_INSTALL_LOCN: C:\Miniconda35-x64
       DISTUTILS_USE_SDK: "1"
       R_VERSION: release
       R_ARCH: x64
@@ -82,19 +73,28 @@ environment:
       R_ARCH: x64
       platform: x64
       PYTHON_ARCH: "64"
-    - PYTHON: "C:\\Python35"
-      RETICULATE_PYTHON: "C:\\Python35"
-      MINICONDA: C:\Miniconda35-x64
-      CONDA_INSTALL_LOCN: C:\Miniconda35-x64
+    - PYTHON: "C:\\Python37"
+      RETICULATE_PYTHON: "C:\\Python37"
+      MINICONDA: C:\Miniconda37-x64
+      CONDA_INSTALL_LOCN: C:\Miniconda37-x64
       DISTUTILS_USE_SDK: "1"
       R_VERSION: release
       R_ARCH: x64
       platform: x64
       PYTHON_ARCH: "64"
-    - PYTHON: "C:\\Python37"
-      RETICULATE_PYTHON: "C:\\Python37"
-      MINICONDA: C:\Miniconda37-x64
-      CONDA_INSTALL_LOCN: C:\Miniconda37-x64
+    - PYTHON: "C:\\Python38"
+      RETICULATE_PYTHON: "C:\\Python38"
+      MINICONDA: C:\Miniconda38-x64
+      CONDA_INSTALL_LOCN: C:\Miniconda38-x64
+      DISTUTILS_USE_SDK: "1"
+      R_VERSION: release
+      R_ARCH: x64
+      platform: x64
+      PYTHON_ARCH: "64"
+    - PYTHON: "C:\\Python35"
+      RETICULATE_PYTHON: "C:\\Python35"
+      MINICONDA: C:\Miniconda35-x64
+      CONDA_INSTALL_LOCN: C:\Miniconda35-x64
       DISTUTILS_USE_SDK: "1"
       R_VERSION: stable
       R_ARCH: x64
@@ -109,10 +109,19 @@ environment:
       R_ARCH: x64
       platform: x64
       PYTHON_ARCH: "64"
-    - PYTHON: "C:\\Python35"
-      RETICULATE_PYTHON: "C:\\Python35"
-      MINICONDA: C:\Miniconda35-x64
-      CONDA_INSTALL_LOCN: C:\Miniconda35-x64
+    - PYTHON: "C:\\Python37"
+      RETICULATE_PYTHON: "C:\\Python37"
+      MINICONDA: C:\Miniconda37-x64
+      CONDA_INSTALL_LOCN: C:\Miniconda37-x64
+      DISTUTILS_USE_SDK: "1"
+      R_VERSION: stable
+      R_ARCH: x64
+      platform: x64
+      PYTHON_ARCH: "64"
+    - PYTHON: "C:\\Python38"
+      RETICULATE_PYTHON: "C:\\Python38"
+      MINICONDA: C:\Miniconda38-x64
+      CONDA_INSTALL_LOCN: C:\Miniconda38-x64
       DISTUTILS_USE_SDK: "1"
       R_VERSION: stable
       R_ARCH: x64
