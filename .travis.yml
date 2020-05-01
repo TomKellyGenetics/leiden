@@ -6,9 +6,8 @@ cache: packages
 
 matrix:
   include:
-    os:
-    - linux
-    - os: osx
+    - os: linus
+    - os:  osx
 
     #osx_image: xcode10.1
     #disable_homebrew: true
@@ -36,9 +35,8 @@ addons:
 
 matrix:
   include:
-    r:
-      - release
-      - devel
+    - r: release
+    - r: devel
 
 r-packages:
   - reticulate
