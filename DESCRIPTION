@@ -13,7 +13,7 @@ License: GPL-3 | file LICENSE
 URL: https://github.com/TomKellyGenetics/leiden
 Imports:
     methods,
-    reticulate (>= 1.15),
+    reticulate,
     Matrix,
     igraph
 Encoding: UTF-8
