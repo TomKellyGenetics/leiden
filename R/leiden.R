@@ -299,7 +299,7 @@ ig <- NULL
                     devtools::install_github("rstudio/reticulate", ref = "86ebb56",  quiet = TRUE)
                     reticulate::conda_install(envname = "r-reticulate", packages = "python-igraph")
                     reticulate::conda_install(envname = "r-reticulate", packages = "mkl", channel = "intel")
-                    reticulate::conda_install(envname = "r-reticulate", packages = "leidenalg", channel = "vtraag")
+                    reticulate::conda_install(envname = "r-reticulate", packages = "leidenalg", channel = "conda-forge")
                     install.packages("reticulate",  quiet = TRUE)
                 } else {
                     reticulate::conda_install("r-reticulate", "python-igraph")

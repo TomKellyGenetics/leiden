@@ -6,7 +6,7 @@ cache: packages
 
 os:
   - linux
-  #- os: osx
+  - os: osx
     #osx_image: xcode10.1
     #disable_homebrew: true
     #r_build_args: '--no-build-vignettes'
@@ -45,10 +45,18 @@ env:
     - R_CHECK_ARGS="--no-build-vignettes --no-manual --ignore-vignettes --no-examples"
     - R_BUILD_ARGS="--no-build-vignettes"
 
-python:
-  - "3.5"
-  - "3.6"
-  - "3.7"
+matrix:
+  include:
+    - python: 2.7
+      env: PYENV="py27"
+    - python: 3.5
+      env: PYENV="py35"
+    - python: 3.6
+      env: PYENV="py36"
+    - python: 3.7
+      env: PYENV="py37"
+    - python: 3.8
+      env: PYENV="py38"
 
 before_install:
   - chmod +x travis_setup.sh
