@@ -4,9 +4,11 @@ language: R
 sudo: true
 cache: packages
 
-os:
-  - linux
-  - os: osx
+matrix:
+  include:
+    os:
+    - linux
+    - os: osx
 
     #osx_image: xcode10.1
     #disable_homebrew: true
@@ -32,9 +34,11 @@ addons:
       #- python3
     #update: true
 
-r:
-  - release
-  - devel
+matrix:
+  include:
+    r:
+      - release
+      - devel
 
 r-packages:
   - reticulate
