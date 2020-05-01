@@ -44,7 +44,7 @@ devtools::install_github("TomKellyGenetics/leiden")
 
 The current release on CRAN can be installed with:
 
-```{r, eval=FALSE}
+```{r, eval=TRUE}
 install.packages("leiden")
 ```
 
