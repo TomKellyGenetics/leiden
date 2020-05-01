@@ -14,7 +14,7 @@ hash -r
 conda config --set always_yes yes --set changeps1 no
 conda update -q conda
 conda info -a
-pip install --upgrade pip
+pip install --user --upgrade pip
 pip install --user igraph leidenalg
 
 conda create -y -n r-reticulate r-base igraph leidenalg
