@@ -276,7 +276,6 @@ devtools::install_github("TomKellyGenetics/leiden", ref = "dev")
 
 ```{bash, eval = FALSE}
 install.packages("leiden")
-devtools::install_github("TomKellyGenetics/leiden", ref = "dev")
 ```
 
 Note that these require the Python version as a dependency.
