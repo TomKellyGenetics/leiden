@@ -1,3 +1,7 @@
+# leiden 0.3.5
+
+* add support for bipartite graphs (requires leidenalg 0.6.1 or later)
+
 # leiden 0.3.4
 
 * changes to install python leidenalg from vtraag channel on Windows
