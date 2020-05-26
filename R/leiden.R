@@ -273,7 +273,7 @@ leiden.igraph <- function(object,
 
     if(!is.null(get.vertex.attribute(object, "type")) || is.bipartite(object)){
         type <- as.integer(V(object)$type)
-        snn_graph$vs$set_attribute_values('type', type)
+        snn_graph$vs$set_attribute_values('type', r_to_py(as.integer(type)))
     }
 
     # from here is the same as method for matrix
