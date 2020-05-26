@@ -1,3 +1,32 @@
+#internal function to compute bipartite paritions
+run_bipartite_partitioning <- function(snn_graph,
+                                       resolution_parameter_01 = 1,
+                                       resolution_parameter_0 = 0,
+                                       resolution_parameter_1 = 0,
+                                       degree_as_node_size = FALSE,
+                                       types = "type",
+                                       seed = NULL,
+                                       n_iterations = 2){
+  self.optimiser = leidenalg$Optimiser()
+  if(!is.null(seed)){
+    self.optimiser$set_rng_seed(r_to_py(as.integer(seed)))
+  }
+  for(ii in 1:n_iterations){
+    bipartite_layers <- leidenalg$CPMVertexPartition$Bipartite(snn_graph,
+                                                               resolution_parameter_01 = resolution_parameter_01,
+                                                               resolution_parameter_0 = resolution_parameter_0,
+                                                               resolution_parameter_1 = resolution_parameter_1,
+                                                               degree_as_node_size = FALSE,
+                                                               types = "type")
+  }
+  bipartite_layers <- r_to_py(bipartite_layers)
+  self.optimiser$optimise_partition_multiplex(
+    bipartite_layers,
+    layer_weights=r_to_py(c(1L, -1L, -1L)))
+  part <- py_to_r(bipartite_layers[[1]])
+  part
+}
+
 #call leiden on a python snn_graph object with reticulate
 find_partition <- function(snn_graph, partition_type = c(
   'RBConfigurationVertexPartition',
@@ -68,16 +97,14 @@ n_iterations = 2L
       initial_membership = initial_membership, weights = weights,
       seed = seed, n_iterations = n_iterations, node_sizes = node_sizes
     ),
-    'CPMVertexPartition.Bipartite' =
-      optimiser <- leidenalg$Optimiser()
-      bipartite_layers <- leidenalg$CPMVertexPartition$Bipartite(snn_graph,
-                                             resolution_parameter_01 = 0.1,
-                                             resolution_parameter_0 = 0,
-                                             resolution_parameter_1 = 0,
-                                             degree_as_node_size = FALSE,
-                                             types = "type")
-      optimiser$optimise_partition_multiplex(r_to_py(bipartite_partition), layer_weights = r_to_py(c(1L, -1L, -1L)))
-   ,
+    'CPMVertexPartition.Bipartite' = run_bipartite_partitioning(snn_graph,
+                                                                resolution_parameter_01 = resolution_parameter,
+                                                                resolution_parameter_0 = 0,
+                                                                resolution_parameter_1 = 0,
+                                                                degree_as_node_size = FALSE,
+                                                                types = "type",
+                                                                seed = seed,
+                                                                n_iterations = n_iterations),
     stop("please specify a partition type as a string out of those documented")
   )
   partition <- part$membership+1
