@@ -6,7 +6,8 @@ find_partition <- function(snn_graph, partition_type = c(
   'CPMVertexPartition',
   'MutableVertexPartition',
   'SignificanceVertexPartition',
-  'SurpriseVertexPartition'
+  'SurpriseVertexPartition',
+  'CPMVertexPartition.Bipartite'
 ),
 initial_membership = NULL,
 weights = NULL,
@@ -67,6 +68,16 @@ n_iterations = 2L
       initial_membership = initial_membership, weights = weights,
       seed = seed, n_iterations = n_iterations, node_sizes = node_sizes
     ),
+    'CPMVertexPartition.Bipartite' =
+      optimiser <- leidenalg$Optimiser()
+      bipartite_layers <- leidenalg$CPMVertexPartition$Bipartite(snn_graph,
+                                             resolution_parameter_01 = 0.1,
+                                             resolution_parameter_0 = 0,
+                                             resolution_parameter_1 = 0,
+                                             degree_as_node_size = FALSE,
+                                             types = "type")
+      optimiser$optimise_partition_multiplex(r_to_py(bipartite_partition), layer_weights = r_to_py(c(1L, -1L, -1L)))
+   ,
     stop("please specify a partition type as a string out of those documented")
   )
   partition <- part$membership+1
