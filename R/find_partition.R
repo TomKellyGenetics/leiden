@@ -1,4 +1,5 @@
 #internal function to compute bipartite paritions
+#' @importFrom reticulate import py_to_r r_to_py
 run_bipartite_partitioning <- function(snn_graph,
                                        resolution_parameter_01 = 1,
                                        resolution_parameter_0 = 0,
