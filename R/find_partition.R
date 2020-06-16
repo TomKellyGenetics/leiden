@@ -17,7 +17,7 @@ run_bipartite_partitioning <- function(snn_graph,
                                                                resolution_parameter_01 = resolution_parameter_01,
                                                                resolution_parameter_0 = resolution_parameter_0,
                                                                resolution_parameter_1 = resolution_parameter_1,
-                                                               degree_as_node_size = FALSE,
+                                                               degree_as_node_size = degree_as_node_size,
                                                                types = "type")
   }
   bipartite_layers <- r_to_py(bipartite_layers)
@@ -44,7 +44,8 @@ weights = NULL,
 node_sizes = NULL,
 resolution_parameter = 1,
 seed = NULL,
-n_iterations = 2L
+n_iterations = 2L,
+degree_as_node_size = FALSE
 ) {
   partition_type <- match.arg(partition_type)
   if(!is.null(seed)) seed <- as.integer(seed)
@@ -102,7 +103,7 @@ n_iterations = 2L
                                                                 resolution_parameter_01 = resolution_parameter,
                                                                 resolution_parameter_0 = 0,
                                                                 resolution_parameter_1 = 0,
-                                                                degree_as_node_size = FALSE,
+                                                                degree_as_node_size = degree_as_node_size,
                                                                 types = "type",
                                                                 seed = seed,
                                                                 n_iterations = n_iterations),
