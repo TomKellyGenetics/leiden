@@ -35,6 +35,7 @@ addons:
 
 matrix:
   include:
+    - r: oldrel
     - r: release
     - r: devel
 

@@ -8,6 +8,7 @@
 ##' @param resolution_parameter A parameter controlling the coarseness of the clusters
 ##' @param seed Seed for the random number generator. By default uses a random seed if nothing is specified.
 ##' @param n_iterations Number of iterations to run the Leiden algorithm. By default, 2 iterations are run. If the number of iterations is negative, the Leiden algorithm is run until an iteration in which there was no improvement.
+##' @param degree_as_node_size (defaults to FALSE). If True use degree as node size instead of 1, to mimic modularity for Bipartite graphs.
 ##' @return A partition of clusters as a vector of integers
 ##' @examples
 ##' #check if python is availble
@@ -89,6 +90,7 @@ leiden <- function(object,
                    resolution_parameter = 1,
                    seed = NULL,
                    n_iterations = 2L,
+                   degree_as_node_size = FALSE,
                    laplacian = FALSE) {
     UseMethod("leiden", object)
 }
@@ -112,6 +114,7 @@ leiden.matrix <- function(object,
                           resolution_parameter = 1,
                           seed = NULL,
                           n_iterations = 2L,
+                          degree_as_node_size = FALSE,
                           laplacian = FALSE
 ) {
     #import python modules with reticulate
@@ -160,7 +163,8 @@ leiden.matrix <- function(object,
                                 node_sizes = node_sizes,
                                 resolution_parameter = resolution_parameter,
                                 seed = seed,
-                                n_iterations = n_iterations
+                                n_iterations = n_iterations,
+                                degree_as_node_size = degree_as_node_size
     )
     partition
 }
@@ -189,6 +193,7 @@ leiden.Matrix <- function(object,
                           resolution_parameter = 1,
                           seed = NULL,
                           n_iterations = 2L,
+                          degree_as_node_size = FALSE,
                           laplacian = FALSE
 ) {
     #cast to sparse matrix
@@ -209,6 +214,7 @@ leiden.Matrix <- function(object,
         resolution_parameter = resolution_parameter,
         seed = seed,
         n_iterations = n_iterations,
+        degree_as_node_size = degree_as_node_size,
         laplacian = laplacian
     )
 }
@@ -235,6 +241,7 @@ leiden.igraph <- function(object,
                           resolution_parameter = 1,
                           seed = NULL,
                           n_iterations = 2L,
+                          degree_as_node_size = FALSE,
                           laplacian = FALSE
 ) {
     #import python modules with reticulate
@@ -286,7 +293,8 @@ leiden.igraph <- function(object,
                                 node_sizes = node_sizes,
                                 resolution_parameter = resolution_parameter,
                                 seed = seed,
-                                n_iterations = n_iterations
+                                n_iterations = n_iterations,
+                                degree_as_node_size = degree_as_node_size
     )
     partition
 }
