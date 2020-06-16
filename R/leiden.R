@@ -3,7 +3,7 @@
 ##' @description Implements the Leiden clustering algorithm in R using reticulate to run the Python version. Requires the python "leidenalg" and "igraph" modules to be installed. Returns a vector of partition indices.
 ##' Windows users can still this with devtools::install_github("rstudio/reticulate", ref = "86ebb56"); reticulate::use_condaenv("r-reticulate"); reticulate::conda_install("r-reticulate", "leidenalg", channel = "vtraag")
 ##' @param object An adjacency matrix compatible with \code{\link[igraph]{igraph}} object or an input graph as an \code{\link[igraph]{igraph}} object (e.g., shared nearest neighbours).
-##' @param partition_type Type of partition to use. Defaults to RBConfigurationVertexPartition. Options include: ModularityVertexPartition, RBERVertexPartition, CPMVertexPartition, MutableVertexPartition, SignificanceVertexPartition, SurpriseVertexPartition (see the Leiden python module documentation for more details)
+##' @param partition_type Type of partition to use. Defaults to RBConfigurationVertexPartition. Options include: ModularityVertexPartition, RBERVertexPartition, CPMVertexPartition, MutableVertexPartition, SignificanceVertexPartition, SurpriseVertexPartition, ModularityVertexPartition.Bipartite, CPMVertexPartition.Bipartite (see the Leiden python module documentation for more details)
 ##' @param initial_membership,weights,node_sizes Parameters to pass to the Python leidenalg function (defaults initial_membership=None, weights=None). Weights are derived from weighted igraph objects and non-zero integer values of adjacency matrices.
 ##' @param resolution_parameter A parameter controlling the coarseness of the clusters
 ##' @param seed Seed for the random number generator. By default uses a random seed if nothing is specified.
@@ -82,6 +82,7 @@ leiden <- function(object,
                        'MutableVertexPartition',
                        'SignificanceVertexPartition',
                        'SurpriseVertexPartition',
+                       'ModularityVertexPartition.Bipartite',
                        'CPMVertexPartition.Bipartite'
                    ),
                    initial_membership = NULL,
@@ -106,6 +107,7 @@ leiden.matrix <- function(object,
                               'MutableVertexPartition',
                               'SignificanceVertexPartition',
                               'SurpriseVertexPartition',
+                              'ModularityVertexPartition.Bipartite',
                               'CPMVertexPartition.Bipartite'
                           ),
                           initial_membership = NULL,
@@ -185,6 +187,7 @@ leiden.Matrix <- function(object,
                               'MutableVertexPartition',
                               'SignificanceVertexPartition',
                               'SurpriseVertexPartition',
+                              'ModularityVertexPartition.Bipartite',
                               'CPMVertexPartition.Bipartite'
                           ),
                           initial_membership = NULL,
@@ -233,6 +236,7 @@ leiden.igraph <- function(object,
                               'MutableVertexPartition',
                               'SignificanceVertexPartition',
                               'SurpriseVertexPartition',
+                              'ModularityVertexPartition.Bipartite',
                               'CPMVertexPartition.Bipartite'
                           ),
                           initial_membership = NULL,

@@ -37,6 +37,7 @@ find_partition <- function(snn_graph, partition_type = c(
   'MutableVertexPartition',
   'SignificanceVertexPartition',
   'SurpriseVertexPartition',
+  'ModularityVertexPartition.Bipartite',
   'CPMVertexPartition.Bipartite'
 ),
 initial_membership = NULL,
@@ -45,9 +46,10 @@ node_sizes = NULL,
 resolution_parameter = 1,
 seed = NULL,
 n_iterations = 2L,
-degree_as_node_size = FALSE
+degree_as_node_size = TRUE
 ) {
   partition_type <- match.arg(partition_type)
+  if(partition_type == 'ModularityVertexPartition.Bipartite') degree_as_node_size <- TRUE
   if(!is.null(seed)) seed <- as.integer(seed)
   if (is.integer(n_iterations)) n_iterations <- as.integer(n_iterations)
   part <- switch(
@@ -99,6 +101,14 @@ degree_as_node_size = FALSE
       initial_membership = initial_membership, weights = weights,
       seed = seed, n_iterations = n_iterations, node_sizes = node_sizes
     ),
+    'ModularityVertexPartition.Bipartite' = run_bipartite_partitioning(snn_graph,
+                                                                resolution_parameter_01 = resolution_parameter,
+                                                                resolution_parameter_0 = 0,
+                                                                resolution_parameter_1 = 0,
+                                                                degree_as_node_size = TRUE,
+                                                                types = "type",
+                                                                seed = seed,
+                                                                n_iterations = n_iterations),
     'CPMVertexPartition.Bipartite' = run_bipartite_partitioning(snn_graph,
                                                                 resolution_parameter_01 = resolution_parameter,
                                                                 resolution_parameter_0 = 0,
