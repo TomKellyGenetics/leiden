@@ -42,6 +42,8 @@ matrix:
     - os: linux
       r: devel
     - os: osx
+      r: oldrel
+    - os: osx
       r: release
 
 r-packages:
