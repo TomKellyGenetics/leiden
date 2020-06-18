@@ -138,22 +138,6 @@ matrix:
       r: devel
       python: 3.8
       env: PYENV="py38"
-    - os: osx
-      r: devel
-      python: 2.7
-      env: PYENV="py27"
-    - os: osx
-      r: devel
-      python: 3.6
-      env: PYENV="py36"
-    - os: osx
-      r: devel
-      python: 3.7
-      env: PYENV="py37"
-    - os: osx
-      r: devel
-      python: 3.8
-      env: PYENV="py38"
 
 before_install:
   - chmod +x travis_setup.sh
