@@ -309,31 +309,56 @@ leidenalg <- NULL
 ig <- NULL
 
 .onLoad = function(libname, pkgname) {
-    if(reticulate::py_available()){
-        install_python_modules <- function(method = "auto", conda = "auto") {
-            if(!is.null(reticulate::conda_binary())){
-                reticulate::conda_install("conda")
-                reticulate::conda_create("r-reticulate")
-                reticulate::use_condaenv("r-reticulate")
-                if(.Platform$OS.type == "windows"){
-                    install.packages("devtools",  quiet = TRUE)
-                    devtools::install_github("rstudio/reticulate", ref = "86ebb56",  quiet = TRUE)
-                    reticulate::conda_install(envname = "r-reticulate", packages = "python-igraph")
-                    reticulate::conda_install(envname = "r-reticulate", packages = "mkl", channel = "intel")
-                    reticulate::conda_install(envname = "r-reticulate", packages = "leidenalg", channel = "conda-forge")
-                    install.packages("reticulate",  quiet = TRUE)
-                    reticulate::conda_install(envname = "r-reticulate", packages = "leidenalg") #, channel = "conda-forge")
-                    utils::install.packages("reticulate",  quiet = TRUE)
+    if(!reticulate::py_available()){
+        tryCatch({
+            if(!("r-reticulate" %in% reticulate::conda_list()$name)){
+                reticulate::conda_create(envname = "r-reticulate")
+                reticulate::conda_install(envname = "r-reticulate", packages = "conda")
+            }
+            reticulate::use_python(reticulate::conda_python())
+            reticulate::use_condaenv("r-reticulate")
+            }, finally = print("conda environment r-reticulate installed"))
+    }
+    tryCatch({
+        if(reticulate::py_available() || sum("r-reticulate" == reticulate::conda_list()$name) == 1){
+            install_python_modules <- function(method = "auto", conda = "auto") {
+                if(!is.null(reticulate::conda_binary())){
+                    reticulate::use_python(reticulate::conda_python())
+                    if(!("r-reticulate" %in% reticulate::conda_list()$name)){
+                        reticulate::conda_create(envname = "r-reticulate", )
+                        reticulate::conda_install(envname = "r-reticulate", packages = "conda")
+                    }
+                    reticulate::use_condaenv("r-reticulate")
+                    if(.Platform$OS.type == "windows"){
+                        install.packages("devtools",  quiet = TRUE)
+                        devtools::install_github("rstudio/reticulate", ref = "86ebb56",  quiet = TRUE)
+                        reticulate::conda_install(envname = "r-reticulate", packages = "python-igraph")
+                        reticulate::conda_install(envname = "r-reticulate", packages = "mkl", channel = "intel")
+                        reticulate::conda_install(envname = "r-reticulate", packages = "leidenalg", channel = "conda-forge")
+                        install.packages("reticulate",  quiet = TRUE)
+                        reticulate::conda_install(envname = "r-reticulate", packages = "leidenalg") #, channel = "conda-forge")
+                        utils::install.packages("reticulate",  quiet = TRUE)
+                    } else {
+                        reticulate::conda_install("r-reticulate", "python-igraph")
+                        reticulate::conda_install("r-reticulate", "leidenalg", forge = TRUE)
+                    }
                 } else {
-                    reticulate::conda_install("r-reticulate", "python-igraph")
-                    reticulate::conda_install("r-reticulate", "leidenalg", forge = TRUE)
+                    # shell <- strsplit(Sys.getenv("SHELL"), "/")[[1]]
+                    # shell <- shell[length(shell)]
+                    # eval(parse(text = paste0(c('system("conda init ', shell, '")'), collapse = "")))
+                    # eval(parse(text = paste0(c('system("source ~/.', shell, 'rc")'), collapse = "")))
+                    # shell <- as.list(system("echo $0"))
+                    # if(shell == sh) shell <- "bash"
+                    # system("conda init")
+                    # eval(parse(text = paste0(c('system("source ~/.', shell, '_profile")'), collapse = "")))
+                    # system("conda init")
+                    # system("conda activate r-reticulate")
+                    reticulate::py_install("python-igraph", method = method, conda = conda)
+                    reticulate::py_install("leidenalg", method = method, conda = conda, forge = TRUE)
                 }
-            } else {
-                reticulate::py_install("python-igraph", method = method, conda = conda)
-                reticulate::py_install("leidenalg", method = method, conda = conda, forge = TRUE)
             }
         }
-    }
+    }, finally = "python modules igraph and leidenalg installed")
     if (suppressWarnings(suppressMessages(requireNamespace("reticulate")))) {
         modules <- reticulate::py_module_available("leidenalg") && reticulate::py_module_available("igraph")
         if (modules) {
