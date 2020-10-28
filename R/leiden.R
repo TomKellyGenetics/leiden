@@ -351,6 +351,8 @@ ig <- NULL
                         reticulate::conda_install("r-reticulate", "numpy")
                         reticulate::conda_install("r-reticulate", "python-igraph")
                         reticulate::conda_install("r-reticulate", "leidenalg", forge = TRUE)
+                        Sys.setenv(PATH = paste0(strsplit(reticulate::py_config()$pythonhome, ":")[[1]][1], "/bin:$PATH"))
+                        Sys.setenv(RETICULATE_PYTHON = reticulate::conda_python())
                     }
                 } else {
                     # shell <- strsplit(Sys.getenv("SHELL"), "/")[[1]]
@@ -363,9 +365,11 @@ ig <- NULL
                     # eval(parse(text = paste0(c('system("source ~/.', shell, '_profile")'), collapse = "")))
                     # system("conda init")
                     # system("conda activate r-reticulate")
-                    reticulate::py_install("numpy", method = method, conda = conda)
+                    reticulate::py_install("numpy")
                     reticulate::py_install("python-igraph", method = method, conda = conda)
                     reticulate::py_install("leidenalg", method = method, conda = conda, forge = TRUE)
+                    Sys.setenv(PATH = paste0(strsplit(reticulate::py_config()$pythonhome, ":")[[1]][1], "/bin:$PATH"))
+                    Sys.setenv(RETICULATE_PYTHON = reticulate::py_config()$python)
                 }
             }
         }
