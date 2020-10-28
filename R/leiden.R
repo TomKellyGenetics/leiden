@@ -175,7 +175,7 @@ leiden.matrix <- function(object,
 ##' @export
 leiden.data.frame <- leiden.matrix
 
-##' @importFrom igraph graph_from_adjacency_matrix edge.attributes set.edge.attribute E
+##' @importFrom igraph graph_from_adjacency_matrix edge_attr set_edge_attr E
 ##' @importFrom methods as
 ##' @importClassesFrom Matrix dgCMatrix dgeMatrix
 ##' @export
@@ -205,10 +205,10 @@ leiden.Matrix <- function(object,
     #run as igraph object (passes to reticulate)
     if(is.null(weights)){
         object <- graph_from_adjacency_matrix(adjmatrix = adj_mat, weighted = TRUE)
-        weights <- edge.attributes(object)$weight
+        weights <- edge_attr(object)$weight
     } else {
         object <- graph_from_adjacency_matrix(adjmatrix = adj_mat, weighted = TRUE)
-        object <- set.edge.attribute(object, "weight", index=E(object), weights)
+        object <- set_edge_attr(object, "weight", index=E(object), weights)
     }
 
     leiden.igraph(object,
@@ -226,7 +226,7 @@ leiden.Matrix <- function(object,
 ##' @export
 leiden.default <- leiden.matrix
 
-##' @importFrom igraph V as_edgelist is.weighted is.named edge.attributes as_adjacency_matrix laplacian_matrix get.vertex.attribute is.bipartite
+##' @importFrom igraph V as_edgelist is.weighted is.named edge_attr as_adjacency_matrix laplacian_matrix vertex_attr is_bipartite bipartite_mapping set_vertex_attr
 ##' @export
 leiden.igraph <- function(object,
                           partition_type = c(
@@ -280,11 +280,35 @@ leiden.igraph <- function(object,
     #compute weights if weighted graph given
     if (is.weighted(object)) {
         #assign weights to edges (without dependancy on igraph)
-        weights <- r_to_py(edge.attributes(object)$weight)
+        weights <- r_to_py(edge_attr(object)$weight)
         snn_graph$es$set_attribute_values('weight', weights)
     }
 
-    if(!is.null(get.vertex.attribute(object, "type")) || is.bipartite(object)){
+
+    if(partition_type == "ModularityVertexPartition.Bipartite"){
+        if(is.null(vertex_attr(object, "type"))){
+            if(bipartite_mapping(object)$res){
+                print("computing bipartite partitions")
+                object <- set_vertex_attr(object, "type", value = bipartite_mapping(object)$type)
+            } else {
+                print("cannot compute bipartite types, defaulting to partition type ModularityVertexPartition")
+                partition_type <- "ModularityVertexPartition"
+            }
+        }
+    }
+    if(partition_type == "CPMVertexPartition.Bipartite"){
+        if(is.null(vertex_attr(object, "type"))){
+            if(bipartite_mapping(object)$res){
+                print("computing bipartite partitions")
+                object <- set_vertex_attr(object, "type", value = bipartite_mapping(object)$type)
+            } else {
+                print("cannot compute bipartite types, defaulting to partition type CPMVertexPartition")
+                partition_type <- "CPMVertexPartition"
+            }
+        }
+    }
+
+    if(!is.null(vertex_attr(object, "type")) || is_bipartite(object)){
         type <- as.integer(V(object)$type)
         snn_graph$vs$set_attribute_values('type', r_to_py(as.integer(type)))
     }
