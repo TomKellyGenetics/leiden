@@ -6,6 +6,8 @@
 
 * bug fixes to install documentation
 
+* improve automated conda configuration in background on loading library
+
 # leiden 0.3.3
 
 * bug fixes for documentation in response to changes to R
