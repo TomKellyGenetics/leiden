@@ -284,7 +284,7 @@ leiden.igraph <- function(object,
         snn_graph$es$set_attribute_values('weight', weights)
     }
 
-
+    if(length(partition_type) > 1) partition_type <- partition_type[1]
     if(partition_type == "ModularityVertexPartition.Bipartite"){
         if(is.null(vertex_attr(object, "type"))){
             if(bipartite_mapping(object)$res){
