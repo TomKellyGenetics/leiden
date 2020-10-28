@@ -89,7 +89,7 @@ graph_object
 
 This represents the following graph structure.
 
-```{r, warning=FALSE, message=FALSE}
+```{r, warning=FALSE, message=FALSE, fig.align='center', out.width="80%",fig.height = 6, fig.width = 6, fig.retina=1.5}
 plot(graph_object, vertex.color = "grey75")
 ```
 
@@ -109,7 +109,7 @@ table(partition)
 
 Here we can see partitions in the plotted results. The nodes that are more interconnected have been partitioned into separate clusters.
 
-```{r, warning=FALSE, message=FALSE}
+```{r, warning=FALSE, message=FALSE, fig.align='center', out.width="80%",fig.height = 6, fig.width = 6, fig.retina=1.5}
 library("RColorBrewer")
 node.cols <- brewer.pal(max(c(3, partition)),"Pastel1")[partition]
 plot(graph_object, vertex.color = node.cols)

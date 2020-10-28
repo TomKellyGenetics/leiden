@@ -21,15 +21,15 @@ LazyData: true
 RoxygenNote: 7.1.0.9000
 Suggests: 
     bipartite,
-    devtools,
-    data.table,
-    tibble,
-    devtools,
     covr,
-    testthat,
-    spelling,
+    data.table,
+    devtools,
+    graphsim,
     knitr,
+    RColorBrewer,
     rmarkdown,
-    RColorBrewer
+    spelling,
+    testthat,
+    tibble
 Language: en-US
 VignetteBuilder: knitr
