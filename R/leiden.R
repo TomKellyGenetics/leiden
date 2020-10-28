@@ -336,7 +336,7 @@ ig <- NULL
                         reticulate::conda_create(envname = "r-reticulate", )
                         reticulate::conda_install(envname = "r-reticulate", packages = "conda")
                     }
-                    reticulate::use_condaenv("r-reticulate")
+                    suppressWarnings(suppressMessages(reticulate::use_condaenv("r-reticulate")))
                     if(.Platform$OS.type == "windows"){
                         install.packages("devtools",  quiet = TRUE)
                         devtools::install_github("rstudio/reticulate", ref = "86ebb56",  quiet = TRUE)
