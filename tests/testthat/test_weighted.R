@@ -7,7 +7,7 @@ modules <- reticulate::py_module_available("leidenalg") && reticulate::py_module
 
 skip_if_no_python <- function() {
   if (!modules)
-    testthat::skip("scipy not available for testing")
+    testthat::skip("leidenalg not available for testing")
 }
 
 library("leiden")
