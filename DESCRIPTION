@@ -1,7 +1,7 @@
 Package: leiden
 Type: Package
 Title: R Implementation of Leiden Clustering Algorithm
-Version: 0.3.4.9004
+Version: 0.3.4
 Date: 2020-04-28
 Authors@R: c(person("S. Thomas", "Kelly", email = "tom.kelly@riken.jp", role = c("aut", "cre", "trl")),
            person("Vincent A.", "Traag", email = "v.a.traag@cwts.leidenuniv.nl", role = c("com")))
@@ -18,7 +18,7 @@ Imports:
     igraph
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.0.9000
+RoxygenNote: 7.1.1
 Suggests: 
     bipartite,
     covr,
