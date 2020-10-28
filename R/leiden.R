@@ -317,7 +317,8 @@ ig <- NULL
             }
             reticulate::use_python(reticulate::conda_python())
             reticulate::use_condaenv("r-reticulate")
-            }, finally = print("conda environment r-reticulate installed"))
+        }, error = function(e) print("Unable to set up conda environment r-reticulate"); print("run in terminal:"); print("conda init"); print("conda create -n r-reticulate"),
+        , finally = print("conda environment r-reticulate installed"))
     }
     tryCatch({
         if(reticulate::py_available() || sum("r-reticulate" == reticulate::conda_list()$name) == 1){
@@ -358,7 +359,8 @@ ig <- NULL
                 }
             }
         }
-    }, finally = "python modules igraph and leidenalg installed")
+    }, error = function(e) print("Unable to install python modules igraph and leidenalg"); print("run in terminal:"); print("conda install -c conda-forge vtraag python-igraph"),
+    finally = print("python modules igraph and leidenalg installed"))
     if (suppressWarnings(suppressMessages(requireNamespace("reticulate")))) {
         modules <- reticulate::py_module_available("leidenalg") && reticulate::py_module_available("igraph")
         if (modules) {
