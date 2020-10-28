@@ -120,6 +120,7 @@ leiden.matrix <- function(object,
                           laplacian = FALSE
 ) {
     #import python modules with reticulate
+    np <- reticulate::import("numpy", delay_load = TRUE)
     leidenalg <- import("leidenalg", delay_load = TRUE)
     ig <- import("igraph", delay_load = TRUE)
 
@@ -249,6 +250,7 @@ leiden.igraph <- function(object,
                           laplacian = FALSE
 ) {
     #import python modules with reticulate
+    np <- reticulate::import("numpy", delay_load = TRUE)
     leidenalg <- import("leidenalg", delay_load = TRUE)
     ig <- import("igraph", delay_load = TRUE)
 
@@ -338,6 +340,7 @@ ig <- NULL
                     if(.Platform$OS.type == "windows"){
                         install.packages("devtools",  quiet = TRUE)
                         devtools::install_github("rstudio/reticulate", ref = "86ebb56",  quiet = TRUE)
+                        reticulate::conda_install(envname = "r-reticulate", packages = "numpy")
                         reticulate::conda_install(envname = "r-reticulate", packages = "python-igraph")
                         reticulate::conda_install(envname = "r-reticulate", packages = "mkl", channel = "intel")
                         reticulate::conda_install(envname = "r-reticulate", packages = "leidenalg", channel = "conda-forge")
@@ -345,6 +348,7 @@ ig <- NULL
                         reticulate::conda_install(envname = "r-reticulate", packages = "leidenalg") #, channel = "conda-forge")
                         utils::install.packages("reticulate",  quiet = TRUE)
                     } else {
+                        reticulate::conda_install("r-reticulate", "numpy")
                         reticulate::conda_install("r-reticulate", "python-igraph")
                         reticulate::conda_install("r-reticulate", "leidenalg", forge = TRUE)
                     }
@@ -359,6 +363,7 @@ ig <- NULL
                     # eval(parse(text = paste0(c('system("source ~/.', shell, '_profile")'), collapse = "")))
                     # system("conda init")
                     # system("conda activate r-reticulate")
+                    reticulate::py_install("numpy", method = method, conda = conda)
                     reticulate::py_install("python-igraph", method = method, conda = conda)
                     reticulate::py_install("leidenalg", method = method, conda = conda, forge = TRUE)
                 }
@@ -374,6 +379,7 @@ ig <- NULL
         modules <- reticulate::py_module_available("leidenalg") && reticulate::py_module_available("igraph")
         if (modules) {
             ## assignment in parent environment!
+            np <<- reticulate::import("numpy", delay_load = TRUE)
             leidenalg <<- reticulate::import("leidenalg", delay_load = TRUE)
             ig <<- reticulate::import("igraph", delay_load = TRUE)
         }
