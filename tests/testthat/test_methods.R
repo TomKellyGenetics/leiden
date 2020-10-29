@@ -1,7 +1,7 @@
 library("leiden")
 library("reticulate")
 library("igraph")
-context("running Leiden on an igraph object")
+context("running Leiden on an dense and sparse matrices")
 
 adj_mat <- matrix(round(runif(10000, 0, 1)), 100, 100)
 snn_graph <- graph_from_adjacency_matrix(adj_mat)
