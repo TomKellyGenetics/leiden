@@ -283,7 +283,7 @@ leiden.igraph <- function(object,
         laplacian <- laplacian_matrix(object)
         if(!is.weighted(object)){
             edge_attr(object)$weight
-            object <- set_edge_attr(object, "weight", value = as.matrix(laplacian)[as.matrix(laplacian) < 0])
+            object <- set_edge_attr(object, "weight", value = -as.matrix(laplacian)[as.matrix(laplacian) < 0])
         }
     }
 
