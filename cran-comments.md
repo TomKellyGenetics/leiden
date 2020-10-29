@@ -1,10 +1,11 @@
 ## Test environments
-* ubuntu 14.04 (on travis-ci), R 3.6.1
-* ubuntu 14.04 (on circle-ci), R 3.6.1
+* ubuntu 14.04 (on travis-ci), R 4.0.2, 3.6.1
+* ubuntu 14.04 (on circle-ci), R 4.0.2, 3.6.1
 * win-builder (devel and release) Windows Server 2008 R2 SP1, R-devel, 32/64 bit
 * rhub (release) Ubuntu Linux 16.04 LTS, R-release, GCC
 * Fedora (devel) Linux, R-devel, clang, gfortran
-* MacOS 18.6.0 R 3.6.1 
+* MacOS 10.14.6 R 3.6.1 
+* MacOS 10.15.7 R 4.0.2
 
 ## R CMD check results
 
@@ -12,9 +13,11 @@
 
 ## Updates
 
-Minor update to include resolve issues with documentation on development version of R.
+Minor update to implement functions in python version.
 
-See development version: https://bugs.r-project.org/bugzilla/show_bug.cgi?id=16223
+Improvements to install of python libraries upon loading if python
+or conda environments are available (checks suppressed on systems
+where they are not).
 
 ## Python integration
 
