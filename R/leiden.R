@@ -217,14 +217,14 @@ leiden.Matrix <- function(object,
     }
 
     leiden.igraph(object,
-        partition_type = partition_type,
-        weights = weights,
-        node_sizes = node_sizes,
-        resolution_parameter = resolution_parameter,
-        seed = seed,
-        n_iterations = n_iterations,
-        degree_as_node_size = degree_as_node_size,
-        laplacian = laplacian
+                  partition_type = partition_type,
+                  weights = weights,
+                  node_sizes = node_sizes,
+                  resolution_parameter = resolution_parameter,
+                  seed = seed,
+                  n_iterations = n_iterations,
+                  degree_as_node_size = degree_as_node_size,
+                  laplacian = laplacian
     )
 }
 
@@ -371,25 +371,25 @@ np <<- NULL
                     reticulate::use_python(reticulate::conda_python())
                     if(!("r-reticulate" %in% reticulate::conda_list()$name)){
                         reticulate::conda_create(envname = "r-reticulate", )
-                        reticulate::conda_install(envname = "r-reticulate", packages = "conda")
+                        if(!reticulate::py_module_available("conda")) reticulate::conda_install(envname = "r-reticulate", packages = "conda")
                     }
                     suppressWarnings(suppressMessages(reticulate::use_condaenv("r-reticulate")))
                     if(.Platform$OS.type == "windows"){
                         install.packages("devtools",  quiet = TRUE)
                         devtools::install_github("rstudio/reticulate", ref = "86ebb56",  quiet = TRUE)
-                        reticulate::conda_install(envname = "r-reticulate", packages = "numpy")
-                        reticulate::conda_install(envname = "r-reticulate", packages = "python-igraph")
-                        reticulate::conda_install(envname = "r-reticulate", packages = "mkl", channel = "intel")
-                        reticulate::conda_install(envname = "r-reticulate", packages = "umap-learn", channel = "conda-forge")
-                        reticulate::conda_install(envname = "r-reticulate", packages = "leidenalg", channel = "conda-forge")
+                        if(!reticulate::py_module_available("numpy")) suppressWarnings(suppressMessages(reticulate::conda_install(envname = "r-reticulate", packages = "numpy")))
+                        if(!reticulate::py_module_available("igraph")) suppressWarnings(suppressMessages(reticulate::conda_install(envname = "r-reticulate", packages = "python-igraph")))
+                        if(!reticulate::py_module_available("mkl")) suppressWarnings(suppressMessages(reticulate::conda_install(envname = "r-reticulate", packages = "mkl", channel = "intel")))
+                        if(!reticulate::py_module_available("umap")) suppressWarnings(suppressMessages(reticulate::conda_install(envname = "r-reticulate", packages = "umap-learn", channel = "conda-forge")))
+                        if(!reticulate::py_module_available("leidenalg")) suppressWarnings(suppressMessages(reticulate::conda_install(envname = "r-reticulate", packages = "leidenalg", channel = "conda-forge")))
                         install.packages("reticulate",  quiet = TRUE)
-                        reticulate::conda_install(envname = "r-reticulate", packages = "leidenalg") #, channel = "conda-forge")
+                        if(!reticulate::py_module_available("leidenalg")) suppressWarnings(suppressMessages(reticulate::conda_install(envname = "r-reticulate", packages = "leidenalg"))) #, channel = "conda-forge")
                         utils::install.packages("reticulate",  quiet = TRUE)
                     } else {
-                        reticulate::conda_install("r-reticulate", "numpy")
-                        reticulate::conda_install("r-reticulate", "python-igraph")
-                        reticulate::conda_install("r-reticulate", "umap-learn", forge = TRUE)
-                        reticulate::conda_install("r-reticulate", "leidenalg", forge = TRUE)
+                        if(!reticulate::py_module_available("numpy")) suppressWarnings(suppressMessages(reticulate::conda_install("r-reticulate", "numpy")))
+                        if(!reticulate::py_module_available("igraph")) suppressWarnings(suppressMessages(reticulate::conda_install("r-reticulate", "python-igraph")))
+                        if(!reticulate::py_module_available("umap")) suppressWarnings(suppressMessages(reticulate::conda_install("r-reticulate", "umap-learn", forge = TRUE)))
+                        if(!reticulate::py_module_available("leidenalg")) suppressWarnings(suppressMessages(reticulate::conda_install("r-reticulate", "leidenalg", forge = TRUE)))
                         #Sys.setenv(PATH = paste0(strsplit(reticulate::py_config()$pythonhome, ":")[[1]][1], "/bin:$PATH"))
                         Sys.setenv(RETICULATE_PYTHON = reticulate::conda_python())
                     }
@@ -404,15 +404,31 @@ np <<- NULL
                     # eval(parse(text = paste0(c('system("source ~/.', shell, '_profile")'), collapse = "")))
                     # system("conda init")
                     # system("conda activate r-reticulate")
-                    reticulate::py_install("numpy")
-                    reticulate::py_install("umap-learn")
-                    reticulate::py_install("python-igraph", method = method, conda = conda)
-                    reticulate::py_install("leidenalg", method = method, conda = conda, forge = TRUE)
+                    if(!reticulate::py_module_available("numpy")) suppressWarnings(suppressMessages(reticulate::py_install("numpy")))
+                    if(!reticulate::py_module_available("igraph")) suppressWarnings(suppressMessages(reticulate::py_install("python-igraph", method = method, conda = conda)))
+                    if(!reticulate::py_module_available("umap")) suppressWarnings(suppressMessages(reticulate::py_install("umap-learn")))
+                    if(!reticulate::py_module_available("leidenalg")) suppressWarnings(suppressMessages(reticulate::py_install("leidenalg", method = method, conda = conda, forge = TRUE)))
                     #Sys.setenv(PATH = paste0(strsplit(reticulate::py_config()$pythonhome, ":")[[1]][1], "/bin:$PATH"))
                     Sys.setenv(RETICULATE_PYTHON = reticulate::py_config()$python)
                 }
             }
-            suppressWarnings(suppressMessages(install_python_modules()))
+            quiet <- function(expr, all = TRUE) {
+                if (Sys.info()['sysname'] == "Windows") {
+                    file <- "NUL"
+                } else {
+                    file <- "/dev/null"
+                }
+                sink(file)
+                if (all) {
+                    suppressWarnings(suppressMessages(suppressPackageStartupMessages(
+                        capture.output(expr, file = file)
+                    )))
+                } else {
+                    capture.output(expr, file = file)
+                }
+                sink()
+            }
+            quiet(install_python_modules())
         }
     }, error = function(e){
         packageStartupMessage("Unable to install python modules igraph and leidenalg")
