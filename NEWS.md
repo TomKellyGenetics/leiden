@@ -8,6 +8,8 @@
 
 * improve automated conda configuration in background on loading library
 
+* optionally derive edge weights from the Laplacian matrix
+
 # leiden 0.3.3
 
 * bug fixes for documentation in response to changes to R

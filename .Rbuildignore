@@ -12,6 +12,8 @@
 ^codecov\.yml$
 ^LICENSE\.md$
 ^cran-comments\.md$
+^.*\.pdf$
+^.*\.png$
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^build.cmd$
@@ -19,6 +21,7 @@
 ^\ .DS_Store$
 revdep
 images
+
 ## Files to ignore when building package
 
 ## For github checks

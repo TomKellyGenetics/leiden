@@ -33,3 +33,6 @@ Suggests:
     tibble
 Language: en-US
 VignetteBuilder: knitr
+Collate: 
+    'find_partition.R'
+    'leiden.R'

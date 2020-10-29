@@ -34,6 +34,8 @@ leiden(
 \item{n_iterations}{Number of iterations to run the Leiden algorithm. By default, 2 iterations are run. If the number of iterations is negative, the Leiden algorithm is run until an iteration in which there was no improvement.}
 
 \item{degree_as_node_size}{(defaults to FALSE). If True use degree as node size instead of 1, to mimic modularity for Bipartite graphs.}
+
+\item{laplacian}{(defaults to FALSE). Derive edge weights from the Laplacian matrix.}
 }
 \value{
 A partition of clusters as a vector of integers

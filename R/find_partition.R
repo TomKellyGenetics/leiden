@@ -1,5 +1,15 @@
-#internal function to compute bipartite paritions
-#' @importFrom reticulate import py_to_r r_to_py
+##' internal function to compute bipartite paritions
+##' @param snn_graph an igraph object
+##' @param partition_type Type of partition to use. Defaults to RBConfigurationVertexPartition. Options include: ModularityVertexPartition, RBERVertexPartition, CPMVertexPartition, MutableVertexPartition, SignificanceVertexPartition, SurpriseVertexPartition, ModularityVertexPartition.Bipartite, CPMVertexPartition.Bipartite (see the Leiden python module documentation for more details)
+##' @param initial_membership,weights,node_sizes Parameters to pass to the Python leidenalg function (defaults initial_membership=None, weights=None). Weights are derived from weighted igraph objects and non-zero integer values of adjacency matrices.
+##' @param resolution_parameter_1,resolution_parameter_0,resolution_parameter_01 A parameter controlling the coarseness of the clusters
+##' @param seed Seed for the random number generator. By default uses a random seed if nothing is specified.
+##' @param n_iterations Number of iterations to run the Leiden algorithm. By default, 2 iterations are run. If the number of iterations is negative, the Leiden algorithm is run until an iteration in which there was no improvement.
+##' @param degree_as_node_size (defaults to FALSE). If True use degree as node size instead of 1, to mimic modularity for Bipartite graphs.
+##' @param types (deftaults to "type"). Defines edge attribute for bipartite graphs.
+##' @noRd
+##' @description internal function to compute partitions for bipartite graphs
+##' @keywords internal
 run_bipartite_partitioning <- function(snn_graph,
                                        resolution_parameter_01 = 1,
                                        resolution_parameter_0 = 0,
@@ -28,7 +38,17 @@ run_bipartite_partitioning <- function(snn_graph,
   part
 }
 
-#call leiden on a python snn_graph object with reticulate
+##' call leiden on a python snn_graph object with reticulate
+##' @param snn_graph an igraph object
+##' @param partition_type Type of partition to use. Defaults to RBConfigurationVertexPartition. Options include: ModularityVertexPartition, RBERVertexPartition, CPMVertexPartition, MutableVertexPartition, SignificanceVertexPartition, SurpriseVertexPartition, ModularityVertexPartition.Bipartite, CPMVertexPartition.Bipartite (see the Leiden python module documentation for more details)
+##' @param initial_membership,weights,node_sizes Parameters to pass to the Python leidenalg function (defaults initial_membership=None, weights=None). Weights are derived from weighted igraph objects and non-zero integer values of adjacency matrices.
+##' @param resolution_parameter A parameter controlling the coarseness of the clusters
+##' @param seed Seed for the random number generator. By default uses a random seed if nothing is specified.
+##' @param n_iterations Number of iterations to run the Leiden algorithm. By default, 2 iterations are run. If the number of iterations is negative, the Leiden algorithm is run until an iteration in which there was no improvement.
+##' @param degree_as_node_size (defaults to FALSE). If True use degree as node size instead of 1, to mimic modularity for Bipartite graphs.
+##' @noRd
+##' @description internal function to compute partitions by calling Python with reticulate
+##' @keywords internal
 find_partition <- function(snn_graph, partition_type = c(
   'RBConfigurationVertexPartition',
   'ModularityVertexPartition',
