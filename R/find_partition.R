@@ -18,6 +18,11 @@ run_bipartite_partitioning <- function(snn_graph,
                                        types = "type",
                                        seed = NULL,
                                        n_iterations = 2){
+  #import python modules with reticulate
+  numpy <- reticulate::import("numpy", delay_load = TRUE)
+  leidenalg <- import("leidenalg", delay_load = TRUE)
+  ig <- import("igraph", delay_load = TRUE)
+
   self.optimiser = leidenalg$Optimiser()
   if(!is.null(seed)){
     self.optimiser$set_rng_seed(r_to_py(as.integer(seed)))
@@ -68,6 +73,11 @@ seed = NULL,
 n_iterations = 2L,
 degree_as_node_size = TRUE
 ) {
+  #import python modules with reticulate
+  numpy <- reticulate::import("numpy", delay_load = TRUE)
+  leidenalg <- import("leidenalg", delay_load = TRUE)
+  ig <- import("igraph", delay_load = TRUE)
+
   partition_type <- match.arg(partition_type)
   if(partition_type == 'ModularityVertexPartition.Bipartite') degree_as_node_size <- TRUE
   if(!is.null(seed)) seed <- as.integer(seed)

@@ -125,7 +125,7 @@ leiden.matrix <- function(object,
                           laplacian = FALSE
 ) {
     #import python modules with reticulate
-    np <- reticulate::import("numpy", delay_load = TRUE)
+    numpy <- reticulate::import("numpy", delay_load = TRUE)
     leidenalg <- import("leidenalg", delay_load = TRUE)
     ig <- import("igraph", delay_load = TRUE)
 
@@ -255,7 +255,7 @@ leiden.igraph <- function(object,
                           laplacian = FALSE
 ) {
     #import python modules with reticulate
-    np <- reticulate::import("numpy", delay_load = TRUE)
+    numpy <- reticulate::import("numpy", delay_load = TRUE)
     leidenalg <- import("leidenalg", delay_load = TRUE)
     ig <- import("igraph", delay_load = TRUE)
 
@@ -341,9 +341,9 @@ leiden.igraph <- function(object,
 
 
 # global reference to python modules (will be initialized in .onLoad)
-leidenalg <<- NULL
-ig <<- NULL
-np <<- NULL
+leidenalg <- NULL
+ig <- NULL
+numpy <- NULL
 
 #' @importFrom utils install.packages
 
@@ -421,7 +421,7 @@ np <<- NULL
                 sink(file)
                 if (all) {
                     suppressWarnings(suppressMessages(suppressPackageStartupMessages(
-                        capture.output(expr, file = file)
+                        utils::capture.output(expr, file = file)
                     )))
                 } else {
                     capture.output(expr, file = file)
@@ -440,9 +440,9 @@ np <<- NULL
         modules <- reticulate::py_module_available("leidenalg") && reticulate::py_module_available("igraph")
         if (modules) {
             ## assignment in parent environment!
-            np <<- reticulate::import("numpy", delay_load = TRUE)
-            leidenalg <<- reticulate::import("leidenalg", delay_load = TRUE)
-            ig <<- reticulate::import("igraph", delay_load = TRUE)
+            numpy <- reticulate::import("numpy", delay_load = TRUE)
+            leidenalg <- reticulate::import("leidenalg", delay_load = TRUE)
+            ig <- reticulate::import("igraph", delay_load = TRUE)
         }
     }
 }
