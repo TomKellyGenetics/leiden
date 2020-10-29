@@ -341,8 +341,8 @@ ig <- NULL
                 reticulate::conda_create(envname = "r-reticulate")
                 reticulate::conda_install(envname = "r-reticulate", packages = "conda")
             }
-            reticulate::use_python(reticulate::conda_python())
-            reticulate::use_condaenv("r-reticulate")
+            suppressWarnings(suppressMessages(reticulate::use_python(reticulate::conda_python())))
+            suppressWarnings(suppressMessages(reticulate::use_condaenv("r-reticulate")))
         }, error = function(e){
             print("Unable to set up conda environment r-reticulate")
             print("run in terminal:")
@@ -367,6 +367,7 @@ ig <- NULL
                         reticulate::conda_install(envname = "r-reticulate", packages = "numpy")
                         reticulate::conda_install(envname = "r-reticulate", packages = "python-igraph")
                         reticulate::conda_install(envname = "r-reticulate", packages = "mkl", channel = "intel")
+                        reticulate::conda_install(envname = "r-reticulate", packages = "umap-learn", channel = "conda-forge")
                         reticulate::conda_install(envname = "r-reticulate", packages = "leidenalg", channel = "conda-forge")
                         install.packages("reticulate",  quiet = TRUE)
                         reticulate::conda_install(envname = "r-reticulate", packages = "leidenalg") #, channel = "conda-forge")
@@ -374,6 +375,7 @@ ig <- NULL
                     } else {
                         reticulate::conda_install("r-reticulate", "numpy")
                         reticulate::conda_install("r-reticulate", "python-igraph")
+                        reticulate::conda_install("r-reticulate", "umap-learn", forge = TRUE)
                         reticulate::conda_install("r-reticulate", "leidenalg", forge = TRUE)
                         Sys.setenv(PATH = paste0(strsplit(reticulate::py_config()$pythonhome, ":")[[1]][1], "/bin:$PATH"))
                         Sys.setenv(RETICULATE_PYTHON = reticulate::conda_python())
@@ -390,6 +392,7 @@ ig <- NULL
                     # system("conda init")
                     # system("conda activate r-reticulate")
                     reticulate::py_install("numpy")
+                    reticulate::py_install("umap-learn")
                     reticulate::py_install("python-igraph", method = method, conda = conda)
                     reticulate::py_install("leidenalg", method = method, conda = conda, forge = TRUE)
                     Sys.setenv(PATH = paste0(strsplit(reticulate::py_config()$pythonhome, ":")[[1]][1], "/bin:$PATH"))
