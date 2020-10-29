@@ -1,3 +1,7 @@
+# leiden 0.4.0
+
+* migrate to calling community_leiden in igraph
+
 # leiden 0.3.4
 
 * add support for bipartite graphs (requires leidenalg 0.6.1 or later)
