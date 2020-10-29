@@ -1,3 +1,7 @@
+#' @include find_partition.R
+#'
+NULL
+
 ##' Run Leiden clustering algorithm
 ##'
 ##' @description Implements the Leiden clustering algorithm in R using reticulate to run the Python version. Requires the python "leidenalg" and "igraph" modules to be installed. Returns a vector of partition indices.
@@ -9,6 +13,7 @@
 ##' @param seed Seed for the random number generator. By default uses a random seed if nothing is specified.
 ##' @param n_iterations Number of iterations to run the Leiden algorithm. By default, 2 iterations are run. If the number of iterations is negative, the Leiden algorithm is run until an iteration in which there was no improvement.
 ##' @param degree_as_node_size (defaults to FALSE). If True use degree as node size instead of 1, to mimic modularity for Bipartite graphs.
+##' @param laplacian (defaults to FALSE). Derive edge weights from the Laplacian matrix.
 ##' @return A partition of clusters as a vector of integers
 ##' @examples
 ##' #check if python is availble
@@ -70,7 +75,7 @@
 ##' }
 ##'
 ##' @keywords graph network igraph mvtnorm simulation
-##' @importFrom reticulate import r_to_py
+##' @importFrom reticulate import py_to_r r_to_py
 ##' @rdname leiden
 ##' @export
 leiden <- function(object,
@@ -226,7 +231,7 @@ leiden.Matrix <- function(object,
 ##' @export
 leiden.default <- leiden.matrix
 
-##' @importFrom igraph V as_edgelist is.weighted is.named edge_attr as_adjacency_matrix laplacian_matrix vertex_attr is_bipartite bipartite_mapping set_vertex_attr
+##' @importFrom igraph V as_edgelist is.weighted is.named edge_attr as_adjacency_matrix laplacian_matrix vertex_attr is_bipartite bipartite_mapping set_vertex_attr simplify
 ##' @export
 leiden.igraph <- function(object,
                           partition_type = c(
@@ -274,11 +279,16 @@ leiden.igraph <- function(object,
 
     #derive Laplacian
     if(laplacian == TRUE){
+        object <- simplify(object, remove.multiple = TRUE, remove.loops = TRUE)
         laplacian <- laplacian_matrix(object)
+        if(!is.weighted(object)){
+            edge_attr(object)$weight
+            object <- set_edge_attr(object, "weight", value = as.matrix(laplacian)[as.matrix(laplacian) < 0])
+        }
     }
 
     #compute weights if weighted graph given
-    if (is.weighted(object)) {
+    if(is.weighted(object)){
         #assign weights to edges (without dependancy on igraph)
         weights <- r_to_py(edge_attr(object)$weight)
         snn_graph$es$set_attribute_values('weight', weights)
@@ -288,10 +298,10 @@ leiden.igraph <- function(object,
     if(partition_type == "ModularityVertexPartition.Bipartite"){
         if(is.null(vertex_attr(object, "type"))){
             if(bipartite_mapping(object)$res){
-                print("computing bipartite partitions")
+                packageStartupMessage("computing bipartite partitions")
                 object <- set_vertex_attr(object, "type", value = bipartite_mapping(object)$type)
             } else {
-                print("cannot compute bipartite types, defaulting to partition type ModularityVertexPartition")
+                packageStartupMessage("cannot compute bipartite types, defaulting to partition type ModularityVertexPartition")
                 partition_type <- "ModularityVertexPartition"
             }
         }
@@ -299,10 +309,10 @@ leiden.igraph <- function(object,
     if(partition_type == "CPMVertexPartition.Bipartite"){
         if(is.null(vertex_attr(object, "type"))){
             if(bipartite_mapping(object)$res){
-                print("computing bipartite partitions")
+                packageStartupMessage("computing bipartite partitions")
                 object <- set_vertex_attr(object, "type", value = bipartite_mapping(object)$type)
             } else {
-                print("cannot compute bipartite types, defaulting to partition type CPMVertexPartition")
+                packageStartupMessage("cannot compute bipartite types, defaulting to partition type CPMVertexPartition")
                 partition_type <- "CPMVertexPartition"
             }
         }
@@ -331,10 +341,13 @@ leiden.igraph <- function(object,
 
 
 # global reference to python modules (will be initialized in .onLoad)
-leidenalg <- NULL
-ig <- NULL
+leidenalg <<- NULL
+ig <<- NULL
+np <<- NULL
 
-.onLoad = function(libname, pkgname) {
+#' @importFrom utils install.packages
+
+.onAttach <- function(libname, pkgname) {
     if(!reticulate::py_available()){
         tryCatch({
             if(!("r-reticulate" %in% reticulate::conda_list()$name)){
@@ -344,15 +357,15 @@ ig <- NULL
             suppressWarnings(suppressMessages(reticulate::use_python(reticulate::conda_python())))
             suppressWarnings(suppressMessages(reticulate::use_condaenv("r-reticulate")))
         }, error = function(e){
-            print("Unable to set up conda environment r-reticulate")
-            print("run in terminal:")
-            print("conda init")
-            print("conda create -n r-reticulate")
+            packageStartupMessage("Unable to set up conda environment r-reticulate")
+            packageStartupMessage("run in terminal:")
+            packageStartupMessage("conda init")
+            packageStartupMessage("conda create -n r-reticulate")
         },
-        finally = print("conda environment r-reticulate installed"))
+        finally = packageStartupMessage("conda environment r-reticulate installed"))
     }
     tryCatch({
-        if(reticulate::py_available() || sum("r-reticulate" == reticulate::conda_list()$name) == 1){
+        if(reticulate::py_available() || sum("r-reticulate" == reticulate::conda_list()$name) >= 1){
             install_python_modules <- function(method = "auto", conda = "auto") {
                 if(!is.null(reticulate::conda_binary())){
                     reticulate::use_python(reticulate::conda_python())
@@ -377,7 +390,7 @@ ig <- NULL
                         reticulate::conda_install("r-reticulate", "python-igraph")
                         reticulate::conda_install("r-reticulate", "umap-learn", forge = TRUE)
                         reticulate::conda_install("r-reticulate", "leidenalg", forge = TRUE)
-                        Sys.setenv(PATH = paste0(strsplit(reticulate::py_config()$pythonhome, ":")[[1]][1], "/bin:$PATH"))
+                        #Sys.setenv(PATH = paste0(strsplit(reticulate::py_config()$pythonhome, ":")[[1]][1], "/bin:$PATH"))
                         Sys.setenv(RETICULATE_PYTHON = reticulate::conda_python())
                     }
                 } else {
@@ -395,17 +408,18 @@ ig <- NULL
                     reticulate::py_install("umap-learn")
                     reticulate::py_install("python-igraph", method = method, conda = conda)
                     reticulate::py_install("leidenalg", method = method, conda = conda, forge = TRUE)
-                    Sys.setenv(PATH = paste0(strsplit(reticulate::py_config()$pythonhome, ":")[[1]][1], "/bin:$PATH"))
+                    #Sys.setenv(PATH = paste0(strsplit(reticulate::py_config()$pythonhome, ":")[[1]][1], "/bin:$PATH"))
                     Sys.setenv(RETICULATE_PYTHON = reticulate::py_config()$python)
                 }
             }
+            suppressWarnings(suppressMessages(install_python_modules()))
         }
     }, error = function(e){
-        print("Unable to install python modules igraph and leidenalg")
-        print("run in terminal:")
-        print("conda install -c conda-forge vtraag python-igraph")
+        packageStartupMessage("Unable to install python modules igraph and leidenalg")
+        packageStartupMessage("run in terminal:")
+        packageStartupMessage("conda install -c conda-forge vtraag python-igraph")
     },
-    finally = print("python modules igraph and leidenalg installed"))
+    finally = packageStartupMessage("python modules igraph and leidenalg installed"))
     if (suppressWarnings(suppressMessages(requireNamespace("reticulate")))) {
         modules <- reticulate::py_module_available("leidenalg") && reticulate::py_module_available("igraph")
         if (modules) {
