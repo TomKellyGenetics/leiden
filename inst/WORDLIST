@@ -5,8 +5,10 @@ arXiv
 Benchmarking
 codecov
 conda
+condaenv
 CPM
 CPMVertexPartition
+CWTSLeiden
 dependancies
 dependancy
 devtools
@@ -29,6 +31,7 @@ readthedocs
 reticulate
 rstudio
 SignificanceVertexPartition
+snn
 SNN
 SurpriseVertexPartition
 Traag

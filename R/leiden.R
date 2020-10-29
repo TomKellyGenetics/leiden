@@ -345,7 +345,7 @@ leidenalg <- NULL
 ig <- NULL
 numpy <- NULL
 
-#' @importFrom utils install.packages
+#' @importFrom utils install.packages capture.output
 
 .onAttach <- function(libname, pkgname) {
     if(!reticulate::py_available()){
@@ -418,7 +418,7 @@ numpy <- NULL
                 } else {
                     file <- "/dev/null"
                 }
-                sink(file)
+
                 if (all) {
                     suppressWarnings(suppressMessages(suppressPackageStartupMessages(
                         utils::capture.output(expr, file = file)
@@ -426,7 +426,7 @@ numpy <- NULL
                 } else {
                     capture.output(expr, file = file)
                 }
-                sink()
+
             }
             quiet(install_python_modules())
         }
