@@ -108,9 +108,8 @@ Here we import a plotting function to display these 2 groups.
 
 ```{r, warning=FALSE, message=FALSE, fig.align='center', out.width="80%",fig.height = 6, fig.width = 6, fig.retina=1.5}
 library("graphsim")
-plot_directed(bipartite_graph,
-              fill.node = c("palevioletred", "lightblue")[as.integer(V(bipartite_graph)$type)+1],
-              cex.arrow = 0.75, col.arrow = "grey75")
+node.cols <- c("palevioletred", "lightblue")[as.integer(V(bipartite_graph)$type)+1]
+plot(bipartite_graph, vertex.color = node.cols, layout = layout.kamada.kawai)
 ```
 
 This data can also be represented by an adjacency matrix derived from a graph object.
@@ -160,7 +159,7 @@ Here we can see partitions in the plotted results. The nodes that are more inter
 ```{r, warning=FALSE, message=FALSE, fig.align='center', out.width="80%",fig.height = 6, fig.width = 6, fig.retina=1.5}
 library("RColorBrewer")
 node.cols <- brewer.pal(max(c(3, partition)),"Pastel1")[partition]
-plot(bipartite_graph, vertex.color = node.cols)
+plot(bipartite_graph, vertex.color = node.cols, layout = layout.kamada.kawai)
 ```
 
 
@@ -188,7 +187,7 @@ Here we can see partitions in the plotted results are different to as those comp
 ```{r, warning=FALSE, message=FALSE, fig.align='center', out.width="80%",fig.height = 6, fig.width = 6, fig.retina=1.5}
 library("RColorBrewer")
 node.cols <- brewer.pal(max(c(3, partition)),"Pastel1")[partition]
-plot(bipartite_graph, vertex.color = node.cols)
+plot(bipartite_graph, vertex.color = node.cols, layout = layout.kamada.kawai)
 ```
 
 #### Resolution Parameter
@@ -213,7 +212,7 @@ Here we can see partitions in the plotted results are the same as those computed
 ```{r, eval=module, warning=FALSE, message=FALSE, fig.align='center', out.width="80%",fig.height = 6, fig.width = 6, fig.retina=1.5}
 library("RColorBrewer")
 node.cols <- brewer.pal(max(c(3, partition)),"Pastel1")[partition]
-plot(bipartite_graph, vertex.color = node.cols)
+plot(bipartite_graph, vertex.color = node.cols, layout = layout.kamada.kawai)
 ```
 
 
@@ -240,5 +239,5 @@ Here we can see partitions in the plotted results are the same as those computed
 ```{r, eval=module, warning=FALSE, message=FALSE, fig.align='center', out.width="80%",fig.height = 6, fig.width = 6, fig.retina=1.5}
 library("RColorBrewer")
 node.cols <- brewer.pal(max(c(3, partition)),"Pastel1")[partition]
-plot(bipartite_graph, vertex.color = node.cols)
+plot(bipartite_graph, vertex.color = node.cols, layout = layout.kamada.kawai)
 ```
