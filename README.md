@@ -1,6 +1,6 @@
 # Leiden Algorithm
 
-## leiden version 0.4.0
+## leiden development version 0.4.0
 
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/leiden)](https://cran.r-project.org/package=leiden)
 [![Travis Build Status](https://travis-ci.org/TomKellyGenetics/leiden.svg?branch=master)](https://travis-ci.org/TomKellyGenetics/leiden)
@@ -21,6 +21,15 @@ This package allows calling the Leiden algorithm for clustering on an igraph obj
 [https://github.com/vtraag/leidenalg](https://github.com/vtraag/leidenalg)
 
 ## Install
+
+Note: this is the _development_ version of the `leiden` R package. This version
+has remote dependencies on the development version of the R 
+[igraph](https://github.com/igraph/rigraph/tree/dev) package. This must be
+cloned and compiled from source. It depends on functions not on CRAN (yet).
+
+This development version is for testing an upcoming release. It is _not_
+recommended to use this unless you require features not supported in previous
+releases.
 
 ### Dependancies
 
