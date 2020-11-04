@@ -53,6 +53,7 @@ run_bipartite_partitioning <- function(snn_graph,
 ##' @param degree_as_node_size (defaults to FALSE). If True use degree as node size instead of 1, to mimic modularity for Bipartite graphs.
 ##' @noRd
 ##' @description internal function to compute partitions by calling Python with reticulate
+##' @importFrom igraph as.undirected is_directed communities membership cluster_leiden
 ##' @keywords internal
 find_partition <- function(snn_graph, partition_type = c(
   'RBConfigurationVertexPartition',
@@ -98,6 +99,7 @@ degree_as_node_size = TRUE
       initial_membership = initial_membership, weights = weights,
       seed = seed, n_iterations = n_iterations
     ),
+    # igraph::membership(cluster_leiden(igraph::as.undirected(graph), objective_function = "modularity"))
     'RBERVertexPartition' = leidenalg$find_partition(
       snn_graph,
       leidenalg$RBERVertexPartition,
@@ -112,6 +114,7 @@ degree_as_node_size = TRUE
       seed = seed, n_iterations = n_iterations, node_sizes = node_sizes,
       resolution_parameter = resolution_parameter
     ),
+    #igraph::membership(cluster_leiden(igraph::as.undirected(graph), objective_function = "CPM"))
     'MutableVertexPartition' = leidenalg$find_partition(
       snn_graph,
       leidenalg$MutableVertexPartition,
