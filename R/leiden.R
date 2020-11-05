@@ -167,9 +167,8 @@ leiden.matrix <- function(object,
     # other option is to passing snn_graph to Python
 
     #compute partitions
-    #compute partitions
     partition <- find_partition(snn_graph, partition_type = partition_type,
-                                initial_membership = initial_membership ,
+                                initial_membership = initial_membership,
                                 weights = weights,
                                 node_sizes = node_sizes,
                                 resolution_parameter = resolution_parameter,
@@ -287,89 +286,110 @@ leiden.igraph <- function(object,
             object <- as.undirected(object, mode = "each")
         }
     }
-    call_igraph <- !is_directed(snn_graph) && !is_bipartite(object) && legacy == FALSE && partition_type == "CPMVertexPartition" || partition_type == "ModularityVertexPartition"
+    call_igraph <- !is_directed(object) && !is_bipartite(object) && legacy == FALSE && partition_type == "CPMVertexPartition" || partition_type == "ModularityVertexPartition"
 
+    if(call_igraph == TRUE){
+        #call igraph implementation
+        if(partition_type == "CPMVertexPartition"){
+            objective_function <- "cpm"
+        }
+        if(partition_type == "ModularityVertexPartition"){
+            objective_function <- "modularity"
+        }
 
-    #import python modules with reticulate
-    numpy <- reticulate::import("numpy", delay_load = TRUE)
-    leidenalg <- import("leidenalg", delay_load = TRUE)
-    ig <- import("igraph", delay_load = TRUE)
-
-    ##convert to python numpy.ndarray, then a list
-    if(!is_named(object)){
-        vertices <- as.list(as.character(V(object)))
+        #compute partitions with igraph in C
+        partition <- membership(cluster_leiden(graph,
+                                               objective_function = objective_function,
+                                               weights = weights,
+                                               resolution_parameter = resolution_parameter,
+                                               initial_membership = initial_membership,
+                                               n_iterations = n_iterations,
+                                               vertex_weights = NULL
+        ))
     } else {
-        vertices <- as.list(names(V(object)))
-    }
+        #call python reticulate implementation
 
-    edges <- as_edgelist(object)
-    dim(edges)
-    edgelist <- list(rep(NA, nrow(edges)))
-    for(ii in 1:nrow(edges)){
-        edgelist[[ii]] <- as.character(edges[ii,])
-    }
+        #import python modules with reticulate
+        numpy <- reticulate::import("numpy", delay_load = TRUE)
+        leidenalg <- import("leidenalg", delay_load = TRUE)
+        ig <- import("igraph", delay_load = TRUE)
 
-    snn_graph <- ig$Graph()
-    snn_graph$add_vertices(r_to_py(vertices))
-    snn_graph$add_edges(r_to_py(edgelist))
+        ##convert to python numpy.ndarray, then a list
+        if(!is_named(object)){
+            vertices <- as.list(as.character(V(object)))
+        } else {
+            vertices <- as.list(names(V(object)))
+        }
 
-    #compute weights if weighted graph given
-    if(is_weighted(object)){
-        #assign weights to edges (without dependancy on igraph)
-        weights <- r_to_py(edge_attr(object)$weight)
-        snn_graph$es$set_attribute_values('weight', weights)
-    }
+        edges <- as_edgelist(object)
+        dim(edges)
+        edgelist <- list(rep(NA, nrow(edges)))
+        for(ii in 1:nrow(edges)){
+            edgelist[[ii]] <- as.character(edges[ii,])
+        }
 
-    if(length(partition_type) > 1) partition_type <- partition_type[1]
-    if(is_bipartite(object) && partition_type == "ModularityVertexPartition"){
-        partition_type <- "ModularityVertexPartition.Bipartite"
-    }
-    if(partition_type == "ModularityVertexPartition.Bipartite"){
-        if(is.null(vertex_attr(object, "type"))){
-            if(bipartite_mapping(object)$res){
-                packageStartupMessage("computing bipartite partitions")
-                object <- set_vertex_attr(object, "type", value = bipartite_mapping(object)$type)
-                partition_type <- "ModularityVertexPartition.Bipartite"
-            } else {
-                packageStartupMessage("cannot compute bipartite types, defaulting to partition type ModularityVertexPartition")
-                partition_type <- "ModularityVertexPartition"
+        snn_graph <- ig$Graph()
+        snn_graph$add_vertices(r_to_py(vertices))
+        snn_graph$add_edges(r_to_py(edgelist))
+
+        #compute weights if weighted graph given
+        if(is_weighted(object)){
+            #assign weights to edges (without dependancy on igraph)
+            weights <- r_to_py(edge_attr(object)$weight)
+            snn_graph$es$set_attribute_values('weight', weights)
+        }
+
+        if(length(partition_type) > 1) partition_type <- partition_type[1]
+        if(is_bipartite(object) && partition_type == "ModularityVertexPartition"){
+            partition_type <- "ModularityVertexPartition.Bipartite"
+        }
+        if(partition_type == "ModularityVertexPartition.Bipartite"){
+            if(is.null(vertex_attr(object, "type"))){
+                if(bipartite_mapping(object)$res){
+                    packageStartupMessage("computing bipartite partitions")
+                    object <- set_vertex_attr(object, "type", value = bipartite_mapping(object)$type)
+                    partition_type <- "ModularityVertexPartition.Bipartite"
+                } else {
+                    packageStartupMessage("cannot compute bipartite types, defaulting to partition type ModularityVertexPartition")
+                    partition_type <- "ModularityVertexPartition"
+                }
             }
         }
-    }
-    if(is_bipartite(object) && partition_type == "CPMVertexPartition"){
-        partition_type <- "CPMVertexPartition.Bipartite"
-    }
-    if(partition_type == "CPMVertexPartition.Bipartite"){
-        if(is.null(vertex_attr(object, "type"))){
-            if(bipartite_mapping(object)$res){
-                packageStartupMessage("computing bipartite partitions")
-                object <- set_vertex_attr(object, "type", value = bipartite_mapping(object)$type)
-                partition_type <- "CPMVertexPartition.Bipartite"
-            } else {
-                packageStartupMessage("cannot compute bipartite types, defaulting to partition type CPMVertexPartition")
-                partition_type <- "CPMVertexPartition"
+        if(is_bipartite(object) && partition_type == "CPMVertexPartition"){
+            partition_type <- "CPMVertexPartition.Bipartite"
+        }
+        if(partition_type == "CPMVertexPartition.Bipartite"){
+            if(is.null(vertex_attr(object, "type"))){
+                if(bipartite_mapping(object)$res){
+                    packageStartupMessage("computing bipartite partitions")
+                    object <- set_vertex_attr(object, "type", value = bipartite_mapping(object)$type)
+                    partition_type <- "CPMVertexPartition.Bipartite"
+                } else {
+                    packageStartupMessage("cannot compute bipartite types, defaulting to partition type CPMVertexPartition")
+                    partition_type <- "CPMVertexPartition"
+                }
             }
         }
+
+        if(!is.null(vertex_attr(object, "type")) || is_bipartite(object)){
+            type <- as.integer(V(object)$type)
+            snn_graph$vs$set_attribute_values('type', r_to_py(as.integer(type)))
+        }
+
+        # from here is the same as method for matrix
+        # would be better to refactor to call from matrix methof
+
+        #compute partitions with reticulate
+        partition <- find_partition(snn_graph, partition_type = partition_type,
+                                    initial_membership = initial_membership,
+                                    weights = weights,
+                                    node_sizes = node_sizes,
+                                    resolution_parameter = resolution_parameter,
+                                    seed = seed,
+                                    n_iterations = n_iterations,
+                                    degree_as_node_size = degree_as_node_size
+        )
     }
-
-    if(!is.null(vertex_attr(object, "type")) || is_bipartite(object)){
-        type <- as.integer(V(object)$type)
-        snn_graph$vs$set_attribute_values('type', r_to_py(as.integer(type)))
-    }
-
-    # from here is the same as method for matrix
-    # would be better to refactor to call from matrix methof
-
-    #compute partitions with reticulate
-    partition <- find_partition(snn_graph, partition_type = partition_type,
-                                initial_membership = initial_membership ,
-                                weights = weights,
-                                node_sizes = node_sizes,
-                                resolution_parameter = resolution_parameter,
-                                seed = seed,
-                                n_iterations = n_iterations,
-                                degree_as_node_size = degree_as_node_size
-    )
     partition
 }
 
