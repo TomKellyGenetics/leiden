@@ -124,7 +124,7 @@ adjacency_matrix <- igraph::as_adjacency_matrix(graph)
 partition <- leiden(adjacency_matrix)
 ```
 
-Calling leiden directly on a graph object is also avaible:
+Calling leiden directly on a graph object is also available:
 
 ```R
 partition <- leiden(graph_object)
