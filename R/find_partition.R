@@ -72,7 +72,8 @@ node_sizes = NULL,
 resolution_parameter = 1,
 seed = NULL,
 n_iterations = 2L,
-degree_as_node_size = TRUE
+degree_as_node_size = TRUE,
+legacy = FALSE
 ) {
   #import python modules with reticulate
   numpy <- reticulate::import("numpy", delay_load = TRUE)
