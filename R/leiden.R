@@ -14,7 +14,7 @@ NULL
 ##' @param n_iterations Number of iterations to run the Leiden algorithm. By default, 2 iterations are run. If the number of iterations is negative, the Leiden algorithm is run until an iteration in which there was no improvement.
 ##' @param degree_as_node_size (defaults to FALSE). If True use degree as node size instead of 1, to mimic modularity for Bipartite graphs.
 ##' @param laplacian (defaults to FALSE). Derive edge weights from the Laplacian matrix.
-##' @param legacy (defaults to FALSE). Force calling python implementation via reticulate. Default behaviour is calling cluster_leiden in igraph with Moduarity (for undirected graphs) and CPM cost functions.
+##' @param legacy (defaults to FALSE). Force calling python implementation via reticulate. Default behaviour is calling cluster_leiden in igraph with Modularity (for undirected graphs) and CPM cost functions.
 ##' @return A partition of clusters as a vector of integers
 ##' @examples
 ##' #check if python is availble
@@ -259,6 +259,9 @@ leiden.igraph <- function(object,
                           laplacian = FALSE,
                           legacy = FALSE
 ) {
+    #default partition
+    if(length(partition_type) > 1) partition_type <- partition_type[1]
+
     #pass weights to igraph if not found
     if(!is_weighted(object) && !is.null(weights)){
         #assign weights to edges (without dependancy on igraph)
@@ -282,7 +285,7 @@ leiden.igraph <- function(object,
     #check whether compatible with igraph implementations in R
     if(is_directed(object) && !is_bipartite(object)){
         #coerce to undirected graph object if possible
-        if(all(which_mutual(object) || which_loop(object)) || partition_type == "CPMVertexPartition"){
+        if(all(which_mutual(object) | which_loop(object)) || partition_type == "CPMVertexPartition"){
             object <- as.undirected(object, mode = "each")
         }
     }
@@ -343,7 +346,6 @@ leiden.igraph <- function(object,
             snn_graph$es$set_attribute_values('weight', weights)
         }
 
-        if(length(partition_type) > 1) partition_type <- partition_type[1]
         if(is_bipartite(object) && partition_type == "ModularityVertexPartition"){
             partition_type <- "ModularityVertexPartition.Bipartite"
         }

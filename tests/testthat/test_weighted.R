@@ -55,7 +55,7 @@ test_that("same output with different input class", {
   expect_equal(sum(diag(table(part_mat0, part_graph0))), nrow(mat))
   expect_equal(sum(diag(table(part_mat0, part_graph0))), length(V(graph)))
 })
-  
+
 # # Test Seurat (development version)
 # devtools::install_github("TomKellyGenetics/seurat", ref = "pr", quiet = TRUE)
 # devtools::install_github("satijalab/seurat", ref = "develop", quiet = TRUE)
@@ -94,38 +94,41 @@ test_that("run with weighted dense matrix", {
   mat
   #passing weights
   part_mat1 <- leiden::leiden(mat, seed = 9000, weights = t(mat)[t(mat) != 0])
-  expect_equal(part_mat1, c(2, 1, 1, 1, 2, 1, 1, 2, 2, 2)) 
+  expect_equal(part_mat1, c(2, 1, 1, 1, 2, 1, 1, 2, 2, 2))
   #detecting weights from matrix
   part_mat1 <- leiden::leiden(mat, seed = 9000)
-  expect_equal(part_mat1, c(2, 1, 1, 1, 2, 1, 1, 2, 2, 2)) 
+  expect_equal(part_mat1, c(2, 1, 1, 1, 2, 1, 1, 2, 2, 2))
 })
 
 test_that("run with weighted sparse matrix", {
   skip_if_no_python()
+  set.seed(9000)
   sp.mat <- as(mat, Class = "dgCMatrix")
   #passing weights
   part_sp.mat1 <- leiden::leiden(sp.mat, seed = 9000, weights = mat[mat != 0])
-  expect_equal(part_sp.mat1, c(2, 1, 1, 1, 2, 1, 1, 2, 2, 2)) 
+  expect_equal(part_sp.mat1, c(2, 1, 1, 1, 2, 1, 1, 2, 2, 2))
   #detecting weights from matrix
   part_sp.mat1 <- leiden::leiden(sp.mat, seed = 9000)
-  expect_equal(part_sp.mat1, c(2, 1, 1, 1, 2, 1, 1, 2, 2, 2)) 
+  expect_equal(part_sp.mat1, c(2, 1, 1, 1, 2, 1, 1, 2, 2, 2))
 })
 
 
 test_that("run with weighted graph object", {
   skip_if_no_python()
+  set.seed(9000)
   graph <- igraph::graph_from_adjacency_matrix(mat, weighted = NULL)
   graph
   #passing weights
   part_graph1 <- leiden::leiden(graph, seed = 9000, weights = edge.attributes(graph)$weight)
-  expect_equal(part_graph1, c(2, 1, 1, 1, 2, 1, 1, 2, 2, 2)) 
+  expect_equal(part_graph1, c(2, 1, 1, 1, 2, 1, 1, 2, 2, 2))
   #detecting weights from matrix
   part_graph1 <- leiden::leiden(graph, seed = 9000)
-  expect_equal(part_graph1, c(2, 1, 1, 1, 2, 1, 1, 2, 2, 2)) 
+  expect_equal(part_graph1, c(2, 1, 1, 1, 2, 1, 1, 2, 2, 2))
 })
 
 test_that("same output with different input class", {
   skip_if_no_python()
+  set.seed(9000)
   part_mat1 <- leiden::leiden(mat, seed = 9000)
   part_graph1 <- leiden::leiden(graph, seed = 9000)
   expect_equivalent(part_mat1, c(2, 1, 1, 1, 2, 1, 1, 2, 2, 2))
