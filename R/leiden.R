@@ -280,6 +280,16 @@ leiden.igraph <- function(object,
         }
     }
 
+    #check whether compatible with igraph implementations in R
+    if(is_directed(object) && !is_bipartite(object)){
+        #coerce to undirected graph object if possible
+        if(all(which_mutual(object) || which_loop(object)) || partition_type == "CPMVertexPartition"){
+            object <- as.undirected(object, mode = "each")
+        }
+    }
+    call_igraph <- !is_directed(snn_graph) && !is_bipartite(object) && legacy == FALSE && partition_type == "CPMVertexPartition" || partition_type == "ModularityVertexPartition"
+
+
     #import python modules with reticulate
     numpy <- reticulate::import("numpy", delay_load = TRUE)
     leidenalg <- import("leidenalg", delay_load = TRUE)
