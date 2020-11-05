@@ -269,7 +269,7 @@ The R version can be installed with devtools or from CRAN:
 install.packages("leiden")
 ```
 
-```{r, eval=TRUE, include=FALSE}
+```{r, eval=FALSE, include=FALSE}
 install.packages("leiden",  quiet = TRUE, repos = 1)
 devtools::install_github("TomKellyGenetics/leiden", ref = "dev")
 ```
@@ -280,7 +280,7 @@ install.packages("leiden")
 
 Note that these require the Python version as a dependency.
 
-### Running in R
+### Running in R via reticulate and igraph
 
 We can reproduce these by running the Leiden algorithm in R using the functions in the leiden package.
 
@@ -304,8 +304,13 @@ Then we load the Zachary karate club example data from igraph.
 G <- graph.famous("Zachary")
 summary(G)
 ```
+
+#### Calling python in R via reticulate 
+
+Here run "legacy" mode to call "leidenalg" in python with the R reticulate package.
+
 ```{r, eval=module}
-partition <- leiden(G, "ModularityVertexPartition")
+partition <- leiden(G, "ModularityVertexPartition", legacy = TRUE)
 partition
 ```
 
@@ -327,7 +332,7 @@ plot(G, vertex.color = node.cols, layout=layout_with_kk)
 We can reproduce passing arguments in this manner as well.
 
 ````{r, eval=module}
-partition <- leiden(G, "CPMVertexPartition", resolution_parameter = 0.5)
+partition <- leiden(G, "CPMVertexPartition", resolution_parameter = 0.05, legacy = TRUE)
 partition
 ```
 
@@ -361,6 +366,55 @@ node.cols <- brewer.pal(max(c(3, partition)),"Pastel1")[partition]
 plot(G, vertex.color = node.cols, layout=layout_with_kk)
 ```
 
+#### Calling C in R with igraph
+
+We can improve performance for undirected graphs for Modularity and CPM cost functions by calling C in igraph.
+
+```{r, eval=module}
+G <- as.undirected(G, mode = "each")
+is.directed(G)
+partition <- leiden(G, "ModularityVertexPartition", legacy = FALSE)
+partition
+```
+
+```{r, eval=module}
+table(partition)
+```
+
+We can plot the result in R to show it in the network. This reproduces the example in the Python leidenalg documentation.
+
+```{r}
+library("igraph")
+library("reticulate")
+library("RColorBrewer")
+node.cols <- brewer.pal(max(c(3, partition)),"Pastel1")[partition]
+plot(G, vertex.color = node.cols, layout=layout_with_kk)
+```
+
+We check here that it returns the same results as in igraph.
+
+````{r, eval=module}
+partition <- membership(cluster_leiden(G, objective_function = "modularity"))
+partition
+table(partition)
+```
+
+We can also run CPM cost functions.
+
+````{r, eval=module}
+partition <- leiden(G, "CPMVertexPartition", resolution_parameter = 0.1, legacy = FALSE)
+partition
+table(partition)
+```
+
+We can plot the result in R to show it in the network. This reproduces the example in the Python leidenalg documentation.
+
+```{r, eval=module}
+node.cols <- brewer.pal(max(c(3, partition)),"Pastel1")[partition]
+plot(G, vertex.color = node.cols, layout=layout_with_kk)
+```
+
+
 #### Benchmarking the R version with reticulate
 
 Now we can time how long the computation of the algorithm takes (for 1000 runs) calling with R on a graph object:
@@ -370,7 +424,7 @@ G <- graph.famous('Zachary')
 summary(G)
 start <- Sys.time()
 for(ii in 1:100){
-  partition = leiden(G, "ModularityVertexPartition")
+  partition <- leiden(G, "ModularityVertexPartition", legacy = TRUE)
 }
 end <- Sys.time()
 table(partition)
@@ -378,7 +432,7 @@ R_graph_time = difftime(end, start)[[1]]
 print(paste(c("leiden time:", R_graph_time, "seconds"), collapse = " "))
 ```
 
-We can see that the R implementation does not perform as well as the Python version but it is convenient for R users. Calling from a graph object avoids casting to a dense adjacency matrix which reduces memory load for large graph objects.
+We can see that the R reticualte implementation does not perform as well as the Python version but it is convenient for R users. Calling from a graph object avoids casting to a dense adjacency matrix which reduces memory load for large graph objects.
 
 We can see that calling leiden in R on an adjacency matrix has faster performance but it does require more memory. For example, on a dense adjacency matrix:
   
@@ -704,14 +758,108 @@ partition
 
 Here we can see that the current approach to pass adjacency matrices to Python and generate graphs in Python is more efficient for a dense matrix than computing the graph in R. Therefore the leiden.matrix method will not call the leiden.igraph method and they will remain distinct.
 
+#### Calling C in R with igraph
+
+Here we compare calling modularity clustering in igraph (R and C) to calling Python via reticulate. Note this is only available for undirected graphs with modularity or CPM. Calling igraph in R does not have a python dependency.
+
+```{r}
+time9 <- Sys.time()
+partition <- membership(cluster_leiden(G, objective_function = "modularity"))
+partition
+table(partition)
+time10 <- Sys.time()
+timing = difftime(time10, time9)[[1]]
+print(paste(c("run with igraph:", timing, "seconds"), collapse = " "))
+```
+
+The updated leiden package calls this implementation when available. We can see this is considerably faster and may be faster than call leidenalg in Python.
+
+```{r, eval=module}
+time11 <- Sys.time()
+partition <- leiden(G, "ModularityVertexPartition", legacy = FALSE)
+partition
+table(partition)
+time12 <- Sys.time()
+timing = difftime(time12, time11)[[1]]
+print(paste(c("run with leiden in igraph:", timing, "seconds"), collapse = " "))
+```
+
+This is considerably faster than the reticulate implementation, especially for larger matrices.
+
+```{r, eval=module}
+time13 <- Sys.time()
+partition <- leiden(G, "ModularityVertexPartition", legacy = TRUE)
+partition
+table(partition)
+time14 <- Sys.time()
+timing = difftime(time14, time13)[[1]]
+print(paste(c("run with leiden with reticulate:", timing, "seconds"), collapse = " "))
+```
+
+Matrix methods in R are significantly slower than the updated igraph version.
+
+```{r, eval=module}
+library("Matrix")
+adj_mat <- as(as_adjacency_matrix(G), Class = "dgCMatrix")
+time15 <- Sys.time()
+partition <- leiden(adj_mat, "ModularityVertexPartition", legacy = TRUE)
+partition
+table(partition)
+time16 <- Sys.time()
+timing = difftime(time16, time15)[[1]]
+print(paste(c("run with leiden with reticulate:", timing, "seconds"), collapse = " "))
+```
+
+```{r, eval=module}
+adj_mat <- as_adjacency_matrix(G)
+time15 <- Sys.time()
+partition <- leiden(adj_mat, "ModularityVertexPartition", legacy = TRUE)
+partition
+table(partition)
+time16 <- Sys.time()
+timing = difftime(time16, time15)[[1]]
+print(paste(c("run with leiden with reticulate:", timing, "seconds"), collapse = " "))
+```
+
+#### Benchmarking C in R with igraph
+
+For comparison with other methods we compute multiple iterations.
+
+```{r, cache=TRUE, , eval=module}
+G <- graph.famous('Zachary')
+summary(G)
+start <- Sys.time()
+for(ii in 1:100){
+  partition <- membership(cluster_leiden(G, objective_function = "modularity"))
+}
+end <- Sys.time()
+table(partition)
+igraph_time = difftime(end, start)[[1]]
+print(paste(c("leiden time:", igraph_time, "seconds"), collapse = " "))
+```
+
+```{r, cache=TRUE, , eval=module}
+G <- graph.famous('Zachary')
+summary(G)
+start <- Sys.time()
+for(ii in 1:100){
+  partition <- leiden(G, "ModularityVertexPartition", legacy =  FALSE)
+}
+end <- Sys.time()
+table(partition)
+R_cigraph_time = difftime(end, start)[[1]]
+print(paste(c("leiden time:", R_cigraph_time, "seconds"), collapse = " "))
+```
+
 ## Summary
 
 Here we compare the compute time for the Zachary datasets between each method for computing paritions from the leiden clustering algorithm in R or Python.
 
 ```{r, fig.align = 'center', fig.height = 3, fig.width = 6, fig.keep = 'last', eval=module}
-barplot(c(bash_py_time, py$py_time, reticulate_time, R_graph_time, 
-          R_mat_time, R_sparse_mat_time), 
-        names = c("Python (shell)", "Python (Rmd)", "Reticulate", "R igraph",
+barplot(c(bash_py_time, py$py_time, reticulate_time, R_graph_time,
+          R_cigraph_time, igraph_time, R_mat_time, R_sparse_mat_time), 
+        names = c("Python (shell)", "Python (Rmd)", "Reticulate",
+                  "R igraph reticulate", "R igraph (C)", "R igraph cluster_leiden",
                   "R matrix","R dgCMatrix"), 
         col = brewer.pal(9,"Pastel1"), las = 2, srt = 45,
         ylab = "time (seconds)", main = "benchmarking 100 computations")
@@ -721,16 +869,19 @@ abline(h=0)
 If we account for time to cast matrices from graph objects. Then these are the time taken to compute partitions from a graph in R.
 
 ```{r, fig.align = 'center', fig.height = 3, fig.width = 6, fig.keep = 'last', eval=module}
-barplot(c(bash_py_time, py$py_time, reticulate_time, R_graph_time, R_mat_time+R_mat_cast_time, 
+barplot(c(bash_py_time, py$py_time, reticulate_time, R_graph_time,
+          R_cigraph_time, igraph_time, R_mat_time+R_mat_cast_time, 
           R_sparse_mat_time+R_sparse_mat_cast_time), 
-        names = c("Python (shell)", "Python (Rmd)", "Reticulate", "R igraph",
+        names = c("Python (shell)", "Python (Rmd)", "Reticulate",
+                  "R igraph reticulate", "R igraph (C)", "R igraph cluster_leiden",
                   "R matrix","R dgCMatrix"), 
         col = "grey80", las = 2, srt = 45,
         ylab = "time (seconds)", main = "benchmarking 100 computations")
 barplot(c(bash_py_time, py$py_time, reticulate_time, R_graph_time,
-          R_mat_time,  R_sparse_mat_time), 
-        names = c("Python (shell)", "Python (Rmd)", "Reticulate", "R igraph",
-                  "R matrix","R dgCMatrix"), 
+          R_cigraph_time, igraph_time, R_mat_time,  R_sparse_mat_time), 
+        names = c("Python (shell)", "Python (Rmd)", "Reticulate",
+                  "R igraph reticulate", "R igraph (C)", "R igraph cluster_leiden",
+                  "R matrix","R dgCMatrix"),
         col = brewer.pal(9,"Pastel1"), las = 2, srt = 45,
         ylab = "time (seconds)", main = "benchmarking 100 computations", add = TRUE)
 abline(h=0)
@@ -740,15 +891,17 @@ Similarly, if we account for time to generate graph from an adjaceny matrix. The
 
 ```{r, fig.align = 'center', fig.height = 3, fig.width = 6, fig.keep = 'last', eval=module}
 R_graph_create_time = difftime(time4, time3)[[1]]
-barplot(c(bash_py_time, py$py_time+reticulate_create_time*100, reticulate_time+reticulate_create_time*100, R_graph_time+R_graph_create_time*100, R_mat_time, 
-          R_sparse_mat_time), 
-        names = c("Python (shell)", "Python (Rmd)", "Reticulate", "R igraph",
+barplot(c(bash_py_time, py$py_time+reticulate_create_time*100, reticulate_time+reticulate_create_time*100, R_graph_time+R_graph_create_time*100,
+        R_cigraph_time, igraph_time, R_mat_time, R_sparse_mat_time), 
+        names = c("Python (shell)", "Python (Rmd)", "Reticulate",
+                  "R igraph reticulate", "R igraph (C)", "R igraph cluster_leiden",
                   "R matrix","R dgCMatrix"), 
         col = "grey80", las = 2, srt = 45,
         ylab = "time (seconds)", main = "benchmarking 100 computations")
-barplot(c(bash_py_time, py$py_time, reticulate_time, R_graph_time,
-          R_mat_time,  R_sparse_mat_time), 
-        names = c("Python (shell)", "Python (Rmd)", "Reticulate", "R igraph",
+barplot(c(bash_py_time, py$py_time, reticulate_time, R_graph_time, 
+        R_cigraph_time, igraph_time, R_mat_time,  R_sparse_mat_time), 
+        names = c("Python (shell)", "Python (Rmd)", "Reticulate",
+                  "R igraph reticulate", "R igraph (C)", "R igraph cluster_leiden",
                   "R matrix","R dgCMatrix"), 
         col = brewer.pal(9,"Pastel1"), las = 2, srt = 45,
         ylab = "time (seconds)", main = "benchmarking 100 computations", add = TRUE)
