@@ -1,5 +1,5 @@
 ##' internal function to compute bipartite paritions
-##' @param snn_graph an igraph object
+##' @param snn_graph an igraph object in python (reticulate)
 ##' @param partition_type Type of partition to use. Defaults to RBConfigurationVertexPartition. Options include: ModularityVertexPartition, RBERVertexPartition, CPMVertexPartition, MutableVertexPartition, SignificanceVertexPartition, SurpriseVertexPartition, ModularityVertexPartition.Bipartite, CPMVertexPartition.Bipartite (see the Leiden python module documentation for more details)
 ##' @param initial_membership,weights,node_sizes Parameters to pass to the Python leidenalg function (defaults initial_membership=None, weights=None). Weights are derived from weighted igraph objects and non-zero integer values of adjacency matrices.
 ##' @param resolution_parameter_1,resolution_parameter_0,resolution_parameter_01 A parameter controlling the coarseness of the clusters
@@ -53,7 +53,6 @@ run_bipartite_partitioning <- function(snn_graph,
 ##' @param degree_as_node_size (defaults to FALSE). If True use degree as node size instead of 1, to mimic modularity for Bipartite graphs.
 ##' @noRd
 ##' @description internal function to compute partitions by calling Python with reticulate
-##' @importFrom igraph as.undirected is_directed communities membership cluster_leiden
 ##' @keywords internal
 find_partition <- function(snn_graph, partition_type = c(
   'RBConfigurationVertexPartition',
@@ -100,7 +99,6 @@ legacy = FALSE
       initial_membership = initial_membership, weights = weights,
       seed = seed, n_iterations = n_iterations
     ),
-    # igraph::membership(cluster_leiden(igraph::as.undirected(graph), objective_function = "modularity"))
     'RBERVertexPartition' = leidenalg$find_partition(
       snn_graph,
       leidenalg$RBERVertexPartition,
