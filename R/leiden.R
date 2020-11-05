@@ -236,7 +236,7 @@ leiden.Matrix <- function(object,
 ##' @export
 leiden.default <- leiden.matrix
 
-##' @importFrom igraph V as_edgelist is.weighted is.named edge_attr as_adjacency_matrix laplacian_matrix vertex_attr is_bipartite bipartite_mapping set_vertex_attr simplify
+##' @importFrom igraph V as_edgelist is_weighted is_named edge_attr as_adjacency_matrix laplacian_matrix vertex_attr is_bipartite bipartite_mapping set_vertex_attr simplify as.undirected is_directed communities membership cluster_leiden which_mutual which_loop
 ##' @export
 leiden.igraph <- function(object,
                           partition_type = c(
@@ -260,13 +260,33 @@ leiden.igraph <- function(object,
                           laplacian = FALSE,
                           legacy = FALSE
 ) {
+    #pass weights to igraph if not found
+    if(!is_weighted(object) && !is.null(weights)){
+        #assign weights to edges (without dependancy on igraph)
+        if(length(E(object)) == length(weights)){
+            set_edge_attr(object, "weight", value = weights)
+        } else {
+            warning(paste("weights but be same length as number of edges:", length(E(object))))
+            weights <- NULL
+        }
+    }
+
+    #derive Laplacian
+    if(laplacian == TRUE){
+        object <- simplify(object, remove.multiple = TRUE, remove.loops = TRUE)
+        laplacian <- laplacian_matrix(object)
+        if(!is_weighted(object)){
+            object <- set_edge_attr(object, "weight", value = -as.matrix(laplacian)[as.matrix(laplacian) < 0])
+        }
+    }
+
     #import python modules with reticulate
     numpy <- reticulate::import("numpy", delay_load = TRUE)
     leidenalg <- import("leidenalg", delay_load = TRUE)
     ig <- import("igraph", delay_load = TRUE)
 
     ##convert to python numpy.ndarray, then a list
-    if(!is.named(object)){
+    if(!is_named(object)){
         vertices <- as.list(as.character(V(object)))
     } else {
         vertices <- as.list(names(V(object)))
@@ -283,40 +303,38 @@ leiden.igraph <- function(object,
     snn_graph$add_vertices(r_to_py(vertices))
     snn_graph$add_edges(r_to_py(edgelist))
 
-    #derive Laplacian
-    if(laplacian == TRUE){
-        object <- simplify(object, remove.multiple = TRUE, remove.loops = TRUE)
-        laplacian <- laplacian_matrix(object)
-        if(!is.weighted(object)){
-            edge_attr(object)$weight
-            object <- set_edge_attr(object, "weight", value = -as.matrix(laplacian)[as.matrix(laplacian) < 0])
-        }
-    }
-
     #compute weights if weighted graph given
-    if(is.weighted(object)){
+    if(is_weighted(object)){
         #assign weights to edges (without dependancy on igraph)
         weights <- r_to_py(edge_attr(object)$weight)
         snn_graph$es$set_attribute_values('weight', weights)
     }
 
     if(length(partition_type) > 1) partition_type <- partition_type[1]
+    if(is_bipartite(object) && partition_type == "ModularityVertexPartition"){
+        partition_type <- "ModularityVertexPartition.Bipartite"
+    }
     if(partition_type == "ModularityVertexPartition.Bipartite"){
         if(is.null(vertex_attr(object, "type"))){
             if(bipartite_mapping(object)$res){
                 packageStartupMessage("computing bipartite partitions")
                 object <- set_vertex_attr(object, "type", value = bipartite_mapping(object)$type)
+                partition_type <- "ModularityVertexPartition.Bipartite"
             } else {
                 packageStartupMessage("cannot compute bipartite types, defaulting to partition type ModularityVertexPartition")
                 partition_type <- "ModularityVertexPartition"
             }
         }
     }
+    if(is_bipartite(object) && partition_type == "CPMVertexPartition"){
+        partition_type <- "CPMVertexPartition.Bipartite"
+    }
     if(partition_type == "CPMVertexPartition.Bipartite"){
         if(is.null(vertex_attr(object, "type"))){
             if(bipartite_mapping(object)$res){
                 packageStartupMessage("computing bipartite partitions")
                 object <- set_vertex_attr(object, "type", value = bipartite_mapping(object)$type)
+                partition_type <- "CPMVertexPartition.Bipartite"
             } else {
                 packageStartupMessage("cannot compute bipartite types, defaulting to partition type CPMVertexPartition")
                 partition_type <- "CPMVertexPartition"
@@ -332,7 +350,7 @@ leiden.igraph <- function(object,
     # from here is the same as method for matrix
     # would be better to refactor to call from matrix methof
 
-    #compute partitions
+    #compute partitions with reticulate
     partition <- find_partition(snn_graph, partition_type = partition_type,
                                 initial_membership = initial_membership ,
                                 weights = weights,
