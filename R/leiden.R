@@ -286,7 +286,9 @@ leiden.igraph <- function(object,
             object <- as.undirected(object, mode = "each")
         }
     }
-    call_igraph <- !is_directed(object) && !is_bipartite(object) && legacy == FALSE && partition_type == "CPMVertexPartition" || partition_type == "ModularityVertexPartition"
+    call_igraph <- !is_directed(object) && !is_bipartite(object) && legacy == FALSE && (partition_type == "CPMVertexPartition" || partition_type == "ModularityVertexPartition")
+
+    #print(call_igraph)
 
     if(call_igraph == TRUE){
         #call igraph implementation
@@ -298,7 +300,8 @@ leiden.igraph <- function(object,
         }
 
         #compute partitions with igraph in C
-        partition <- membership(cluster_leiden(graph,
+        if(!is.null(seed)) set.seed(seed)
+        partition <- membership(cluster_leiden(graph = object,
                                                objective_function = objective_function,
                                                weights = weights,
                                                resolution_parameter = resolution_parameter,
@@ -306,6 +309,7 @@ leiden.igraph <- function(object,
                                                n_iterations = n_iterations,
                                                vertex_weights = NULL
         ))
+        partition <- as.numeric(partition)
     } else {
         #call python reticulate implementation
 

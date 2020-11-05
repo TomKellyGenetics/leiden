@@ -67,3 +67,128 @@ test_that("run with named adjacency matrix", {
   expect_length(partition, 100)
 })
 
+mat1 <- matrix(round(runif(10000, 0, 1)), 100, 100)
+mat2 <- matrix(round(rbinom(10000, 1, 0.1)), 100, 100)
+adj_mat <- rbind(cbind(mat1, mat2), cbind(mat2, mat1))
+
+snn_graph <- graph_from_adjacency_matrix(adj_mat)
+snn_graph <- as.undirected(snn_graph, mode = "each")
+
+test_that("run with reticulate in legacy mode with 2 clusters", {
+  skip_if_no_python()
+  set.seed(42)
+  partition <- leiden(snn_graph,
+                      partition_type = "ModularityVertexPartition",
+                      seed = 42L,
+                      legacy = TRUE,
+                      resolution_parameter = 0.95)
+  expect_length(partition, 200)
+})
+
+test_that("run with igraph modewith 2 clusters", {
+  skip_if_no_python()
+  set.seed(42)
+  partition <- leiden(snn_graph,
+                      partition_type = "ModularityVertexPartition",
+                      seed = 42L,
+                      legacy = FALSE,
+                      resolution_parameter = 0.95)
+  expect_length(partition, 200)
+})
+
+test_that("run consistent results bewteen igraph and reticulate legacy mode with 2 clusters", {
+  skip_if_no_python()
+  set.seed(42)
+  partition <- leiden(snn_graph,
+                      partition_type = "ModularityVertexPartition",
+                      seed = 42L,
+                      legacy = TRUE,
+                      resolution_parameter = 0.95)
+  expect_length(partition, 200)
+  set.seed(42)
+  partition2 <- leiden(snn_graph,
+                       partition_type = "ModularityVertexPartition",
+                       seed = 42L,
+                       legacy = FALSE,
+                       resolution_parameter = 0.95)
+  expect_true(all(table(partition, partition2) %in% c(0, 100)))
+  set.seed(42)
+  partition <- leiden(snn_graph,
+                      partition_type = "CPMVertexPartition",
+                      seed = 42L,
+                      legacy = TRUE,
+                      resolution_parameter = 0.5)
+  expect_length(partition, 200)
+  set.seed(42)
+  partition2 <- leiden(snn_graph,
+                       partition_type = "CPMVertexPartition",
+                       seed = 42L,
+                       legacy = FALSE,
+                       resolution_parameter = 0.5)
+  expect_true(all(table(partition, partition2) %in% c(0, 100)))
+})
+
+mat1 <- matrix(round(runif(10000, 0, 1)), 100, 100)
+mat2 <- matrix(round(rbinom(10000, 1, 0.1)), 100, 100)
+mat3 <- matrix(round(rbinom(10000, 1, 0.01)), 100, 100)
+adj_mat <- rbind(cbind(mat1, mat2, mat3), cbind(mat2, mat1, mat2), cbind(mat3, mat2, mat1))
+
+snn_graph <- graph_from_adjacency_matrix(adj_mat)
+snn_graph <- as.undirected(snn_graph, mode = "each")
+
+test_that("run with reticulate in legacy mode with 3 clusters", {
+  skip_if_no_python()
+  set.seed(42)
+  partition <- leiden(snn_graph,
+                      partition_type = "ModularityVertexPartition",
+                      seed = 42L,
+                      legacy = TRUE,
+                      resolution_parameter = 0.95)
+  expect_length(partition, 300)
+})
+
+test_that("run with igraph mode with 3 clusters", {
+  skip_if_no_python()
+  set.seed(42)
+  partition <- leiden(snn_graph,
+                      partition_type = "ModularityVertexPartition",
+                      seed = 42L,
+                      legacy = FALSE,
+                      resolution_parameter = 0.95)
+  expect_length(partition, 300)
+})
+
+test_that("run consistent results bewteen igraph and reticulate legacy mode with 3 clusters", {
+  skip_if_no_python()
+  set.seed(42)
+  partition <- leiden(snn_graph,
+                      partition_type = "ModularityVertexPartition",
+                      seed = 42L,
+                      legacy = TRUE,
+                      resolution_parameter = 0.95)
+  expect_length(partition, 300)
+  set.seed(42)
+  partition2 <- leiden(snn_graph,
+                       partition_type = "ModularityVertexPartition",
+                       seed = 42L,
+                       legacy = FALSE,
+                       resolution_parameter = 0.95)
+  expect_true(all(table(partition, partition2) %in% c(0, 100)))
+  set.seed(42)
+  partition <- leiden(snn_graph,
+                      partition_type = "CPMVertexPartition",
+                      seed = 42L,
+                      legacy = TRUE,
+                      resolution_parameter = 0.5)
+  expect_length(partition, 300)
+  set.seed(42)
+  partition2 <- leiden(snn_graph,
+                       partition_type = "CPMVertexPartition",
+                       seed = 42L,
+                       legacy = FALSE,
+                       resolution_parameter = 0.5)
+  expect_true(all(table(partition, partition2) %in% c(0, 100)))
+})
+
+
+
