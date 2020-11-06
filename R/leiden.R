@@ -132,8 +132,7 @@ leiden.matrix <- function(object,
     leidenalg <- import("leidenalg", delay_load = TRUE)
     ig <- import("igraph", delay_load = TRUE)
 
-    adj_mat_py <- make_py_object(object, weights = weights)
-    py_graph <- GraphClass(adj_mat_py)
+    py_graph <- make_py_object(object, weights = weights)
 
     #compute partitions
     partition <- find_partition(py_graph, partition_type = partition_type,
@@ -227,22 +226,41 @@ leiden.list <- function(object,
                           laplacian = FALSE,
                           legacy = FALSE
 ) {
+    if(length(partition_type) > 1) partition_type <- partition_type[[1]][1]
+    partition_type <- match.arg(partition_type)
+
     if(length(object) == 1){
         object <- object[[1]]
-        leiden(object,
-                      partition_type = partition_type,
-                      weights = weights,
-                      node_sizes = node_sizes,
-                      resolution_parameter = resolution_parameter,
-                      seed = seed,
-                      n_iterations = n_iterations,
-                      degree_as_node_size = degree_as_node_size,
-                      laplacian = laplacian,
-                      legacy = legacy
+        partition <- leiden(object,
+                            partition_type = partition_type,
+                            weights = weights,
+                            node_sizes = node_sizes,
+                            resolution_parameter = resolution_parameter,
+                            seed = seed,
+                            n_iterations = n_iterations,
+                            degree_as_node_size = degree_as_node_size,
+                            laplacian = laplacian,
+                            legacy = legacy
         )
     } else{
+        py_list <- r_to_py(lapply(object, make_py_graph))
 
+
+        if(partition_type == 'ModularityVertexPartition.Bipartite') partition_type <- "ModularityVertexPartition"
+        if(partition_type == 'CPMVertexPartition.Bipartite') partition_type <- "CPMVertexPartition"
+
+        #compute partitions with reticulate
+        partition <- find_partition_multiplex(py_list, partition_type = partition_type,
+                                    initial_membership = initial_membership,
+                                    weights = weights,
+                                    node_sizes = node_sizes,
+                                    resolution_parameter = resolution_parameter,
+                                    seed = seed,
+                                    n_iterations = n_iterations,
+                                    degree_as_node_size = degree_as_node_size
+        )
     }
+    partition
 }
 
 ##' @export
@@ -273,7 +291,9 @@ leiden.igraph <- function(object,
                           legacy = FALSE
 ) {
     #default partition
-    if(length(partition_type) > 1) partition_type <- partition_type[1]
+    if(length(partition_type) > 1) partition_type <- partition_type[[1]][1]
+    partition_type <- match.arg(partition_type)
+
 
     #pass weights to igraph if not found
     if(!is_weighted(object) && !is.null(weights)){
@@ -370,9 +390,6 @@ leiden.igraph <- function(object,
             type <- as.integer(V(object)$type)
             py_graph$vs$set_attribute_values('type', r_to_py(as.integer(type)))
         }
-
-        # from here is the same as method for matrix
-        # would be better to refactor to call from matrix methof
 
         #compute partitions with reticulate
         partition <- find_partition(py_graph, partition_type = partition_type,
