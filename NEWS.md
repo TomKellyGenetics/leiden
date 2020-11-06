@@ -1,3 +1,7 @@
+# leiden 0.3.6
+
+* add methods for multiplex community detection from a list of graphs
+
 # leiden 0.3.5
 
 * background changes to build vignettes on CRAN

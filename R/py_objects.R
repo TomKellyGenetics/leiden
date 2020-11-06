@@ -38,12 +38,6 @@ make_py_object.matrix <- function(object, weights = NULL){
   }
   adj_mat_py <- adj_mat_py$tolist()
 
-  #convert graph structure to a Python compatible object
-  GraphClass <- if (!is.null(weights) && !is_pure_adj){
-    ig$Graph$Weighted_Adjacency
-  } else {
-    ig$Graph$Adjacency
-  }
   adj_mat_py
 }
 
@@ -77,6 +71,29 @@ make_py_object.igraph <- function(object, weights = NULL){
     weights <- r_to_py(edge_attr(object)$weight)
     py_graph$es$set_attribute_values('weight', weights)
   }
-
   py_graph
 }
+
+make_py_graph <- function(object, weights = NULL) {
+  UseMethod("make_py_graph", object)
+}
+
+make_py_graph.matrix <- function(object, weights = NULL){
+  #import python modules with reticulate
+  numpy <- reticulate::import("numpy", delay_load = TRUE)
+  leidenalg <- import("leidenalg", delay_load = TRUE)
+  ig <- import("igraph", delay_load = TRUE)
+
+  adj_mat_py <- make_py_object(object, weights = weights)
+
+  #convert graph structure to a Python compatible object
+  GraphClass <- if (!is.null(weights) && !is_pure_adj){
+    ig$Graph$Weighted_Adjacency
+  } else {
+    ig$Graph$Adjacency
+  }
+  py_graph <- GraphClass(adj_mat_py)
+}
+
+make_py_graph.igraph <- make_py_object.igraph
+
