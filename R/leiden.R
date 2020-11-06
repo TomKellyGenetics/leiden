@@ -6,7 +6,7 @@ NULL
 ##'
 ##' @description Implements the Leiden clustering algorithm in R using reticulate to run the Python version. Requires the python "leidenalg" and "igraph" modules to be installed. Returns a vector of partition indices.
 ##' Windows users can still this with devtools::install_github("rstudio/reticulate", ref = "86ebb56"); reticulate::use_condaenv("r-reticulate"); reticulate::conda_install("r-reticulate", "leidenalg", channel = "vtraag")
-##' @param object An adjacency matrix compatible with \code{\link[igraph]{igraph}} object or an input graph as an \code{\link[igraph]{igraph}} object (e.g., shared nearest neighbours).
+##' @param object An adjacency matrix compatible with \code{\link[igraph]{igraph}} object or an input graph as an \code{\link[igraph]{igraph}} object (e.g., shared nearest neighbours). A list of multiple graph objects can be passed for multiplex community detection.
 ##' @param partition_type Type of partition to use. Defaults to RBConfigurationVertexPartition. Options include: ModularityVertexPartition, RBERVertexPartition, CPMVertexPartition, MutableVertexPartition, SignificanceVertexPartition, SurpriseVertexPartition, ModularityVertexPartition.Bipartite, CPMVertexPartition.Bipartite (see the Leiden python module documentation for more details)
 ##' @param initial_membership,weights,node_sizes Parameters to pass to the Python leidenalg function (defaults initial_membership=None, weights=None). Weights are derived from weighted igraph objects and non-zero integer values of adjacency matrices.
 ##' @param resolution_parameter A parameter controlling the coarseness of the clusters
@@ -54,22 +54,22 @@ NULL
 ##' # generate (unweighted) igraph object in R
 ##' library("igraph")
 ##' adjacency_matrix[adjacency_matrix > 1] <- 1
-##' snn_graph <- graph_from_adjacency_matrix(adjacency_matrix)
-##' partition <- leiden(snn_graph)
+##' my_graph <- graph_from_adjacency_matrix(adjacency_matrix)
+##' partition <- leiden(my_graph)
 ##' table(partition)
 ##'
 ##' # generate (weighted) igraph object in R
 ##' library("igraph")
 ##' adjacency_matrix[adjacency_matrix >= 1] <- weights
-##' snn_graph <- graph_from_adjacency_matrix(adjacency_matrix, weighted = TRUE)
-##' partition <- leiden(snn_graph)
+##' my_graph <- graph_from_adjacency_matrix(adjacency_matrix, weighted = TRUE)
+##' partition <- leiden(my_graph)
 ##' table(partition)
 ##'
 ##' # pass weights to python leidenalg
 ##' adjacency_matrix[adjacency_matrix >= 1 ] <- 1
-##' snn_graph <- graph_from_adjacency_matrix(adjacency_matrix, weighted = NULL)
+##' my_graph <- graph_from_adjacency_matrix(adjacency_matrix, weighted = NULL)
 ##' weights <- sample(1:10, sum(adjacency_matrix!=0), replace=TRUE)
-##' partition <- leiden(snn_graph, weights = weights)
+##' partition <- leiden(my_graph, weights = weights)
 ##' table(partition)
 ##'
 ##' # run only if python is available (for testing)
@@ -128,46 +128,15 @@ leiden.matrix <- function(object,
                           legacy = FALSE
 ) {
     #import python modules with reticulate
-    numpy <- reticulate::import("numpy", delay_load = TRUE)
+    numpy <- import("numpy", delay_load = TRUE)
     leidenalg <- import("leidenalg", delay_load = TRUE)
     ig <- import("igraph", delay_load = TRUE)
 
-    #convert matrix input (corrects for sparse matrix input)
-    if(is.matrix(object) || is(object, "dgCMatrix")){
-        adj_mat <- object
-    } else{
-        adj_mat <- as.matrix(object)
-    }
-
-    #compute weights if non-binary adjacency matrix given
-    is_pure_adj <- all(as.logical(adj_mat) == adj_mat)
-    if (is.null(weights) && !is_pure_adj) {
-        if(!is.matrix(object)) adj_mat <- as.matrix(adj_mat)
-        #assign weights to edges (without dependancy on igraph)
-        t_mat <- t(adj_mat)
-        weights <- t_mat[t_mat!=0]
-        #remove zeroes from rows of matrix and return vector of length edges
-    }
-
-    ##convert to python numpy.ndarray, then a list
-    adj_mat_py <- r_to_py(adj_mat, convert = T)
-    if(is(object, "dgCMatrix")){
-        adj_mat_py <- adj_mat_py$toarray()
-    }
-    adj_mat_py <- adj_mat_py$tolist()
-
-    #convert graph structure to a Python compatible object
-    GraphClass <- if (!is.null(weights) && !is_pure_adj){
-        ig$Graph$Weighted_Adjacency
-    } else {
-        ig$Graph$Adjacency
-    }
-    snn_graph <- GraphClass(adj_mat_py)
-    # test performance for computing matrix to graph in R
-    # other option is to passing snn_graph to Python
+    adj_mat_py <- make_py_object(object, weights = weights)
+    py_graph <- GraphClass(adj_mat_py)
 
     #compute partitions
-    partition <- find_partition(snn_graph, partition_type = partition_type,
+    partition <- find_partition(py_graph, partition_type = partition_type,
                                 initial_membership = initial_membership,
                                 weights = weights,
                                 node_sizes = node_sizes,
@@ -230,6 +199,50 @@ leiden.Matrix <- function(object,
                   laplacian = laplacian,
                   legacy = legacy
     )
+}
+
+##' @importFrom igraph graph_from_adjacency_matrix edge_attr set_edge_attr E
+##' @importFrom methods as
+##' @importClassesFrom Matrix dgCMatrix dgeMatrix
+##' @export
+leiden.list <- function(object,
+                          partition_type = c(
+                              'RBConfigurationVertexPartition',
+                              'ModularityVertexPartition',
+                              'RBERVertexPartition',
+                              'CPMVertexPartition',
+                              'MutableVertexPartition',
+                              'SignificanceVertexPartition',
+                              'SurpriseVertexPartition',
+                              'ModularityVertexPartition.Bipartite',
+                              'CPMVertexPartition.Bipartite'
+                          ),
+                          initial_membership = NULL,
+                          weights = NULL,
+                          node_sizes = NULL,
+                          resolution_parameter = 1,
+                          seed = NULL,
+                          n_iterations = 2L,
+                          degree_as_node_size = FALSE,
+                          laplacian = FALSE,
+                          legacy = FALSE
+) {
+    if(length(object) == 1){
+        object <- object[[1]]
+        leiden(object,
+                      partition_type = partition_type,
+                      weights = weights,
+                      node_sizes = node_sizes,
+                      resolution_parameter = resolution_parameter,
+                      seed = seed,
+                      n_iterations = n_iterations,
+                      degree_as_node_size = degree_as_node_size,
+                      laplacian = laplacian,
+                      legacy = legacy
+        )
+    } else{
+
+    }
 }
 
 ##' @export
@@ -315,36 +328,12 @@ leiden.igraph <- function(object,
         partition <- as.numeric(partition)
     } else {
         #call python reticulate implementation
-
         #import python modules with reticulate
-        numpy <- reticulate::import("numpy", delay_load = TRUE)
+        numpy <- import("numpy", delay_load = TRUE)
         leidenalg <- import("leidenalg", delay_load = TRUE)
         ig <- import("igraph", delay_load = TRUE)
 
-        ##convert to python numpy.ndarray, then a list
-        if(!is_named(object)){
-            vertices <- as.list(as.character(V(object)))
-        } else {
-            vertices <- as.list(names(V(object)))
-        }
-
-        edges <- as_edgelist(object)
-        dim(edges)
-        edgelist <- list(rep(NA, nrow(edges)))
-        for(ii in 1:nrow(edges)){
-            edgelist[[ii]] <- as.character(edges[ii,])
-        }
-
-        snn_graph <- ig$Graph()
-        snn_graph$add_vertices(r_to_py(vertices))
-        snn_graph$add_edges(r_to_py(edgelist))
-
-        #compute weights if weighted graph given
-        if(is_weighted(object)){
-            #assign weights to edges (without dependancy on igraph)
-            weights <- r_to_py(edge_attr(object)$weight)
-            snn_graph$es$set_attribute_values('weight', weights)
-        }
+        py_graph <- make_py_object(object, weights = weights)
 
         if(is_bipartite(object) && partition_type == "ModularityVertexPartition"){
             partition_type <- "ModularityVertexPartition.Bipartite"
@@ -379,14 +368,14 @@ leiden.igraph <- function(object,
 
         if(!is.null(vertex_attr(object, "type")) || is_bipartite(object)){
             type <- as.integer(V(object)$type)
-            snn_graph$vs$set_attribute_values('type', r_to_py(as.integer(type)))
+            py_graph$vs$set_attribute_values('type', r_to_py(as.integer(type)))
         }
 
         # from here is the same as method for matrix
         # would be better to refactor to call from matrix methof
 
         #compute partitions with reticulate
-        partition <- find_partition(snn_graph, partition_type = partition_type,
+        partition <- find_partition(py_graph, partition_type = partition_type,
                                     initial_membership = initial_membership,
                                     weights = weights,
                                     node_sizes = node_sizes,
