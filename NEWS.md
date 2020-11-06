@@ -2,6 +2,8 @@
 
 * migrate to calling community_leiden in igraph
 
+* add methods for multiplex community detection from a list of graphs
+
 # leiden 0.3.4
 
 * add support for bipartite graphs (requires leidenalg 0.6.1 or later)
