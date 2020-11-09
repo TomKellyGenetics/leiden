@@ -269,7 +269,7 @@ The R version can be installed with devtools or from CRAN:
 install.packages("leiden")
 ```
 
-```{r, eval=TRUE, include=FALSE}
+```{r, eval=FALSE, include=FALSE}
 install.packages("leiden",  quiet = TRUE, repos = 1)
 devtools::install_github("TomKellyGenetics/leiden", ref = "dev")
 ```
