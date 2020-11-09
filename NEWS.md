@@ -4,6 +4,10 @@
 
 * add methods for multiplex community detection from a list of graphs
 
+# leiden 0.3.5
+
+* background changes to build vignettes on CRAN
+
 # leiden 0.3.4
 
 * add support for bipartite graphs (requires leidenalg 0.6.1 or later)
