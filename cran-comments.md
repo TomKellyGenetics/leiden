@@ -13,11 +13,7 @@
 
 ## Updates
 
-Minor update to implement functions in python version.
-
-Improvements to install of python libraries upon loading if python
-or conda environments are available (checks suppressed on systems
-where they are not).
+Minor update to disable warnings when building vignettes. No GitHub dependencies found if no internet connection.
 
 ## Python integration
 
