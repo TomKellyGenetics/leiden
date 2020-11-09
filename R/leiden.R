@@ -421,7 +421,7 @@ numpy <- NULL
 
                 if (all) {
                     suppressWarnings(suppressMessages(suppressPackageStartupMessages(
-                        utils::capture.output(expr, file = file)
+                        capture.output(expr, file = file)
                     )))
                 } else {
                     capture.output(expr, file = file)
