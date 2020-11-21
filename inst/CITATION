@@ -13,6 +13,6 @@ citEntry(entry = "Manual",
 )
 
 citFooter(paste("Please also acknowledge the original publication: \n",
-                "Traag, V.A., Waltman. L., Van Eck, N.-J. (2018). \n",
+                "Traag, V.A., Waltman. L., Van Eck, N.-J. (2019). \n",
                 "From Louvain to  Leiden: guaranteeing well-connected communities.  \n",
-                "`arXiv:1810.08473 <https://arxiv.org/abs/1810.08473>`",sep=" "))
+                "Sci Rep 9, 5233 <https://doi.org/10.1038/s41598-019-41695-z>",sep=" "))
