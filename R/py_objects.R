@@ -78,6 +78,10 @@ make_py_graph <- function(object, weights = NULL) {
   UseMethod("make_py_graph", object)
 }
 
+make_py_graph.data.frame <- function(object, weights = NULL){
+  py_graph <- make_py_graph(as.matrix(object), weights = weights)
+}
+
 make_py_graph.matrix <- function(object, weights = NULL){
   #import python modules with reticulate
   numpy <- reticulate::import("numpy", delay_load = TRUE)
