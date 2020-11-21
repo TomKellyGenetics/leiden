@@ -41,13 +41,6 @@ make_py_object.matrix <- function(object, weights = NULL){
   adj_mat_py
 }
 
-make_py_object.data.frame <- function(object, weights = NULL){
-  pd <- reticulate::import("pandas", delay_load = TRUE)
-  adj_df_py <- pd$DataFrame(data = r_to_py(object, convert = TRUE))
-
-  adj_df_py
-}
-
 make_py_object.igraph <- function(object, weights = NULL){
   #import python modules with reticulate
   numpy <- import("numpy", delay_load = TRUE)
@@ -81,12 +74,21 @@ make_py_object.igraph <- function(object, weights = NULL){
   py_graph
 }
 
-make_py_graph <- function(object, weights = NULL) {
-  UseMethod("make_py_graph", object)
+make_py_object.data.frame <- function(object, weights = NULL){
+  pd <- reticulate::import("pandas", delay_load = TRUE)
+  adj_df_py <- pd$DataFrame(data = r_to_py(object, convert = TRUE))
+
+  adj_df_py
 }
 
-make_py_graph.data.frame <- function(object, weights = NULL){
-  py_graph <- make_py_graph(as.matrix(object), weights = weights)
+##' convert to python igraph object
+##' @param object an igraph object or matrix
+##' @param weights Parameters to pass to the Python leidenalg function (defaults initial_membership=None, weights=None). Weights are derived from weighted igraph objects and non-zero integer values of adjacency matrices.
+##' @noRd
+##' @description internal function to compute partitions by calling Python with reticulate
+##' @keywords internal
+make_py_graph <- function(object, weights = NULL) {
+  UseMethod("make_py_graph", object)
 }
 
 make_py_graph.matrix <- function(object, weights = NULL){
@@ -118,3 +120,6 @@ make_py_graph.matrix <- function(object, weights = NULL){
 
 make_py_graph.igraph <- make_py_object.igraph
 
+make_py_graph.data.frame <- function(object, weights = NULL){
+  py_graph <- make_py_graph(as.matrix(object), weights = weights)
+}

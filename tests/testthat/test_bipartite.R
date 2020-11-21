@@ -1,6 +1,6 @@
-library("leiden")
 library("reticulate")
 library("igraph")
+library("leiden")
 library("bipartite")
 
 context("running Leiden on a bipartite igraph object")

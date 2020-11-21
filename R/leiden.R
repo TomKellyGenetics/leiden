@@ -256,7 +256,15 @@ leiden.list <- function(object,
                             laplacian = laplacian
         )
     } else{
-        py_list <- r_to_py(lapply(object, make_py_graph))
+
+        #import python modules with reticulate
+        numpy <- reticulate::import("numpy", delay_load = TRUE)
+        leidenalg <- import("leidenalg", delay_load = TRUE)
+        ig <- import("igraph", delay_load = TRUE)
+
+        py_list <- r_to_py(lapply(object, function(r_graph){
+            make_py_graph(r_graph, weights = weights)
+        }))
 
 
         if(partition_type == 'ModularityVertexPartition.Bipartite') partition_type <- "ModularityVertexPartition"
@@ -327,10 +335,6 @@ leiden.igraph <- function(object,
     for(ii in 1:nrow(edges)){
         edgelist[[ii]] <- as.character(edges[ii,])
     }
-
-    snn_graph <- ig$Graph()
-    snn_graph$add_vertices(r_to_py(vertices))
-    snn_graph$add_edges(r_to_py(edgelist))
 
     #derive Laplacian
     if(laplacian == TRUE){
