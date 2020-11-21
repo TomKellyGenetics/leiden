@@ -124,22 +124,32 @@ leiden.matrix <- function(object,
                           degree_as_node_size = FALSE,
                           laplacian = FALSE
 ) {
+    if(length(partition_type) > 1) partition_type <- partition_type[[1]][1]
+    partition_type <- match.arg(partition_type)
+
     #import python modules with reticulate
     numpy <- import("numpy", delay_load = TRUE)
     leidenalg <- import("leidenalg", delay_load = TRUE)
     ig <- import("igraph", delay_load = TRUE)
 
+    #convert matrix input (corrects for sparse matrix input)
+    if(is.matrix(object) || is(object, "dgCMatrix")){
+        object <- object
+    } else{
+        object <- as.matrix(object)
+    }
+
     #compute weights if non-binary adjacency matrix given
-    is_pure_adj <- all(as.logical(adj_mat) == adj_mat)
+    is_pure_adj <- all(as.logical(object) == object)
     if (is.null(weights) && !is_pure_adj) {
-        if(!is.matrix(object)) adj_mat <- as.matrix(adj_mat)
+        if(!is.matrix(object)) object <- as.matrix(object)
         #assign weights to edges (without dependancy on igraph)
-        t_mat <- t(adj_mat)
+        t_mat <- t(object)
         weights <- t_mat[t_mat!=0]
         #remove zeroes from rows of matrix and return vector of length edges
     }
 
-    py_graph <- make_py_object(object, weights = weights)
+    py_graph <- make_py_graph(object, weights = weights)
 
     #compute partitions
     partition <- find_partition(py_graph, partition_type = partition_type,
@@ -183,13 +193,13 @@ leiden.Matrix <- function(object,
                           laplacian = FALSE
 ) {
     #cast to sparse matrix
-    adj_mat <- as(object, "dgCMatrix")
+    object <- as(object, "dgCMatrix")
     #run as igraph object (passes to reticulate)
     if(is.null(weights)){
-        object <- graph_from_adjacency_matrix(adjmatrix = adj_mat, weighted = TRUE)
+        object <- graph_from_adjacency_matrix(adjmatrix = object, weighted = TRUE)
         weights <- edge_attr(object)$weight
     } else {
-        object <- graph_from_adjacency_matrix(adjmatrix = adj_mat, weighted = TRUE)
+        object <- graph_from_adjacency_matrix(adjmatrix = object, weighted = TRUE)
         object <- set_edge_attr(object, "weight", index=E(object), weights)
     }
 
@@ -228,8 +238,7 @@ leiden.list <- function(object,
                           seed = NULL,
                           n_iterations = 2L,
                           degree_as_node_size = FALSE,
-                          laplacian = FALSE,
-                          legacy = FALSE
+                          laplacian = FALSE
 ) {
     if(length(partition_type) > 1) partition_type <- partition_type[[1]][1]
     partition_type <- match.arg(partition_type)
@@ -244,8 +253,7 @@ leiden.list <- function(object,
                             seed = seed,
                             n_iterations = n_iterations,
                             degree_as_node_size = degree_as_node_size,
-                            laplacian = laplacian,
-                            legacy = legacy
+                            laplacian = laplacian
         )
     } else{
         py_list <- r_to_py(lapply(object, make_py_graph))
@@ -294,6 +302,9 @@ leiden.igraph <- function(object,
                           degree_as_node_size = FALSE,
                           laplacian = FALSE
 ) {
+    if(length(partition_type) > 1) partition_type <- partition_type[[1]][1]
+    partition_type <- match.arg(partition_type)
+
     #import python modules with reticulate
     numpy <- reticulate::import("numpy", delay_load = TRUE)
     leidenalg <- import("leidenalg", delay_load = TRUE)
@@ -331,7 +342,7 @@ leiden.igraph <- function(object,
         }
     }
 
-    py_graph <- make_py_object(object, weights = weights)
+    py_graph <- make_py_graph(object, weights = weights)
 
     if(length(partition_type) > 1) partition_type <- partition_type[1]
     if(partition_type == "ModularityVertexPartition.Bipartite"){
