@@ -284,11 +284,7 @@ Please cite this implementation R in if you use it:
 To cite the leiden package in publications use:
 
   S. Thomas Kelly (2020). leiden: R implementation of the Leiden algorithm. R
-<<<<<<< HEAD
   package version 0.4.0 https://github.com/TomKellyGenetics/leiden
-=======
-  package version 0.3.5 https://github.com/TomKellyGenetics/leiden
->>>>>>> master
 
 A BibTeX entry for LaTeX users is
 
@@ -296,11 +292,7 @@ A BibTeX entry for LaTeX users is
     title = {leiden: R implementation of the Leiden algorithm},
     author = {S. Thomas Kelly},
     year = {2020},
-<<<<<<< HEAD
     note = {R package version 0.4.0},
-=======
-    note = {R package version 0.3.5},
->>>>>>> master
     url = {https://github.com/TomKellyGenetics/leiden},
   }
  ```
@@ -308,7 +300,7 @@ A BibTeX entry for LaTeX users is
 Please also cite the original publication of this algorithm.
 
 ```
-Traag, V.A., Waltman. L., Van Eck, N.-J. (2018). From Louvain to
+Traag, V.A., Waltman. L., Van Eck, N.-J. (2019). From Louvain to
        Leiden: guaranteeing well-connected communities.
-       `arXiv:1810.08473 <https://arxiv.org/abs/1810.08473>`
+       Sci Rep 9, 5233 <https://doi.org/10.1038/s41598-019-41695-z>
 ```
