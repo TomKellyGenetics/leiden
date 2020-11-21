@@ -41,6 +41,13 @@ make_py_object.matrix <- function(object, weights = NULL){
   adj_mat_py
 }
 
+make_py_object.data.frame <- function(object, weights = NULL){
+  pd <- reticulate::import("pandas", delay_load = TRUE)
+  adj_df_py <- pd$DataFrame(data = object)
+
+  adj_df_py
+}
+
 make_py_object.igraph <- function(object, weights = NULL){
   #import python modules with reticulate
   numpy <- import("numpy", delay_load = TRUE)
