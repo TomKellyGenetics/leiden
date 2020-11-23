@@ -127,12 +127,32 @@ leiden.matrix <- function(object,
                           laplacian = FALSE,
                           legacy = FALSE
 ) {
+    if(length(partition_type) > 1) partition_type <- partition_type[[1]][1]
+    partition_type <- match.arg(partition_type)
+
     #import python modules with reticulate
     numpy <- import("numpy", delay_load = TRUE)
     leidenalg <- import("leidenalg", delay_load = TRUE)
     ig <- import("igraph", delay_load = TRUE)
 
-    py_graph <- make_py_object(object, weights = weights)
+    #convert matrix input (corrects for sparse matrix input)
+    if(is.matrix(object) || is(object, "dgCMatrix")){
+        object <- object
+    } else{
+        object <- as.matrix(object)
+    }
+
+    #compute weights if non-binary adjacency matrix given
+    is_pure_adj <- all(as.logical(object) == object)
+    if (is.null(weights) && !is_pure_adj) {
+        if(!is.matrix(object)) object <- as.matrix(object)
+        #assign weights to edges (without dependancy on igraph)
+        t_mat <- t(object)
+        weights <- t_mat[t_mat!=0]
+        #remove zeroes from rows of matrix and return vector of length edges
+    }
+
+    py_graph <- make_py_graph(object, weights = weights)
 
     #compute partitions
     partition <- find_partition(py_graph, partition_type = partition_type,
@@ -176,6 +196,9 @@ leiden.Matrix <- function(object,
                           laplacian = FALSE,
                           legacy = FALSE
 ) {
+    if(length(partition_type) > 1) partition_type <- partition_type[[1]][1]
+    partition_type <- match.arg(partition_type)
+
     #cast to sparse matrix
     adj_mat <- as(object, "dgCMatrix")
     #run as igraph object (passes to reticulate)
@@ -243,8 +266,14 @@ leiden.list <- function(object,
                             legacy = legacy
         )
     } else{
-        py_list <- r_to_py(lapply(object, make_py_graph))
+        #import python modules with reticulate
+        numpy <- reticulate::import("numpy", delay_load = TRUE)
+        leidenalg <- import("leidenalg", delay_load = TRUE)
+        ig <- import("igraph", delay_load = TRUE)
 
+        py_list <- r_to_py(lapply(object, function(r_graph){
+            make_py_graph(r_graph, weights = weights)
+        }))
 
         if(partition_type == 'ModularityVertexPartition.Bipartite') partition_type <- "ModularityVertexPartition"
         if(partition_type == 'CPMVertexPartition.Bipartite') partition_type <- "CPMVertexPartition"
@@ -294,6 +323,10 @@ leiden.igraph <- function(object,
     if(length(partition_type) > 1) partition_type <- partition_type[[1]][1]
     partition_type <- match.arg(partition_type)
 
+    #import python modules with reticulate
+    numpy <- reticulate::import("numpy", delay_load = TRUE)
+    leidenalg <- import("leidenalg", delay_load = TRUE)
+    ig <- import("igraph", delay_load = TRUE)
 
     #pass weights to igraph if not found
     if(!is_weighted(object) && !is.null(weights)){
@@ -444,6 +477,7 @@ numpy <- NULL
                         install.packages("devtools",  quiet = TRUE)
                         devtools::install_github("rstudio/reticulate", ref = "86ebb56",  quiet = TRUE)
                         if(!reticulate::py_module_available("numpy")) suppressWarnings(suppressMessages(reticulate::conda_install(envname = "r-reticulate", packages = "numpy")))
+                        if(!reticulate::py_module_available("pandas")) suppressWarnings(suppressMessages(reticulate::conda_install(envname = "r-reticulate", packages = "pandas")))
                         if(!reticulate::py_module_available("igraph")) suppressWarnings(suppressMessages(reticulate::conda_install(envname = "r-reticulate", packages = "python-igraph")))
                         if(!reticulate::py_module_available("mkl")) suppressWarnings(suppressMessages(reticulate::conda_install(envname = "r-reticulate", packages = "mkl", channel = "intel")))
                         if(!reticulate::py_module_available("umap")) suppressWarnings(suppressMessages(reticulate::conda_install(envname = "r-reticulate", packages = "umap-learn", channel = "conda-forge")))
@@ -453,6 +487,7 @@ numpy <- NULL
                         utils::install.packages("reticulate",  quiet = TRUE)
                     } else {
                         if(!reticulate::py_module_available("numpy")) suppressWarnings(suppressMessages(reticulate::conda_install("r-reticulate", "numpy")))
+                        if(!reticulate::py_module_available("pandas")) suppressWarnings(suppressMessages(reticulate::conda_install(envname = "r-reticulate", packages = "pandas")))
                         if(!reticulate::py_module_available("igraph")) suppressWarnings(suppressMessages(reticulate::conda_install("r-reticulate", "python-igraph")))
                         if(!reticulate::py_module_available("umap")) suppressWarnings(suppressMessages(reticulate::conda_install("r-reticulate", "umap-learn", forge = TRUE)))
                         if(!reticulate::py_module_available("leidenalg")) suppressWarnings(suppressMessages(reticulate::conda_install("r-reticulate", "leidenalg", forge = TRUE)))
@@ -471,6 +506,7 @@ numpy <- NULL
                     # system("conda init")
                     # system("conda activate r-reticulate")
                     if(!reticulate::py_module_available("numpy")) suppressWarnings(suppressMessages(reticulate::py_install("numpy")))
+                    if(!reticulate::py_module_available("pandas")) suppressWarnings(suppressMessages(reticulate::conda_install(envname = "r-reticulate", packages = "pandas")))
                     if(!reticulate::py_module_available("igraph")) suppressWarnings(suppressMessages(reticulate::py_install("python-igraph", method = method, conda = conda)))
                     if(!reticulate::py_module_available("umap")) suppressWarnings(suppressMessages(reticulate::py_install("umap-learn")))
                     if(!reticulate::py_module_available("leidenalg")) suppressWarnings(suppressMessages(reticulate::py_install("leidenalg", method = method, conda = conda, forge = TRUE)))
@@ -507,6 +543,7 @@ numpy <- NULL
         if (modules) {
             ## assignment in parent environment!
             numpy <- reticulate::import("numpy", delay_load = TRUE)
+            pd <- reticulate::import("pandas", delay_load = TRUE)
             leidenalg <- reticulate::import("leidenalg", delay_load = TRUE)
             ig <- reticulate::import("igraph", delay_load = TRUE)
         }
