@@ -16,23 +16,23 @@ make_py_object.matrix <- function(object, weights = NULL){
 
   #convert matrix input (corrects for sparse matrix input)
   if(is.matrix(object) || is(object, "dgCMatrix")){
-    adj_mat <- object
+    object <- object
   } else{
-    adj_mat <- as.matrix(object)
+    object <- as.matrix(object)
   }
 
   #compute weights if non-binary adjacency matrix given
-  is_pure_adj <- all(as.logical(adj_mat) == adj_mat)
+  is_pure_adj <- all(as.logical(object) == object)
   if (is.null(weights) && !is_pure_adj) {
-    if(!is.matrix(object)) adj_mat <- as.matrix(adj_mat)
+    if(!is.matrix(object)) object <- as.matrix(object)
     #assign weights to edges (without dependancy on igraph)
-    t_mat <- t(adj_mat)
+    t_mat <- t(object)
     weights <- t_mat[t_mat!=0]
     #remove zeroes from rows of matrix and return vector of length edges
   }
 
   ##convert to python numpy.ndarray, then a list
-  adj_mat_py <- r_to_py(adj_mat, convert = T)
+  adj_mat_py <- r_to_py(object, convert = TRUE)
   if(is(object, "dgCMatrix")){
     adj_mat_py <- adj_mat_py$toarray()
   }
@@ -74,11 +74,34 @@ make_py_object.igraph <- function(object, weights = NULL){
   py_graph
 }
 
+make_py_object.data.frame <- function(object, weights = NULL){
+  pd <- reticulate::import("pandas", delay_load = TRUE)
+  adj_df_py <- pd$DataFrame(data = r_to_py(object, convert = TRUE))
+
+  adj_df_py
+}
+
+##' convert to python igraph object
+##' @param object an igraph object or matrix
+##' @param weights Parameters to pass to the Python leidenalg function (defaults initial_membership=None, weights=None). Weights are derived from weighted igraph objects and non-zero integer values of adjacency matrices.
+##' @noRd
+##' @description internal function to compute partitions by calling Python with reticulate
+##' @keywords internal
 make_py_graph <- function(object, weights = NULL) {
   UseMethod("make_py_graph", object)
 }
 
 make_py_graph.matrix <- function(object, weights = NULL){
+  #compute weights if non-binary adjacency matrix given
+  is_pure_adj <- all(as.logical(object) == object)
+  if (is.null(weights) && !is_pure_adj) {
+    if(!is.matrix(object)) object <- as.matrix(object)
+    #assign weights to edges (without dependancy on igraph)
+    t_mat <- t(object)
+    weights <- t_mat[t_mat!=0]
+    #remove zeroes from rows of matrix and return vector of length edges
+  }
+
   #import python modules with reticulate
   numpy <- reticulate::import("numpy", delay_load = TRUE)
   leidenalg <- import("leidenalg", delay_load = TRUE)
@@ -97,3 +120,6 @@ make_py_graph.matrix <- function(object, weights = NULL){
 
 make_py_graph.igraph <- make_py_object.igraph
 
+make_py_graph.data.frame <- function(object, weights = NULL){
+  py_graph <- make_py_graph(as.matrix(object), weights = weights)
+}
