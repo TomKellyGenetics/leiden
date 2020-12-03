@@ -16,6 +16,7 @@ leiden(
   resolution_parameter = 1,
   seed = NULL,
   n_iterations = 2L,
+  max_comm_size = 0L,
   degree_as_node_size = FALSE,
   laplacian = FALSE
 )
@@ -32,6 +33,8 @@ leiden(
 \item{seed}{Seed for the random number generator. By default uses a random seed if nothing is specified.}
 
 \item{n_iterations}{Number of iterations to run the Leiden algorithm. By default, 2 iterations are run. If the number of iterations is negative, the Leiden algorithm is run until an iteration in which there was no improvement.}
+
+\item{max_comm_size}{(non-negative int) – Maximal total size of nodes in a community. If zero (the default), then communities can be of any size.}
 
 \item{degree_as_node_size}{(defaults to FALSE). If True use degree as node size instead of 1, to mimic modularity for Bipartite graphs.}
 

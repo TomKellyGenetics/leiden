@@ -12,6 +12,7 @@ NULL
 ##' @param resolution_parameter A parameter controlling the coarseness of the clusters
 ##' @param seed Seed for the random number generator. By default uses a random seed if nothing is specified.
 ##' @param n_iterations Number of iterations to run the Leiden algorithm. By default, 2 iterations are run. If the number of iterations is negative, the Leiden algorithm is run until an iteration in which there was no improvement.
+##' @param max_comm_size (non-negative int) – Maximal total size of nodes in a community. If zero (the default), then communities can be of any size.
 ##' @param degree_as_node_size (defaults to FALSE). If True use degree as node size instead of 1, to mimic modularity for Bipartite graphs.
 ##' @param laplacian (defaults to FALSE). Derive edge weights from the Laplacian matrix.
 ##' @return A partition of clusters as a vector of integers
@@ -96,6 +97,7 @@ leiden <- function(object,
                    resolution_parameter = 1,
                    seed = NULL,
                    n_iterations = 2L,
+                   max_comm_size = 0L,
                    degree_as_node_size = FALSE,
                    laplacian = FALSE) {
     UseMethod("leiden", object)
@@ -121,6 +123,7 @@ leiden.matrix <- function(object,
                           resolution_parameter = 1,
                           seed = NULL,
                           n_iterations = 2L,
+                          max_comm_size = 0L,
                           degree_as_node_size = FALSE,
                           laplacian = FALSE
 ) {
@@ -159,6 +162,7 @@ leiden.matrix <- function(object,
                                 resolution_parameter = resolution_parameter,
                                 seed = seed,
                                 n_iterations = n_iterations,
+                                max_comm_size = max_comm_size,
                                 degree_as_node_size = degree_as_node_size
     )
     partition
@@ -189,6 +193,7 @@ leiden.Matrix <- function(object,
                           resolution_parameter = 1,
                           seed = NULL,
                           n_iterations = 2L,
+                          max_comm_size = 0L,
                           degree_as_node_size = FALSE,
                           laplacian = FALSE
 ) {
@@ -237,6 +242,7 @@ leiden.list <- function(object,
                           resolution_parameter = 1,
                           seed = NULL,
                           n_iterations = 2L,
+                          max_comm_size = 0L,
                           degree_as_node_size = FALSE,
                           laplacian = FALSE
 ) {
@@ -252,6 +258,7 @@ leiden.list <- function(object,
                             resolution_parameter = resolution_parameter,
                             seed = seed,
                             n_iterations = n_iterations,
+                            max_comm_size = max_comm_size,
                             degree_as_node_size = degree_as_node_size,
                             laplacian = laplacian
         )
@@ -278,6 +285,7 @@ leiden.list <- function(object,
                                     resolution_parameter = resolution_parameter,
                                     seed = seed,
                                     n_iterations = n_iterations,
+                                    max_comm_size = max_comm_size,
                                     degree_as_node_size = degree_as_node_size
         )
     }
@@ -307,6 +315,7 @@ leiden.igraph <- function(object,
                           resolution_parameter = 1,
                           seed = NULL,
                           n_iterations = 2L,
+                          max_comm_size = 0L,
                           degree_as_node_size = FALSE,
                           laplacian = FALSE
 ) {
@@ -385,6 +394,7 @@ leiden.igraph <- function(object,
                                 resolution_parameter = resolution_parameter,
                                 seed = seed,
                                 n_iterations = n_iterations,
+                                max_comm_size = max_comm_size,
                                 degree_as_node_size = degree_as_node_size
     )
     partition
