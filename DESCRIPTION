@@ -15,10 +15,9 @@ Imports:
     methods,
     reticulate,
     Matrix,
-    igraph
+    igraph (> 1.2.6)
 Encoding: UTF-8
 LazyData: true
-Remotes: github::igraph/rigraph@5e1b0e3cd1889c8e829ce4c4cfe470372ce17355
 RoxygenNote: 7.1.1
 Suggests: 
     bipartite,
