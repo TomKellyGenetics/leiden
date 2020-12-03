@@ -12,6 +12,8 @@
 ##' @description internal function to compute partitions for bipartite graphs
 ##' @keywords internal
 run_bipartite_partitioning <- function(py_graph,
+                                       initial_membership = NULL,
+                                       weights = NULL,
                                        resolution_parameter_01 = 1,
                                        resolution_parameter_0 = 0,
                                        resolution_parameter_1 = 0,
@@ -26,16 +28,22 @@ run_bipartite_partitioning <- function(py_graph,
   ig <- import("igraph", delay_load = TRUE)
 
   self.optimiser = leidenalg$Optimiser()
+  if(!missing(self.optimiser$max_comm_size)){
+    self.optimiser$max_comm_size <- r_to_py(max_comm_size)
+  }
+
   if(!is.null(seed)){
     self.optimiser$set_rng_seed(r_to_py(as.integer(seed)))
   }
   for(ii in 1:n_iterations){
     bipartite_layers <- leidenalg$CPMVertexPartition$Bipartite(py_graph,
+                                                               initial_membership = initial_membership, weights = weights,
+                                                               seed = seed, n_iterations = n_iterations,
                                                                resolution_parameter_01 = resolution_parameter_01,
                                                                resolution_parameter_0 = resolution_parameter_0,
                                                                resolution_parameter_1 = resolution_parameter_1,
                                                                degree_as_node_size = degree_as_node_size,
-                                                               types = "type")
+                                                               types = types)
   }
   bipartite_layers <- r_to_py(bipartite_layers)
   self.optimiser$optimise_partition_multiplex(
@@ -135,6 +143,7 @@ degree_as_node_size = TRUE
       seed = seed, n_iterations = n_iterations, node_sizes = node_sizes
     ),
     'ModularityVertexPartition.Bipartite' = run_bipartite_partitioning(py_graph,
+                                                                initial_membership = initial_membership, weights = weights,
                                                                 resolution_parameter_01 = resolution_parameter,
                                                                 resolution_parameter_0 = 0,
                                                                 resolution_parameter_1 = 0,
@@ -143,6 +152,7 @@ degree_as_node_size = TRUE
                                                                 seed = seed,
                                                                 n_iterations = n_iterations),
     'CPMVertexPartition.Bipartite' = run_bipartite_partitioning(py_graph,
+                                                                initial_membership = initial_membership, weights = weights,
                                                                 resolution_parameter_01 = resolution_parameter,
                                                                 resolution_parameter_0 = 0,
                                                                 resolution_parameter_1 = 0,
