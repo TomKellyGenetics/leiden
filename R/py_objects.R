@@ -22,7 +22,7 @@ make_py_object.matrix <- function(object, weights = NULL){
   }
 
   #compute weights if non-binary adjacency matrix given
-  is_pure_adj <- all(as.logical(object) == object)
+  is_pure_adj <- all(as.logical(unlist(object)) == object)
   if (is.null(weights) && !is_pure_adj) {
     if(!is.matrix(object)) object <- as.matrix(object)
     #assign weights to edges (without dependancy on igraph)
@@ -93,7 +93,7 @@ make_py_graph <- function(object, weights = NULL) {
 
 make_py_graph.matrix <- function(object, weights = NULL){
   #compute weights if non-binary adjacency matrix given
-  is_pure_adj <- all(as.logical(object) == object)
+  is_pure_adj <- all(as.logical(unlist(object)) == object)
   if (is.null(weights) && !is_pure_adj) {
     if(!is.matrix(object)) object <- as.matrix(object)
     #assign weights to edges (without dependancy on igraph)
