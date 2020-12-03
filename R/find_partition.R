@@ -5,6 +5,7 @@
 ##' @param resolution_parameter_1,resolution_parameter_0,resolution_parameter_01 A parameter controlling the coarseness of the clusters
 ##' @param seed Seed for the random number generator. By default uses a random seed if nothing is specified.
 ##' @param n_iterations Number of iterations to run the Leiden algorithm. By default, 2 iterations are run. If the number of iterations is negative, the Leiden algorithm is run until an iteration in which there was no improvement.
+##' @param max_comm_size (non-negative int) – Maximal total size of nodes in a community. If zero (the default), then communities can be of any size.
 ##' @param degree_as_node_size (defaults to FALSE). If True use degree as node size instead of 1, to mimic modularity for Bipartite graphs.
 ##' @param types (deftaults to "type"). Defines edge attribute for bipartite graphs.
 ##' @noRd
@@ -17,7 +18,8 @@ run_bipartite_partitioning <- function(py_graph,
                                        degree_as_node_size = FALSE,
                                        types = "type",
                                        seed = NULL,
-                                       n_iterations = 2){
+                                       n_iterations = 2L,
+                                       max_comm_size = 0L){
   #import python modules with reticulate
   numpy <- import("numpy", delay_load = TRUE)
   leidenalg <- import("leidenalg", delay_load = TRUE)
@@ -71,6 +73,7 @@ node_sizes = NULL,
 resolution_parameter = 1,
 seed = NULL,
 n_iterations = 2L,
+max_comm_size = 0L,
 degree_as_node_size = TRUE
 ) {
   #import python modules with reticulate
@@ -179,6 +182,7 @@ node_sizes = NULL,
 resolution_parameter = 1,
 seed = NULL,
 n_iterations = 2L,
+max_comm_size = 0L,
 degree_as_node_size = TRUE,
 legacy = FALSE
 ) {
