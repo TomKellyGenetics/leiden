@@ -39,3 +39,4 @@ VignetteBuilder: knitr
 Collate: 
     'find_partition.R'
     'leiden.R'
+    'py_objects.R'
