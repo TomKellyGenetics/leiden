@@ -143,7 +143,7 @@ leiden.matrix <- function(object,
     }
 
     #compute weights if non-binary adjacency matrix given
-    is_pure_adj <- all(as.logical(object) == object)
+    is_pure_adj <- all(as.logical(unlist(object)) == object)
     if (is.null(weights) && !is_pure_adj) {
         if(!is.matrix(object)) object <- as.matrix(object)
         #assign weights to edges (without dependancy on igraph)
@@ -319,9 +319,6 @@ leiden.igraph <- function(object,
                           degree_as_node_size = FALSE,
                           laplacian = FALSE
 ) {
-    if(length(partition_type) > 1) partition_type <- partition_type[[1]][1]
-    partition_type <- match.arg(partition_type)
-
     #import python modules with reticulate
     numpy <- reticulate::import("numpy", delay_load = TRUE)
     leidenalg <- import("leidenalg", delay_load = TRUE)
