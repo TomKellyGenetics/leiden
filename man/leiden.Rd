@@ -23,7 +23,7 @@ leiden(
 )
 }
 \arguments{
-\item{object}{An adjacency matrix compatible with \code{\link[igraph]{igraph}} object or an input graph as an \code{\link[igraph]{igraph}} object (e.g., shared nearest neighbours).}
+\item{object}{An adjacency matrix compatible with \code{\link[igraph]{igraph}} object or an input graph as an \code{\link[igraph]{igraph}} object (e.g., shared nearest neighbours). A list of multiple graph objects can be passed for multiplex community detection.}
 
 \item{partition_type}{Type of partition to use. Defaults to RBConfigurationVertexPartition. Options include: ModularityVertexPartition, RBERVertexPartition, CPMVertexPartition, MutableVertexPartition, SignificanceVertexPartition, SurpriseVertexPartition, ModularityVertexPartition.Bipartite, CPMVertexPartition.Bipartite (see the Leiden python module documentation for more details)}
 
@@ -41,7 +41,7 @@ leiden(
 
 \item{laplacian}{(defaults to FALSE). Derive edge weights from the Laplacian matrix.}
 
-\item{legacy}{(defaults to FALSE). Force calling python implementation via reticulate. Default behaviour is calling cluster_leiden in igraph with Moduarity (for undirected graphs) and CPM cost functions.}
+\item{legacy}{(defaults to FALSE). Force calling python implementation via reticulate. Default behaviour is calling cluster_leiden in igraph with Modularity (for undirected graphs) and CPM cost functions.}
 }
 \value{
 A partition of clusters as a vector of integers
@@ -88,22 +88,22 @@ table(partition)
 # generate (unweighted) igraph object in R
 library("igraph")
 adjacency_matrix[adjacency_matrix > 1] <- 1
-snn_graph <- graph_from_adjacency_matrix(adjacency_matrix)
-partition <- leiden(snn_graph)
+my_graph <- graph_from_adjacency_matrix(adjacency_matrix)
+partition <- leiden(my_graph)
 table(partition)
 
 # generate (weighted) igraph object in R
 library("igraph")
 adjacency_matrix[adjacency_matrix >= 1] <- weights
-snn_graph <- graph_from_adjacency_matrix(adjacency_matrix, weighted = TRUE)
-partition <- leiden(snn_graph)
+my_graph <- graph_from_adjacency_matrix(adjacency_matrix, weighted = TRUE)
+partition <- leiden(my_graph)
 table(partition)
 
 # pass weights to python leidenalg
 adjacency_matrix[adjacency_matrix >= 1 ] <- 1
-snn_graph <- graph_from_adjacency_matrix(adjacency_matrix, weighted = NULL)
+my_graph <- graph_from_adjacency_matrix(adjacency_matrix, weighted = NULL)
 weights <- sample(1:10, sum(adjacency_matrix!=0), replace=TRUE)
-partition <- leiden(snn_graph, weights = weights)
+partition <- leiden(my_graph, weights = weights)
 table(partition)
 
 # run only if python is available (for testing)

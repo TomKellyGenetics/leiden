@@ -60,6 +60,7 @@ run_bipartite_partitioning <- function(py_graph,
 ##' @param resolution_parameter A parameter controlling the coarseness of the clusters
 ##' @param seed Seed for the random number generator. By default uses a random seed if nothing is specified.
 ##' @param n_iterations Number of iterations to run the Leiden algorithm. By default, 2 iterations are run. If the number of iterations is negative, the Leiden algorithm is run until an iteration in which there was no improvement.
+##' @param max_comm_size (non-negative int) – Maximal total size of nodes in a community. If zero (the default), then communities can be of any size.
 ##' @param degree_as_node_size (defaults to FALSE). If True use degree as node size instead of 1, to mimic modularity for Bipartite graphs.
 ##' @noRd
 ##' @description internal function to compute partitions by calling Python with reticulate
@@ -94,6 +95,92 @@ legacy = FALSE
   if(partition_type == 'ModularityVertexPartition.Bipartite') degree_as_node_size <- TRUE
   if(!is.null(seed)) seed <- as.integer(seed)
   if (is.integer(n_iterations)) n_iterations <- as.integer(n_iterations)
+
+  self.optimiser = leidenalg$Optimiser()
+  if(py_has_attr(self.optimiser, "max_comm_size")){
+    py_set_attr(self.optimiser, "max_comm_size", r_to_py(as.integer(max_comm_size)))
+    part <- switch(
+      EXPR = partition_type,
+      'RBConfigurationVertexPartition' = leidenalg$find_partition(
+        py_graph,
+        leidenalg$RBConfigurationVertexPartition,
+        initial_membership = initial_membership, weights = weights,
+        seed = seed,
+        n_iterations = n_iterations,
+        max_comm_size = r_to_py(as.integer(max_comm_size)),
+        resolution_parameter = resolution_parameter
+      ),
+      'ModularityVertexPartition' = leidenalg$find_partition(
+        py_graph,
+        leidenalg$ModularityVertexPartition,
+        initial_membership = initial_membership, weights = weights,
+        seed = seed, n_iterations = n_iterations,
+        max_comm_size = r_to_py(as.integer(max_comm_size))
+      ),
+      'RBERVertexPartition' = leidenalg$find_partition(
+        py_graph,
+        leidenalg$RBERVertexPartition,
+        initial_membership = initial_membership, weights = weights,
+        seed = seed, n_iterations = n_iterations,
+        max_comm_size = r_to_py(as.integer(max_comm_size)),
+        node_sizes = node_sizes,
+        resolution_parameter = resolution_parameter
+      ),
+      'CPMVertexPartition' = leidenalg$find_partition(
+        py_graph,
+        leidenalg$CPMVertexPartition,
+        initial_membership = initial_membership, weights = weights,
+        seed = seed, n_iterations = n_iterations,
+        max_comm_size = r_to_py(as.integer(max_comm_size)),
+        node_sizes = node_sizes,
+        resolution_parameter = resolution_parameter
+      ),
+      'MutableVertexPartition' = leidenalg$find_partition(
+        py_graph,
+        leidenalg$MutableVertexPartition,
+        initial_membership = initial_membership,
+        seed = seed, n_iterations = n_iterations,
+        max_comm_size = r_to_py(as.integer(max_comm_size))
+      ),
+      'SignificanceVertexPartition' = leidenalg$find_partition(
+        py_graph,
+        leidenalg$SignificanceVertexPartition,
+        initial_membership = initial_membership,
+        seed = seed, n_iterations = n_iterations,
+        max_comm_size = r_to_py(as.integer(max_comm_size)),
+        node_sizes = node_sizes,
+        resolution_parameter = resolution_parameter
+      ),
+      'SurpriseVertexPartition' = leidenalg$find_partition(
+        py_graph,
+        leidenalg$SurpriseVertexPartition,
+        initial_membership = initial_membership, weights = weights,
+        seed = seed, n_iterations = n_iterations,
+        max_comm_size = r_to_py(as.integer(max_comm_size)),
+        node_sizes = node_sizes
+      ),
+      'ModularityVertexPartition.Bipartite' = run_bipartite_partitioning(py_graph,
+                                                                         initial_membership = initial_membership, weights = weights,
+                                                                         resolution_parameter_01 = resolution_parameter,
+                                                                         resolution_parameter_0 = 0,
+                                                                         resolution_parameter_1 = 0,
+                                                                         degree_as_node_size = TRUE,
+                                                                         types = "type",
+                                                                         seed = seed,
+                                                                         n_iterations = n_iterations),
+      'CPMVertexPartition.Bipartite' = run_bipartite_partitioning(py_graph,
+                                                                  initial_membership = initial_membership, weights = weights,
+                                                                  resolution_parameter_01 = resolution_parameter,
+                                                                  resolution_parameter_0 = 0,
+                                                                  resolution_parameter_1 = 0,
+                                                                  degree_as_node_size = degree_as_node_size,
+                                                                  types = "type",
+                                                                  seed = seed,
+                                                                  n_iterations = n_iterations),
+      stop("please specify a partition type as a string out of those documented")
+    )
+  } else {
+
   part <- switch(
     EXPR = partition_type,
     'RBConfigurationVertexPartition' = leidenalg$find_partition(
@@ -151,7 +238,8 @@ legacy = FALSE
                                                                 degree_as_node_size = TRUE,
                                                                 types = "type",
                                                                 seed = seed,
-                                                                n_iterations = n_iterations),
+                                                                n_iterations = n_iterations,
+                                                                max_comm_size = max_comm_size),
     'CPMVertexPartition.Bipartite' = run_bipartite_partitioning(py_graph,
                                                                 initial_membership = initial_membership, weights = weights,
                                                                 resolution_parameter_01 = resolution_parameter,
@@ -160,9 +248,11 @@ legacy = FALSE
                                                                 degree_as_node_size = degree_as_node_size,
                                                                 types = "type",
                                                                 seed = seed,
-                                                                n_iterations = n_iterations),
+                                                                n_iterations = n_iterations,
+                                                                max_comm_size = max_comm_size),
     stop("please specify a partition type as a string out of those documented")
   )
+}
   partition <- part$membership+1
   partition
 }
@@ -174,6 +264,7 @@ legacy = FALSE
 ##' @param resolution_parameter A parameter controlling the coarseness of the clusters
 ##' @param seed Seed for the random number generator. By default uses a random seed if nothing is specified.
 ##' @param n_iterations Number of iterations to run the Leiden algorithm. By default, 2 iterations are run. If the number of iterations is negative, the Leiden algorithm is run until an iteration in which there was no improvement.
+##' @param max_comm_size (non-negative int) – Maximal total size of nodes in a community. If zero (the default), then communities can be of any size.
 ##' @param degree_as_node_size (defaults to FALSE). If True use degree as node size instead of 1, to mimic modularity for Bipartite graphs.
 ##' @noRd
 ##' @description internal function to compute partitions by calling Python with reticulate
@@ -205,6 +296,73 @@ legacy = FALSE
   partition_type <- match.arg(partition_type)
   if(!is.null(seed)) seed <- as.integer(seed)
   if (is.integer(n_iterations)) n_iterations <- as.integer(n_iterations)
+
+  self.optimiser = leidenalg$Optimiser()
+  if(py_has_attr(self.optimiser, "max_comm_size")){
+    py_set_attr(self.optimiser, "max_comm_size", r_to_py(as.integer(max_comm_size)))
+    part <- switch(
+      EXPR = partition_type,
+      'RBConfigurationVertexPartition' = leidenalg$find_partition_multiplex(
+        graph_list,
+        leidenalg$RBConfigurationVertexPartition,
+        initial_membership = initial_membership, weights = weights,
+        seed = seed,
+        n_iterations = n_iterations,
+        max_comm_size = r_to_py(as.integer(max_comm_size)),
+        resolution_parameter = resolution_parameter
+      ),
+      'ModularityVertexPartition' = leidenalg$find_partition_multiplex(
+        graph_list,
+        leidenalg$ModularityVertexPartition,
+        initial_membership = initial_membership, weights = weights,
+        seed = seed, n_iterations = n_iterations,
+        max_comm_size = r_to_py(as.integer(max_comm_size))
+      ),
+      'RBERVertexPartition' = leidenalg$find_partition_multiplex(
+        graph_list,
+        leidenalg$RBERVertexPartition,
+        initial_membership = initial_membership, weights = weights,
+        seed = seed, n_iterations = n_iterations,
+        max_comm_size = r_to_py(as.integer(max_comm_size)),
+        node_sizes = node_sizes,
+        resolution_parameter = resolution_parameter
+      ),
+      'CPMVertexPartition' = leidenalg$find_partition_multiplex(
+        graph_list,
+        leidenalg$CPMVertexPartition,
+        initial_membership = initial_membership, weights = weights,
+        seed = seed, n_iterations = n_iterations,
+        max_comm_size = r_to_py(as.integer(max_comm_size)),
+        node_sizes = node_sizes,
+        resolution_parameter = resolution_parameter
+      ),
+      'MutableVertexPartition' = leidenalg$find_partition_multiplex(
+        graph_list,
+        leidenalg$MutableVertexPartition,
+        initial_membership = initial_membership,
+        seed = seed, n_iterations = n_iterations,
+        max_comm_size = r_to_py(as.integer(max_comm_size))
+      ),
+      'SignificanceVertexPartition' = leidenalg$find_partition_multiplex(
+        graph_list,
+        leidenalg$SignificanceVertexPartition,
+        initial_membership = initial_membership,
+        seed = seed, n_iterations = n_iterations,
+        max_comm_size = r_to_py(as.integer(max_comm_size)),
+        node_sizes = node_sizes,
+        resolution_parameter = resolution_parameter
+      ),
+      'SurpriseVertexPartition' = leidenalg$find_partition_multiplex(
+        graph_list,
+        leidenalg$SurpriseVertexPartition,
+        initial_membership = initial_membership, weights = weights,
+        seed = seed, n_iterations = n_iterations,
+        max_comm_size = r_to_py(as.integer(max_comm_size)),
+        node_sizes = node_sizes
+      ),
+      stop("please specify a partition type as a string out of those documented")
+    )
+  } else {
   part <- switch(
     EXPR = partition_type,
     'RBConfigurationVertexPartition' = leidenalg$find_partition_multiplex(
@@ -256,6 +414,7 @@ legacy = FALSE
     ),
     stop("please specify a partition type as a string out of those documented")
   )
+}
   names(part) <- c("membership", "improv")
   partition <- part$membership+1
   partition
