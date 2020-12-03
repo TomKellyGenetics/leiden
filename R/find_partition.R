@@ -43,7 +43,7 @@ run_bipartite_partitioning <- function(py_graph,
                                                                resolution_parameter_0 = resolution_parameter_0,
                                                                resolution_parameter_1 = resolution_parameter_1,
                                                                degree_as_node_size = degree_as_node_size,
-                                                               types = r_to_py(type))
+                                                               types = r_to_py(types))
   }
   bipartite_layers <- r_to_py(bipartite_layers)
   self.optimiser$optimise_partition_multiplex(
