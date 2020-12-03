@@ -77,7 +77,7 @@ NULL
 ##' }
 ##'
 ##' @keywords graph network igraph mvtnorm simulation
-##' @importFrom reticulate import py_to_r r_to_py
+##' @importFrom reticulate import py_to_r r_to_py py_has_attr py_get_attr py_set_attr
 ##' @rdname leiden
 ##' @export
 leiden <- function(object,
@@ -228,7 +228,7 @@ leiden.Matrix <- function(object,
     )
 }
 
-##' @importFrom igraph graph_from_adjacency_matrix edge_attr set_edge_attr E
+##' @importFrom igraph graph_from_adjacency_matrix edge_attr set_edge_attr E is.igraph
 ##' @importFrom methods as
 ##' @importClassesFrom Matrix dgCMatrix dgeMatrix
 ##' @export
@@ -258,9 +258,9 @@ leiden.list <- function(object,
     if(length(partition_type) > 1) partition_type <- partition_type[[1]][1]
     partition_type <- match.arg(partition_type)
 
-    if(length(object) == 1){
-        object <- object[[1]]
-        partition <- leiden(object,
+    if(length(object) == 1 || is.igraph(object)){
+        if(!is.igraph(object) && is.list(object)) object <- object[[1]]
+        partition <- leiden.igraph(object,
                             partition_type = partition_type,
                             weights = weights,
                             node_sizes = node_sizes,
@@ -429,7 +429,7 @@ leiden.igraph <- function(object,
         }
 
         if(!is.null(vertex_attr(object, "type")) || is_bipartite(object)){
-            type <- as.integer(V(object)$type)
+            type <- as.integer(unlist(V(object)$type))
             py_graph$vs$set_attribute_values('type', r_to_py(as.integer(type)))
         }
 
