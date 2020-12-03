@@ -29,7 +29,7 @@ run_bipartite_partitioning <- function(py_graph,
 
   self.optimiser = leidenalg$Optimiser()
   if(py_has_attr(self.optimiser, "max_comm_size")){
-    reticulate::py_set_attr(self.optimiser, "max_comm_size", r_to_py(as.integer(max_comm_size)))
+    py_set_attr(self.optimiser, "max_comm_size", r_to_py(as.integer(max_comm_size)))
   }
 
   if(!is.null(seed)){
@@ -37,12 +37,13 @@ run_bipartite_partitioning <- function(py_graph,
   }
   for(ii in 1:n_iterations){
     bipartite_layers <- leidenalg$CPMVertexPartition$Bipartite(py_graph,
-                                                               initial_membership = initial_membership, weights = weights,
+                                                               initial_membership = initial_membership,
+                                                               weights = weights,
                                                                resolution_parameter_01 = resolution_parameter_01,
                                                                resolution_parameter_0 = resolution_parameter_0,
                                                                resolution_parameter_1 = resolution_parameter_1,
                                                                degree_as_node_size = degree_as_node_size,
-                                                               types = types)
+                                                               types = r_to_py(type))
   }
   bipartite_layers <- r_to_py(bipartite_layers)
   self.optimiser$optimise_partition_multiplex(
