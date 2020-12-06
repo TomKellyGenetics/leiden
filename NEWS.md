@@ -2,7 +2,11 @@
 
 * migrate to calling community_leiden in igraph
 
+# leiden 0.3.6
+
 * add methods for multiplex community detection from a list of graphs
+
+* add support for maximum community size (depends on leidenalg 0.8.2), if available
 
 # leiden 0.3.5
 
