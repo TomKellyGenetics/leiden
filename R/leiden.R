@@ -278,12 +278,24 @@ leiden.list <- function(object,
         leidenalg <- import("leidenalg", delay_load = TRUE)
         ig <- import("igraph", delay_load = TRUE)
 
+        object <- lapply(object, function(graph){
+            if(is.matrix(graph) || is(graph, "dgCMatrix")){
+                graph_from_adjacency_matrix(graph)
+            } else {
+                graph
+            }
+        })
+
+        names(object) <- c()
+
         py_list <- r_to_py(lapply(object, function(r_graph){
             make_py_graph(r_graph, weights = weights)
         }))
 
         if(partition_type == 'ModularityVertexPartition.Bipartite') partition_type <- "ModularityVertexPartition"
         if(partition_type == 'CPMVertexPartition.Bipartite') partition_type <- "CPMVertexPartition"
+        partition_type <- gsub(".Bipartite", "", partition_type)
+        partition_type <- gsub(".Multiplex", "", partition_type)
 
         #compute partitions with reticulate
         partition <- find_partition_multiplex(py_list, partition_type = partition_type,
