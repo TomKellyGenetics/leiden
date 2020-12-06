@@ -32,6 +32,19 @@ test_that("run with resolution parameter", {
   expect_length(partition, 100)
 })
 
+test_that("run with max_comm_size", {
+  skip_if_no_python()
+  partition <- leiden(snn_graph,
+                      partition_type = "ModularityVertexPartition",
+                      resolution_parameter = 0.2,
+                      max_comm_size = 8,
+                      degree_as_node_size = TRUE,
+                      seed = 9001)
+  expect_length(partition, length(V(snn_graph)))
+  expect_equal(sort(unique(partition)), 1:14)
+  expect_equal(max(table(partition)), 8)
+})
+
 test_that("run on igraph object with random seed", {
   skip_if_no_python()
   partition <- leiden(snn_graph, seed = 42L, weights = NULL)
@@ -66,4 +79,3 @@ test_that("run with named adjacency matrix", {
   partition <- leiden(snn_graph)
   expect_length(partition, 100)
 })
-
