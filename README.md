@@ -182,7 +182,7 @@ names(test@ident) <- rownames(test@meta.data)
 pbmc_small@meta.data$ident <- as.factor(partition)
 ```
 
-Suerat objects contain an SNN graph that can be passed directly to the igraph method. For example
+Seurat objects contain an SNN graph that can be passed directly to the igraph method. For example
 
 ```R
 library("Seurat")

@@ -364,7 +364,7 @@ plot_directed(multiplex_graph$leisure, main = "leisure", col.label  = node.cols,
 plot_directed(multiplex_graph$coauthor, main = "coauthor", col.label  = node.cols, col.arrow = brewer.pal(5, "Pastel1")[5], layout = layout.kamada.kawai)
 ```
 
-### Fine-tuning with maxiumum community size
+### Fine-tuning with maximum community size
 
 The `resolution`max_comm_size` parameter applies on multiplex graphs to fine-tuning the size of clusters detected.
 
