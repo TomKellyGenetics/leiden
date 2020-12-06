@@ -216,7 +216,7 @@ plot(bipartite_graph, vertex.color = node.cols, layout = layout.kamada.kawai)
 ```
 
 
-#### Maxiumum Community Size Parameter
+#### Maximum Community Size Parameter
 
 The `resolution`max_comm_size` parameter applies on bipartite graphs to fine-tuning the size of clusters detected.
 
