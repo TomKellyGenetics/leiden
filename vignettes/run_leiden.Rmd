@@ -140,7 +140,7 @@ Arguments can be passed to the leidenalg implementation in Python:
   partition <- leiden(adjacency_matrix, resolution_parameter = 0.95)
 ```
 
-In particular, the resolution parameter can tune the number of clusters to be detected.
+In particular, the resolution parameter can fine-tune the number of clusters to be detected.
 
 ```{r, warning=FALSE, message=FALSE, eval=module}
 partition <- leiden(adjacency_matrix, resolution_parameter = 0.5)
@@ -152,6 +152,12 @@ plot(graph_object, vertex.color = node.cols)
 ```{r, warning=FALSE, message=FALSE, eval=module}
 partition <- leiden(adjacency_matrix, resolution_parameter = 1.8)
 node.cols <- brewer.pal(max(c(3, partition)),"Pastel1")[partition]
+plot(graph_object, vertex.color = node.cols)
+```
+
+```{r, warning=FALSE, message=FALSE, eval=module}
+partition <- leiden(adjacency_matrix, max_comm_size = 12)
+node.cols <- brewer.pal(max(c(10, partition)),"Pastel1")[partition]
 plot(graph_object, vertex.color = node.cols)
 ```
 
