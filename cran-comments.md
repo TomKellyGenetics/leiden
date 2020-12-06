@@ -13,7 +13,7 @@
 
 ## Updates
 
-Minor update to disable warnings when building vignettes. No GitHub dependencies found if no internet connection.
+Adds new features supported by Python version. Backwards compatible and does not attempt to pass new arguments in Python if these are not available.
 
 ## Python integration
 
