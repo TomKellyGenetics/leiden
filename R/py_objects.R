@@ -41,6 +41,8 @@ make_py_object.matrix <- function(object, weights = NULL){
   adj_mat_py
 }
 
+make_py_object.Matrix <- make_py_object.matrix
+
 make_py_object.igraph <- function(object, weights = NULL){
   #import python modules with reticulate
   numpy <- import("numpy", delay_load = TRUE)
@@ -117,6 +119,8 @@ make_py_graph.matrix <- function(object, weights = NULL){
   }
   py_graph <- GraphClass(adj_mat_py)
 }
+
+make_py_graph.Matrix <- make_py_graph.matrix
 
 make_py_graph.igraph <- make_py_object.igraph
 
