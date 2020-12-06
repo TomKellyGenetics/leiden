@@ -245,3 +245,20 @@ test_that("run with ModularityVertexPartition multiplexed", {
                  1, 3, 1, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 5, 5, 3, 3,
                  3, 1, 5, 3, 1, 1, 1, 1, 1, 1, 1, 5, 5, 5, 1, 1, 1, 5, 6, 5))
 })
+
+test_that("run with ModularityVertexPartition multiplexed and max_comm_size", {
+  skip_if_no_python()
+  partition <- leiden(multiplex_graph,
+                      partition_type = "ModularityVertexPartition",
+                      resolution_parameter = 0.1,
+                      max_comm_size = 8,
+                      degree_as_node_size = TRUE,
+                      seed = 9001)
+  expect_length(partition, length(V(multiplex_graph[[1]])))
+  expect_equal(sort(unique(partition)), 1:10)
+  expect_equal(max(table(partition)), 8)
+  expect_equal(partition,
+               c(4, 4, 2, 3, 8, 3, 3, 4, 2, 3, 3, 8, 8, 3, 3, 3, 6, 6, 5, 8,
+                 2, 8, 6, 7, 2, 5, 5, 5, 7, 5, 7, 7, 5, 5, 7, 5, 4, 1, 1, 4, 4,
+                 4, 2, 1, 4, 6, 6, 6, 6, 9, 2, 6, 1, 1, 1, 2, 2, 7, 1, 10, 1))
+})
