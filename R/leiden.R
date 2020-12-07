@@ -307,7 +307,7 @@ leiden.list <- function(object,
 ##' @export
 leiden.default <- leiden.matrix
 
-##' @importFrom igraph V as_edgelist is.weighted is.named edge_attr as_adjacency_matrix laplacian_matrix vertex_attr is_bipartite bipartite_mapping set_vertex_attr simplify
+##' @importFrom igraph V as_edgelist is.weighted is.named edge_attr as_adjacency_matrix laplacian_matrix vertex_attr is_bipartite bipartite_mapping set_vertex_attr simplify is_named is_weighted
 ##' @export
 leiden.igraph <- function(object,
                           partition_type = c(

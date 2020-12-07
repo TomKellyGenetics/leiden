@@ -1,7 +1,6 @@
 library("reticulate")
 library("igraph")
 library("leiden")
-library("multiplex")
 
 context("running Leiden on multiplex igraph objects")
 
