@@ -41,7 +41,7 @@ test_that("run with max_comm_size", {
                       degree_as_node_size = TRUE,
                       seed = 9001)
   expect_length(partition, length(V(snn_graph)))
-  expect_equal(sort(unique(partition)), 1:14)
+  expect_equal(sort(unique(partition)), 1:13)
   expect_equal(max(table(partition)), 8)
 })
 
