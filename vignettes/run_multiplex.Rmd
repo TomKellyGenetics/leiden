@@ -16,7 +16,6 @@ knitr::opts_chunk$set(
 )
 knitr::opts_chunk$set(fig.cap = "", fig.path = "Plot")
 knitr::opts_chunk$set(fig.align = "center")
-knitr::opts_chunk$set(dev.args = list(type = "cairo"))
 options(width = 120, cli.unicode = FALSE, cli.width = 120)
 library("reticulate")
 module <- py_available() && reticulate::py_module_available("leidenalg") && reticulate::py_module_available("igraph")
