@@ -1,6 +1,7 @@
 library("reticulate")
 library("igraph")
 library("leiden")
+set.seed(9000)
 
 context("running Leiden on multiplex igraph objects")
 
