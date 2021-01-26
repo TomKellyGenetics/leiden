@@ -308,11 +308,11 @@ library("graphsim")
 library("RColorBrewer")
 node.cols <- brewer.pal(max(c(10, partition)),"Pastel1")[partition]
 par(mfrow = c(2, 3))
-plot_directed(multiplex_graph$lunch, main = "lunch", col.label  = node.cols, col.arrow = brewer.pal(5, "Pastel1")[1], layout = layout.kamada.kawai)
-plot_directed(multiplex_graph$work, main = "work", col.label  = node.cols, col.arrow = brewer.pal(5, "Pastel1")[2], layout = layout.kamada.kawai)
-plot_directed(multiplex_graph$facebook, main = "facebook", col.label  = node.cols, col.arrow = brewer.pal(5, "Pastel1")[3], layout = layout.kamada.kawai)
-plot_directed(multiplex_graph$leisure, main = "leisure", col.label  = node.cols, col.arrow = brewer.pal(5, "Pastel1")[4], layout = layout.kamada.kawai)
-plot_directed(multiplex_graph$coauthor, main = "coauthor", col.label  = node.cols, col.arrow = brewer.pal(5, "Pastel1")[5], layout = layout.kamada.kawai)
+plot_directed(multiplex_graph$lunch, main = "lunch", fill.node  = node.cols, col.arrow = brewer.pal(5, "Pastel1")[1], layout = layout.kamada.kawai)
+plot_directed(multiplex_graph$work, main = "work", fill.node  = node.cols, col.arrow = brewer.pal(5, "Pastel1")[2], layout = layout.kamada.kawai)
+plot_directed(multiplex_graph$facebook, main = "facebook", fill.node  = node.cols, col.arrow = brewer.pal(5, "Pastel1")[3], layout = layout.kamada.kawai)
+plot_directed(multiplex_graph$leisure, main = "leisure", fill.node  = node.cols, col.arrow = brewer.pal(5, "Pastel1")[4], layout = layout.kamada.kawai)
+plot_directed(multiplex_graph$coauthor, main = "coauthor", fill.node  = node.cols, col.arrow = brewer.pal(5, "Pastel1")[5], layout = layout.kamada.kawai)
 ```
 
 This can also be run on a list of adjacency matrices giving the same results.
@@ -357,11 +357,11 @@ library("graphsim")
 library("RColorBrewer")
 node.cols <- brewer.pal(max(c(10, partition)),"Pastel1")[partition]
 par(mfrow = c(2, 3))
-plot_directed(multiplex_graph$lunch, main = "lunch", col.label  = node.cols, col.arrow = brewer.pal(5, "Pastel1")[1], layout = layout.kamada.kawai)
-plot_directed(multiplex_graph$work, main = "work", col.label  = node.cols, col.arrow = brewer.pal(5, "Pastel1")[2], layout = layout.kamada.kawai)
-plot_directed(multiplex_graph$facebook, main = "facebook", col.label  = node.cols, col.arrow = brewer.pal(5, "Pastel1")[3], layout = layout.kamada.kawai)
-plot_directed(multiplex_graph$leisure, main = "leisure", col.label  = node.cols, col.arrow = brewer.pal(5, "Pastel1")[4], layout = layout.kamada.kawai)
-plot_directed(multiplex_graph$coauthor, main = "coauthor", col.label  = node.cols, col.arrow = brewer.pal(5, "Pastel1")[5], layout = layout.kamada.kawai)
+plot_directed(multiplex_graph$lunch, main = "lunch", fill.node  = node.cols, col.arrow = brewer.pal(5, "Pastel1")[1], layout = layout.kamada.kawai)
+plot_directed(multiplex_graph$work, main = "work", fill.node  = node.cols, col.arrow = brewer.pal(5, "Pastel1")[2], layout = layout.kamada.kawai)
+plot_directed(multiplex_graph$facebook, main = "facebook", fill.node  = node.cols, col.arrow = brewer.pal(5, "Pastel1")[3], layout = layout.kamada.kawai)
+plot_directed(multiplex_graph$leisure, main = "leisure", fill.node  = node.cols, col.arrow = brewer.pal(5, "Pastel1")[4], layout = layout.kamada.kawai)
+plot_directed(multiplex_graph$coauthor, main = "coauthor", fill.node  = node.cols, col.arrow = brewer.pal(5, "Pastel1")[5], layout = layout.kamada.kawai)
 ```
 
 ### Fine-tuning with maximum community size
@@ -388,11 +388,11 @@ library("graphsim")
 library("RColorBrewer")
 node.cols <- brewer.pal(max(c(10, partition)),"Pastel1")[partition]
 par(mfrow = c(2, 3))
-plot_directed(multiplex_graph$lunch, main = "lunch", col.label  = node.cols, col.arrow = brewer.pal(5, "Pastel1")[1], layout = layout.kamada.kawai)
-plot_directed(multiplex_graph$work, main = "work", col.label  = node.cols, col.arrow = brewer.pal(5, "Pastel1")[2], layout = layout.kamada.kawai)
-plot_directed(multiplex_graph$facebook, main = "facebook", col.label  = node.cols, col.arrow = brewer.pal(5, "Pastel1")[3], layout = layout.kamada.kawai)
-plot_directed(multiplex_graph$leisure, main = "leisure", col.label  = node.cols, col.arrow = brewer.pal(5, "Pastel1")[4], layout = layout.kamada.kawai)
-plot_directed(multiplex_graph$coauthor, main = "coauthor", col.label  = node.cols, col.arrow = brewer.pal(5, "Pastel1")[5], layout = layout.kamada.kawai)
+plot_directed(multiplex_graph$lunch, main = "lunch", fill.node  = node.cols, col.arrow = brewer.pal(5, "Pastel1")[1], layout = layout.kamada.kawai)
+plot_directed(multiplex_graph$work, main = "work", fill.node  = node.cols, col.arrow = brewer.pal(5, "Pastel1")[2], layout = layout.kamada.kawai)
+plot_directed(multiplex_graph$facebook, main = "facebook", fill.node  = node.cols, col.arrow = brewer.pal(5, "Pastel1")[3], layout = layout.kamada.kawai)
+plot_directed(multiplex_graph$leisure, main = "leisure", fill.node  = node.cols, col.arrow = brewer.pal(5, "Pastel1")[4], layout = layout.kamada.kawai)
+plot_directed(multiplex_graph$coauthor, main = "coauthor", fill.node  = node.cols, col.arrow = brewer.pal(5, "Pastel1")[5], layout = layout.kamada.kawai)
 ```
 
 ### Multiplex cost functions
@@ -421,10 +421,10 @@ library("graphsim")
 library("RColorBrewer")
 node.cols <- brewer.pal(max(c(8, partition)),"Pastel1")[partition]
 par(mfrow = c(2, 3))
-plot_directed(multiplex_graph$lunch, main = "lunch", col.label  = node.cols, col.arrow = brewer.pal(5, "Pastel1")[1], layout = layout.kamada.kawai)
-plot_directed(multiplex_graph$work, main = "work", col.label  = node.cols, col.arrow = brewer.pal(5, "Pastel1")[2], layout = layout.kamada.kawai)
-plot_directed(multiplex_graph$facebook, main = "facebook", col.label  = node.cols, col.arrow = brewer.pal(5, "Pastel1")[3], layout = layout.kamada.kawai)
-plot_directed(multiplex_graph$leisure, main = "leisure", col.label  = node.cols, col.arrow = brewer.pal(5, "Pastel1")[4], layout = layout.kamada.kawai)
-plot_directed(multiplex_graph$coauthor, main = "coauthor", col.label  = node.cols, col.arrow = brewer.pal(5, "Pastel1")[5], layout = layout.kamada.kawai)
+plot_directed(multiplex_graph$lunch, main = "lunch", fill.node  = node.cols, col.arrow = brewer.pal(5, "Pastel1")[1], layout = layout.kamada.kawai)
+plot_directed(multiplex_graph$work, main = "work", fill.node  = node.cols, col.arrow = brewer.pal(5, "Pastel1")[2], layout = layout.kamada.kawai)
+plot_directed(multiplex_graph$facebook, main = "facebook", fill.node  = node.cols, col.arrow = brewer.pal(5, "Pastel1")[3], layout = layout.kamada.kawai)
+plot_directed(multiplex_graph$leisure, main = "leisure", fill.node  = node.cols, col.arrow = brewer.pal(5, "Pastel1")[4], layout = layout.kamada.kawai)
+plot_directed(multiplex_graph$coauthor, main = "coauthor", fill.node  = node.cols, col.arrow = brewer.pal(5, "Pastel1")[5], layout = layout.kamada.kawai)
 ```
 
