@@ -465,6 +465,7 @@ leiden.igraph <- function(object,
 leidenalg <- NULL
 ig <- NULL
 numpy <- NULL
+pd < -NULL
 
 #' @importFrom utils install.packages capture.output
 
@@ -557,15 +558,19 @@ numpy <- NULL
     }, error = function(e){
         packageStartupMessage("Unable to install python modules igraph and leidenalg")
         packageStartupMessage("run in terminal:")
-        packageStartupMessage("conda install -c conda-forge vtraag python-igraph")
+        packageStartupMessage("conda install -n r-reticulate -c conda-forge vtraag python-igraph pandas umap learn")
     },
     finally = packageStartupMessage("python modules igraph and leidenalg installed"))
     if (suppressWarnings(suppressMessages(requireNamespace("reticulate")))) {
+        modules <- reticulate::py_module_available("pandas")
+        if (modules) {
+            ## assignment in parent environment!
+            pd <- reticulate::import("pandas", delay_load = TRUE)
+        }
         modules <- reticulate::py_module_available("leidenalg") && reticulate::py_module_available("igraph")
         if (modules) {
             ## assignment in parent environment!
             numpy <- reticulate::import("numpy", delay_load = TRUE)
-            pd <- reticulate::import("pandas", delay_load = TRUE)
             leidenalg <- reticulate::import("leidenalg", delay_load = TRUE)
             ig <- reticulate::import("igraph", delay_load = TRUE)
         }
