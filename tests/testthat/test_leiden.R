@@ -1,6 +1,7 @@
 library("leiden")
 library("reticulate")
 context("running Leiden on an adjacency matrix")
+set.seed(9000)
 
 adj_mat <- matrix(round(runif(10000, 0, 1)), 100, 100)
 
