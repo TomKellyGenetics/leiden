@@ -1,6 +1,14 @@
+# leiden 0.4.1
+
+* migrates changes to retain on CRAN to leiden 0.4.0 (alpha)
+
 # leiden 0.4.0
 
 * migrate to calling community_leiden in igraph
+
+# leiden 0.3.7
+
+* remove cairo graphics from vignette to retain on CRAN
 
 # leiden 0.3.6
 
