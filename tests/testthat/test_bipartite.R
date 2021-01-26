@@ -2,6 +2,7 @@ library("leiden")
 library("reticulate")
 library("igraph")
 library("bipartite")
+set.seed(9000)
 
 context("running Leiden on a bipartite igraph object")
 

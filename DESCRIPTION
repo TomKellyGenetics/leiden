@@ -27,6 +27,7 @@ Suggests:
     graphsim,
     knitr,
     markdown,
+    multiplex,
     RColorBrewer,
     remotes,
     rmarkdown,
