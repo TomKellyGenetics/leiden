@@ -2,6 +2,7 @@ library("leiden")
 library("reticulate")
 library("igraph")
 context("running Leiden on unweighted objects")
+set.seed(9000)
 
 modules <- reticulate::py_module_available("leidenalg") && reticulate::py_module_available("igraph")
 
