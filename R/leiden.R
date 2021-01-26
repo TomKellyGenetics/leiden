@@ -134,6 +134,7 @@ leiden.matrix <- function(object,
     numpy <- import("numpy", delay_load = TRUE)
     leidenalg <- import("leidenalg", delay_load = TRUE)
     ig <- import("igraph", delay_load = TRUE)
+    pd <- import("pandas", delay_load = TRUE)
 
     #convert matrix input (corrects for sparse matrix input)
     if(is.matrix(object) || is(object, "dgCMatrix")){
@@ -411,10 +412,10 @@ leiden.igraph <- function(object,
 
 
 # global reference to python modules (will be initialized in .onLoad)
-leidenalg <- NULL
-ig <- NULL
-numpy <- NULL
-pd < -NULL
+leidenalg <<- NULL
+ig <<- NULL
+numpy <<- NULL
+pd <<- NULL
 
 #' @importFrom utils install.packages capture.output
 
@@ -446,7 +447,8 @@ pd < -NULL
                     }
                     suppressWarnings(suppressMessages(reticulate::use_condaenv("r-reticulate")))
                     if(.Platform$OS.type == "windows"){
-                        install.packages("devtools",  quiet = TRUE)
+
+                                             install.packages("devtools",  quiet = TRUE)
                         devtools::install_github("rstudio/reticulate", ref = "86ebb56",  quiet = TRUE)
                         if(!reticulate::py_module_available("numpy")) suppressWarnings(suppressMessages(reticulate::conda_install(envname = "r-reticulate", packages = "numpy")))
                         if(!reticulate::py_module_available("pandas")) suppressWarnings(suppressMessages(reticulate::conda_install(envname = "r-reticulate", packages = "pandas")))

@@ -13,7 +13,9 @@
 
 ## Updates
 
-Adds new features supported by Python version. Backwards compatible and does not attempt to pass new arguments in Python if these are not available.
+Changes to remove cairo graphics (M1 requirement).
+
+Soft dependency on python module to avoid install issues.
 
 ## Python integration
 

@@ -28,8 +28,6 @@ Suggests:
     knitr,
     multiplex,
     multinet,
-    multinets,
-    mully,
     markdown,
     network,
     RColorBrewer,
