@@ -1,3 +1,7 @@
+# leiden 0.3.7
+
+* remove cairo graphics from vignette to retain on CRAN
+
 # leiden 0.3.6
 
 * add methods for multiplex community detection from a list of graphs (requires leidenalg 0.7.1)
