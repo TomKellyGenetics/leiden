@@ -465,7 +465,7 @@ leiden.igraph <- function(object,
 leidenalg <- NULL
 ig <- NULL
 numpy <- NULL
-pd < -NULL
+pd <- NULL
 
 #' @importFrom utils install.packages capture.output
 
