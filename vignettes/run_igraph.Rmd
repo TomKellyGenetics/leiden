@@ -64,15 +64,15 @@ library("leiden")
 First set up a compatible adjacency matrix:
 
 ```{r}
-adjacency_matrix <- rbind(cbind(matrix(round(rbinom(4000, 1, 0.8)), 20, 20),
-                                matrix(round(rbinom(4000, 1, 0.3)), 20, 20), 
+adjacency_matrix <- rbind(cbind(matrix(round(rbinom(400, 1, 0.8)), 20, 20),
+                                matrix(round(rbinom(400, 1, 0.3)), 20, 20), 
                                 matrix(round(rbinom(400, 1, 0.1)), 20, 20)),
                           cbind(matrix(round(rbinom(400, 1, 0.3)), 20, 20), 
                                 matrix(round(rbinom(400, 1, 0.8)), 20, 20), 
-                                matrix(round(rbinom(4000, 1, 0.2)), 20, 20)),
+                                matrix(round(rbinom(400, 1, 0.2)), 20, 20)),
                           cbind(matrix(round(rbinom(400, 1, 0.3)), 20, 20), 
-                                matrix(round(rbinom(4000, 1, 0.1)), 20, 20), 
-                                matrix(round(rbinom(4000, 1, 0.9)), 20, 20)))
+                                matrix(round(rbinom(400, 1, 0.1)), 20, 20), 
+                                matrix(round(rbinom(400, 1, 0.9)), 20, 20)))
 str(adjacency_matrix)
 dim(adjacency_matrix )
 ```
