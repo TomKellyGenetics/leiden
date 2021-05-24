@@ -1,3 +1,7 @@
+# leiden 0.3.8
+
+* bug fixes for vignettes to retain on CRAN
+
 # leiden 0.3.7
 
 * remove cairo graphics from vignette to retain on CRAN
