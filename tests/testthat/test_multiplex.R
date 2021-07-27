@@ -1,7 +1,10 @@
 library("reticulate")
 library("igraph")
 library("leiden")
+<<<<<<< HEAD
 library("multiplex")
+=======
+>>>>>>> master
 set.seed(9000)
 
 context("running Leiden on multiplex igraph objects")

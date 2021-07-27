@@ -1,6 +1,6 @@
-library("leiden")
 library("reticulate")
 library("igraph")
+library("leiden")
 library("bipartite")
 set.seed(9000)
 

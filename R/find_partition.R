@@ -85,6 +85,7 @@ n_iterations = 2L,
 max_comm_size = 0L,
 degree_as_node_size = TRUE,
 legacy = FALSE
+degree_as_node_size = TRUE
 ) {
   #import python modules with reticulate
   numpy <- import("numpy", delay_load = TRUE)

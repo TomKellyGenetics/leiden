@@ -137,6 +137,7 @@ leiden.matrix <- function(object,
     numpy <- import("numpy", delay_load = TRUE)
     leidenalg <- import("leidenalg", delay_load = TRUE)
     ig <- import("igraph", delay_load = TRUE)
+    pd <- import("pandas", delay_load = TRUE)
 
     #convert matrix input (corrects for sparse matrix input)
     if(is.matrix(object) || is(object, "dgCMatrix")){
@@ -205,13 +206,13 @@ leiden.Matrix <- function(object,
     partition_type <- match.arg(partition_type)
 
     #cast to sparse matrix
-    adj_mat <- as(object, "dgCMatrix")
+    object <- as(object, "dgCMatrix")
     #run as igraph object (passes to reticulate)
     if(is.null(weights)){
-        object <- graph_from_adjacency_matrix(adjmatrix = adj_mat, weighted = TRUE)
+        object <- graph_from_adjacency_matrix(adjmatrix = object, weighted = TRUE)
         weights <- edge_attr(object)$weight
     } else {
-        object <- graph_from_adjacency_matrix(adjmatrix = adj_mat, weighted = TRUE)
+        object <- graph_from_adjacency_matrix(adjmatrix = object, weighted = TRUE)
         object <- set_edge_attr(object, "weight", index=E(object), weights)
     }
 
@@ -273,6 +274,7 @@ leiden.list <- function(object,
                             legacy = legacy
         )
     } else{
+
         #import python modules with reticulate
         numpy <- reticulate::import("numpy", delay_load = TRUE)
         leidenalg <- import("leidenalg", delay_load = TRUE)
@@ -291,6 +293,7 @@ leiden.list <- function(object,
         py_list <- r_to_py(lapply(object, function(r_graph){
             make_py_graph(r_graph, weights = weights)
         }))
+
 
         if(partition_type == 'ModularityVertexPartition.Bipartite') partition_type <- "ModularityVertexPartition"
         if(partition_type == 'CPMVertexPartition.Bipartite') partition_type <- "CPMVertexPartition"
@@ -315,7 +318,7 @@ leiden.list <- function(object,
 ##' @export
 leiden.default <- leiden.matrix
 
-##' @importFrom igraph V as_edgelist is_weighted is_named edge_attr as_adjacency_matrix laplacian_matrix vertex_attr is_bipartite bipartite_mapping set_vertex_attr simplify as.undirected is_directed communities membership cluster_leiden which_mutual which_loop
+##' @importFrom igraph V as_edgelist is_weighted is_named edge_attr as_adjacency_matrix laplacian_matrix vertex_attr is_bipartite bipartite_mapping set_vertex_attr simplify as.undirected is_directed communities membership cluster_leiden which_mutual which_loop is_named is_weighted
 ##' @export
 leiden.igraph <- function(object,
                           partition_type = c(
@@ -358,7 +361,6 @@ leiden.igraph <- function(object,
             warning(paste("weights but be same length as number of edges:", length(E(object))))
             weights <- NULL
         }
-    }
 
     #derive Laplacian
     if(laplacian == TRUE){
@@ -377,7 +379,6 @@ leiden.igraph <- function(object,
         }
     }
     call_igraph <- !is_directed(object) && !is_bipartite(object) && legacy == FALSE && (partition_type == "CPMVertexPartition" || partition_type == "ModularityVertexPartition")
-
     #print(call_igraph)
 
     if(call_igraph == TRUE){
@@ -497,7 +498,8 @@ pd <- NULL
                     }
                     suppressWarnings(suppressMessages(reticulate::use_condaenv("r-reticulate")))
                     if(.Platform$OS.type == "windows"){
-                        install.packages("devtools",  quiet = TRUE)
+
+                                             install.packages("devtools",  quiet = TRUE)
                         devtools::install_github("rstudio/reticulate", ref = "86ebb56",  quiet = TRUE)
                         if(!reticulate::py_module_available("numpy")) suppressWarnings(suppressMessages(reticulate::conda_install(envname = "r-reticulate", packages = "numpy")))
                         if(!reticulate::py_module_available("pandas")) suppressWarnings(suppressMessages(reticulate::conda_install(envname = "r-reticulate", packages = "pandas")))
