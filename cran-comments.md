@@ -13,10 +13,7 @@
 
 ## Updates
 
-Changes to vignettes to address the following issue:
-
-Specifically, please see the problems for the Debian-based checks for
-r-devel.
+Updates maintainer contact details.
 
 These are from
 
