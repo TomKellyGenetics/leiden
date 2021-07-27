@@ -1,4 +1,8 @@
-# leiden 0.3.8
+# leiden 0.3.9
+
+Updates maintainer contact details.
+
+# leiden 0.3.9
 
 * bug fixes for vignettes to retain on CRAN
 
