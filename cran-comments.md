@@ -13,21 +13,8 @@
 
 ## Updates
 
-Updates maintainer contact details.
-
-These are from
-
-      \item \code{matrix(x, n, m)} now warns in more cases where
-      \code{length(x)} differs from than \code{n * m}; suggested by Abby
-      Spurdle and Wolfgang Huber in Feb 2021 on the R-devel mailing
-      list.
-
-      This warning can be turned into an error by setting environment
-      variable \env{_R_CHECK_MATRIX_DATA_} to \samp{TRUE}: \command{R
-        CMD check --as-cran} does so unless it is already set.
-
-in current r-devel, where the Debian-based checks are now performed with
-_R_CHECK_MATRIX_DATA_=TRUE.
+Updates unit testing, conda installation, documentation in knitr, and handling scientific notation.
+Resolves various bugs reported on GitHub.
 
 ## Python integration
 
