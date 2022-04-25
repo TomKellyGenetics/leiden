@@ -2,7 +2,7 @@
 
 Updates maintainer contact details.
 
-# leiden 0.3.9
+# leiden 0.3.8
 
 * bug fixes for vignettes to retain on CRAN
 
