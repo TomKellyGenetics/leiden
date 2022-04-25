@@ -63,7 +63,7 @@ skip_if_no_python <- function() {
     testthat::skip("leidenalg not available for testing")
 }
 
-
+set.seed(9000)
 test_that("run with CPMVertexPartition.Bipartite", {
   skip_if_no_python()
   partition <- leiden(bipartite_graph,
@@ -78,6 +78,7 @@ test_that("run with CPMVertexPartition.Bipartite", {
   bipartite_graph
 })
 
+set.seed(9000)
 test_that("run with CPMVertexPartition.Bipartite and degree as node size", {
   skip_if_no_python()
   partition <- leiden(bipartite_graph,
@@ -86,12 +87,13 @@ test_that("run with CPMVertexPartition.Bipartite and degree as node size", {
                       degree_as_node_size = TRUE,
                       seed = 9001)
   expect_length(partition, length(V(bipartite_graph)))
-  expect_equal(sort(unique(partition)), c(1, 2))
+  expect_equal(sort(unique(partition)), c(1, 2, 3, 4))
   expect_equal(partition,
-               c(1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1,
-                 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2))
+               c(1, 1, 1, 1, 1, 1, 3, 4, 3, 3, 2, 2, 2, 2, 2, 2, 4, 4, 1, 1,
+                 1, 1, 1, 1, 3, 3, 4, 2, 4, 2, 2, 2))
 })
 
+set.seed(9000)
 test_that("run with ModularityVertexPartition.Bipartite", {
   skip_if_no_python()
   partition <- leiden(bipartite_graph,
@@ -99,9 +101,9 @@ test_that("run with ModularityVertexPartition.Bipartite", {
                       resolution_parameter = 0.01,
                       seed = 9001)
   expect_length(partition, length(V(bipartite_graph)))
-  expect_equal(sort(unique(partition)), c(1, 2))
+  expect_equal(sort(unique(partition)), c(1, 2, 3, 4))
   expect_equal(partition,
-               c(1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1,
-                 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2))
+               c(1, 1, 1, 1, 1, 1, 3, 4, 3, 3, 2, 2, 2, 2, 2, 2, 4, 4, 1, 1,
+                 1, 1, 1, 1, 3, 3, 4, 2, 4, 2, 2, 2))
 })
 
