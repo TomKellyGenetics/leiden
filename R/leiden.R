@@ -127,6 +127,11 @@ leiden.matrix <- function(object,
                           degree_as_node_size = FALSE,
                           laplacian = FALSE
 ) {
+    # disable printing numerals in scientific notation
+    oo <- options(scipen = 100000000000)
+    # restore options when function terminates
+    on.exit(options(oo))
+
     if(length(partition_type) > 1) partition_type <- partition_type[[1]][1]
     partition_type <- match.arg(partition_type)
 
@@ -198,6 +203,11 @@ leiden.Matrix <- function(object,
                           degree_as_node_size = FALSE,
                           laplacian = FALSE
 ) {
+    # disable printing numerals in scientific notation
+    oo <- options(scipen = 100000000000)
+    # restore options when function terminates
+    on.exit(options(oo))
+
     #cast to sparse matrix
     object <- as(object, "dgCMatrix")
     #run as igraph object (passes to reticulate)
@@ -247,6 +257,11 @@ leiden.list <- function(object,
                           degree_as_node_size = FALSE,
                           laplacian = FALSE
 ) {
+    # disable printing numerals in scientific notation
+    oo <- options(scipen = 100000000000)
+    # restore options when function terminates
+    on.exit(options(oo))
+
     if(length(partition_type) > 1) partition_type <- partition_type[[1]][1]
     partition_type <- match.arg(partition_type)
 
@@ -332,6 +347,11 @@ leiden.igraph <- function(object,
                           degree_as_node_size = FALSE,
                           laplacian = FALSE
 ) {
+    # disable printing numerals in scientific notation
+    oo <- options(scipen = 100000000000)
+    # restore options when function terminates
+    on.exit(options(oo))
+
     #import python modules with reticulate
     numpy <- reticulate::import("numpy", delay_load = TRUE)
     leidenalg <- import("leidenalg", delay_load = TRUE)
