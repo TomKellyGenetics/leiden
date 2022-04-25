@@ -1,3 +1,7 @@
+# leiden 0.3.10
+
+* removes limitation on number of cells (disables scientific notation within function call)
+
 # leiden 0.3.9
 
 Updates maintainer contact details.
