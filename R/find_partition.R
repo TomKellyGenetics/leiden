@@ -22,6 +22,11 @@ run_bipartite_partitioning <- function(py_graph,
                                        seed = NULL,
                                        n_iterations = 2L,
                                        max_comm_size = 0L){
+  # disable printing numerals in scientific notation
+  oo <- options(scipen = 100000000000)
+  # restore options when function terminates
+  on.exit(options(oo))
+
   #import python modules with reticulate
   numpy <- import("numpy", delay_load = TRUE)
   leidenalg <- import("leidenalg", delay_load = TRUE)
@@ -85,6 +90,11 @@ n_iterations = 2L,
 max_comm_size = 0L,
 degree_as_node_size = TRUE
 ) {
+  # disable printing numerals in scientific notation
+  oo <- options(scipen = 100000000000)
+  # restore options when function terminates
+  on.exit(options(oo))
+
   #import python modules with reticulate
   numpy <- import("numpy", delay_load = TRUE)
   leidenalg <- import("leidenalg", delay_load = TRUE)
@@ -287,6 +297,11 @@ max_comm_size = 0L,
 degree_as_node_size = TRUE,
 legacy = FALSE
 ) {
+  # disable printing numerals in scientific notation
+  oo <- options(scipen = 100000000000)
+  # restore options when function terminates
+  on.exit(options(oo))
+
   #import python modules with reticulate
   numpy <- import("numpy", delay_load = TRUE)
   leidenalg <- import("leidenalg", delay_load = TRUE)
