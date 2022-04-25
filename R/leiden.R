@@ -450,8 +450,8 @@ pd <<- NULL
                 reticulate::conda_install(envname = "r-reticulate", packages = "conda")
             }
             # use "r-reticulate" or "base" image (which ever is used by reticulate if installed already)
-            reticulate.env <- reticulate::conda_list()$name[grep("r-reticulate/bin/python", reticulate::conda_list()$python][1]
-            print(paste(c("using environment:",  reticulate.env), collapse = " ")
+            reticulate.env <- reticulate::conda_list()$name[grep("r-reticulate/bin/python", reticulate::conda_list()$python)][1]
+            print(paste(c("using environment:",  reticulate.env), collapse = " "))
             suppressWarnings(suppressMessages(reticulate::use_python(reticulate::conda_python())))
             suppressWarnings(suppressMessages(reticulate::use_condaenv(reticulate.env)))
         }, error = function(e){
@@ -465,12 +465,12 @@ pd <<- NULL
     tryCatch({
         is.reticulate.env <- any(grepl("r-reticulate/bin", reticulate::conda_list()$python))
         if(reticulate::py_available() || is.reticulate.env ){
-            reticulate.env <- reticulate::conda_list()$name[grep("r-reticulate/bin/python", reticulate::conda_list()$python][1]
-            print(paste(c("using environment:",  reticulate.env), collapse = " ")
+            reticulate.env <- reticulate::conda_list()$name[grep("r-reticulate/bin/python", reticulate::conda_list()$python)][1]
+            print(paste(c("using environment:",  reticulate.env), collapse = " "))
             install_python_modules <- function(method = "auto", conda = "auto") {
                 if(!is.null(reticulate::conda_binary())){
                     reticulate::use_python(reticulate::conda_python())
-                    if(!(is.reticulate.env){
+                    if(!(is.reticulate.env)){
                         reticulate::conda_create(envname = reticulate.env)
                         if(!reticulate::py_module_available("conda")) reticulate::conda_install(envname = reticulate.env, packages = "conda")
                     }
