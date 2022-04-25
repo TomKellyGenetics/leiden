@@ -1,3 +1,9 @@
+# leiden 0.3.10
+
+* removes limitation on number of cells (disables scientific notation within function call)
+
+* resolves conflict between base and r-reticulate conda environments on loading
+
 # leiden 0.3.9
 
 Updates maintainer contact details.
