@@ -109,7 +109,7 @@ First we load the packages:
 import igraph as ig
 print("igraph", ig.__version__)
 import leidenalg as la
-print("leidenalg", la.__version__)
+print("leidenalg", la.version)
 ```
 
 Then we load the Zachary karate club example data from igraph.
