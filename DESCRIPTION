@@ -1,8 +1,8 @@
 Package: leiden
 Type: Package
 Title: R Implementation of Leiden Clustering Algorithm
-Version: 0.4.1.9001
-Date: 2021-07-27
+Version: 0.4.2.9001
+Date: 2022-05-01
 Authors@R: c(person("S. Thomas", "Kelly", email = "tomkellygenetics@gmail.com", role = c("aut", "cre", "trl")),
            person("Vincent A.", "Traag", email = "v.a.traag@cwts.leidenuniv.nl", role = c("com")))
 Description: Implements the 'Python leidenalg' module to be called in R.
@@ -16,10 +16,10 @@ Imports:
     methods,
     reticulate,
     Matrix,
-    igraph (> 1.2.6)
+    igraph (>= 1.2.7)
 Encoding: UTF-8
 LazyData: false
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Suggests: 
     bipartite,
     covr,

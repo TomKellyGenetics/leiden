@@ -5,7 +5,7 @@
 * rhub (release) Ubuntu Linux 16.04 LTS, R-release, GCC
 * Fedora (devel) Linux, R-devel, clang, gfortran
 * MacOS 10.14.6 R 3.6.1 
-* MacOS 10.15.7 R 4.1.0
+* MacOS 10.15.7 R 4.2.0
 
 ## R CMD check results
 
@@ -13,25 +13,16 @@
 
 ## Updates
 
-Changes to vignettes to address the following issue:
+Updates calling native R version in igraph v1.2.7 when applicable.
+Significant performance improvements are expected without python
+dependencies for some parameters.
 
-Specifically, please see the problems for the Debian-based checks for
-r-devel.
-
-These are from
-
-      \item \code{matrix(x, n, m)} now warns in more cases where
-      \code{length(x)} differs from than \code{n * m}; suggested by Abby
-      Spurdle and Wolfgang Huber in Feb 2021 on the R-devel mailing
-      list.
-
-      This warning can be turned into an error by setting environment
-      variable \env{_R_CHECK_MATRIX_DATA_} to \samp{TRUE}: \command{R
-        CMD check --as-cran} does so unless it is already set.
-
-in current r-devel, where the Debian-based checks are now performed with
-_R_CHECK_MATRIX_DATA_=TRUE.
+Breaking changes are possible with the new implementation.
+A legacy mode with setting the random seed is supported 
+to reproduce previous results.
 
 ## Python integration
+
+Python is a soft dependency which is still required for some functions but is not essential for core functionality any longer. It is retained for backwards compatibility.
 
 Vignettes are disabled when python is not available. This works on Linux test environments (with python available) and windows test environments (without python or pip packages).

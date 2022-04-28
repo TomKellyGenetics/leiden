@@ -80,7 +80,6 @@ test_that("run with named adjacency matrix", {
   partition <- leiden(snn_graph)
   expect_length(partition, 100)
 })
-<<<<<<< HEAD
 
 mat1 <- matrix(round(runif(10000, 0, 1)), 100, 100)
 mat2 <- matrix(round(rbinom(10000, 1, 0.1)), 100, 100)
@@ -204,5 +203,3 @@ test_that("run consistent results bewteen igraph and reticulate legacy mode with
                        resolution_parameter = 0.5)
   expect_true(all(table(partition, partition2) %in% c(0, 100)))
 })
-=======
->>>>>>> master
