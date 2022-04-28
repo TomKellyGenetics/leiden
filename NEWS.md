@@ -1,8 +1,10 @@
 # leiden 0.3.10
 
-* removes limitation on number of cells (disables scientific notation within function call)
+* removes limitation on number of cells (disables scientific notation within function call): resolves #12
 
-* resolves conflict between base and r-reticulate conda environments on loading
+* resolves conflict between base and r-reticulate conda environments on loading: resolves #20
+
+* updates conda environment in interactive sessions only for compliance to CRAN checks
 
 * resolves formatting error in Rmarkdown vignettes (https://github.com/yihui/knitr/issues/2057)
 

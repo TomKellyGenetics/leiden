@@ -5,7 +5,7 @@
 * rhub (release) Ubuntu Linux 16.04 LTS, R-release, GCC
 * Fedora (devel) Linux, R-devel, clang, gfortran
 * MacOS 10.14.6 R 3.6.1 
-* MacOS 10.15.7 R 4.1.0
+* MacOS 10.15.7 R 4.2.0
 
 ## R CMD check results
 
