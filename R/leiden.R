@@ -130,6 +130,11 @@ leiden.matrix <- function(object,
                           laplacian = FALSE,
                           legacy = FALSE
 ) {
+    # disable printing numerals in scientific notation
+    oo <- options(scipen = 100000000000)
+    # restore options when function terminates
+    on.exit(options(oo))
+
     if(length(partition_type) > 1) partition_type <- partition_type[[1]][1]
     partition_type <- match.arg(partition_type)
 
@@ -205,6 +210,11 @@ leiden.Matrix <- function(object,
     if(length(partition_type) > 1) partition_type <- partition_type[[1]][1]
     partition_type <- match.arg(partition_type)
 
+    # disable printing numerals in scientific notation
+    oo <- options(scipen = 100000000000)
+    # restore options when function terminates
+    on.exit(options(oo))
+
     #cast to sparse matrix
     object <- as(object, "dgCMatrix")
     #run as igraph object (passes to reticulate)
@@ -234,44 +244,49 @@ leiden.Matrix <- function(object,
 ##' @importClassesFrom Matrix dgCMatrix dgeMatrix
 ##' @export
 leiden.list <- function(object,
-                          partition_type = c(
-                              'RBConfigurationVertexPartition',
-                              'ModularityVertexPartition',
-                              'RBERVertexPartition',
-                              'CPMVertexPartition',
-                              'MutableVertexPartition',
-                              'SignificanceVertexPartition',
-                              'SurpriseVertexPartition',
-                              'ModularityVertexPartition.Bipartite',
-                              'CPMVertexPartition.Bipartite'
-                          ),
-                          initial_membership = NULL,
-                          weights = NULL,
-                          node_sizes = NULL,
-                          resolution_parameter = 1,
-                          seed = NULL,
-                          n_iterations = 2L,
-                          max_comm_size = 0L,
-                          degree_as_node_size = FALSE,
-                          laplacian = FALSE,
-                          legacy = FALSE
+                        partition_type = c(
+                            'RBConfigurationVertexPartition',
+                            'ModularityVertexPartition',
+                            'RBERVertexPartition',
+                            'CPMVertexPartition',
+                            'MutableVertexPartition',
+                            'SignificanceVertexPartition',
+                            'SurpriseVertexPartition',
+                            'ModularityVertexPartition.Bipartite',
+                            'CPMVertexPartition.Bipartite'
+                        ),
+                        initial_membership = NULL,
+                        weights = NULL,
+                        node_sizes = NULL,
+                        resolution_parameter = 1,
+                        seed = NULL,
+                        n_iterations = 2L,
+                        max_comm_size = 0L,
+                        degree_as_node_size = FALSE,
+                        laplacian = FALSE,
+                        legacy = FALSE
 ) {
+    # disable printing numerals in scientific notation
+    oo <- options(scipen = 100000000000)
+    # restore options when function terminates
+    on.exit(options(oo))
+
     if(length(partition_type) > 1) partition_type <- partition_type[[1]][1]
     partition_type <- match.arg(partition_type)
 
     if(length(object) == 1 || is.igraph(object)){
         if(!is.igraph(object) && is.list(object)) object <- object[[1]]
         partition <- leiden.igraph(object,
-                            partition_type = partition_type,
-                            weights = weights,
-                            node_sizes = node_sizes,
-                            resolution_parameter = resolution_parameter,
-                            seed = seed,
-                            n_iterations = n_iterations,
-                            max_comm_size = max_comm_size,
-                            degree_as_node_size = degree_as_node_size,
-                            laplacian = laplacian,
-                            legacy = legacy
+                                   partition_type = partition_type,
+                                   weights = weights,
+                                   node_sizes = node_sizes,
+                                   resolution_parameter = resolution_parameter,
+                                   seed = seed,
+                                   n_iterations = n_iterations,
+                                   max_comm_size = max_comm_size,
+                                   degree_as_node_size = degree_as_node_size,
+                                   laplacian = laplacian,
+                                   legacy = legacy
         )
     } else{
 
@@ -302,14 +317,14 @@ leiden.list <- function(object,
 
         #compute partitions with reticulate
         partition <- find_partition_multiplex(py_list, partition_type = partition_type,
-                                    initial_membership = initial_membership,
-                                    weights = weights,
-                                    node_sizes = node_sizes,
-                                    resolution_parameter = resolution_parameter,
-                                    seed = seed,
-                                    n_iterations = n_iterations,
-                                    max_comm_size = max_comm_size,
-                                    degree_as_node_size = degree_as_node_size
+                                              initial_membership = initial_membership,
+                                              weights = weights,
+                                              node_sizes = node_sizes,
+                                              resolution_parameter = resolution_parameter,
+                                              seed = seed,
+                                              n_iterations = n_iterations,
+                                              max_comm_size = max_comm_size,
+                                              degree_as_node_size = degree_as_node_size
         )
     }
     partition
@@ -347,6 +362,11 @@ leiden.igraph <- function(object,
     if(length(partition_type) > 1) partition_type <- partition_type[[1]][1]
     partition_type <- match.arg(partition_type)
 
+    # disable printing numerals in scientific notation
+    oo <- options(scipen = 100000000000)
+    # restore options when function terminates
+    on.exit(options(oo))
+
     #import python modules with reticulate
     numpy <- reticulate::import("numpy", delay_load = TRUE)
     leidenalg <- import("leidenalg", delay_load = TRUE)
@@ -361,6 +381,7 @@ leiden.igraph <- function(object,
             warning(paste("weights but be same length as number of edges:", length(E(object))))
             weights <- NULL
         }
+    }
 
     #derive Laplacian
     if(laplacian == TRUE){
@@ -473,12 +494,28 @@ pd <- NULL
 .onAttach <- function(libname, pkgname) {
     if(!reticulate::py_available()){
         tryCatch({
-            if(!("r-reticulate" %in% reticulate::conda_list()$name)){
-                reticulate::conda_create(envname = "r-reticulate")
-                reticulate::conda_install(envname = "r-reticulate", packages = "conda")
+            is.reticulate.env <- any(grepl("r-reticulate/bin", reticulate::conda_list()$python))
+            # create conda env if no base image found
+            if(!(is.reticulate.env)){
+                if(interactive()){
+                    install.deps <- readline("create conda environment (yes/no)?")
+                    packageStartupMessage(install.deps)
+                } else {
+                    packageStartupMessage("create conda environment (yes/no)?")
+                    install.deps <- "no (use interactive mode)"
+                    packageStartupMessage("no (use interactive mode)")
+                }
+                if(install.deps == "yes" || install.deps == "y"){
+                    reticulate::miniconda_update()
+                    reticulate::conda_create(envname = "r-reticulate")
+                    reticulate::conda_install(envname = "r-reticulate", packages = "conda")
+                }
             }
+            # use "r-reticulate" or "base" image (which ever is used by reticulate if installed already)
+            reticulate.env <- reticulate::conda_list()$name[grep("r-reticulate/bin/python", reticulate::conda_list()$python)][1]
+            packageStartupMessage(paste(c("using environment:",  reticulate.env), collapse = " "))
             suppressWarnings(suppressMessages(reticulate::use_python(reticulate::conda_python())))
-            suppressWarnings(suppressMessages(reticulate::use_condaenv("r-reticulate")))
+            suppressWarnings(suppressMessages(reticulate::use_condaenv(reticulate.env)))
         }, error = function(e){
             packageStartupMessage("Unable to set up conda environment r-reticulate")
             packageStartupMessage("run in terminal:")
@@ -488,55 +525,56 @@ pd <- NULL
         finally = packageStartupMessage("conda environment r-reticulate installed"))
     }
     tryCatch({
-        if(reticulate::py_available() || sum("r-reticulate" == reticulate::conda_list()$name) >= 1){
-            install_python_modules <- function(method = "auto", conda = "auto") {
-                if(!is.null(reticulate::conda_binary())){
-                    reticulate::use_python(reticulate::conda_python())
-                    if(!("r-reticulate" %in% reticulate::conda_list()$name)){
-                        reticulate::conda_create(envname = "r-reticulate", )
-                        if(!reticulate::py_module_available("conda")) reticulate::conda_install(envname = "r-reticulate", packages = "conda")
-                    }
-                    suppressWarnings(suppressMessages(reticulate::use_condaenv("r-reticulate")))
-                    if(.Platform$OS.type == "windows"){
-
-                                             install.packages("devtools",  quiet = TRUE)
-                        devtools::install_github("rstudio/reticulate", ref = "86ebb56",  quiet = TRUE)
-                        if(!reticulate::py_module_available("numpy")) suppressWarnings(suppressMessages(reticulate::conda_install(envname = "r-reticulate", packages = "numpy")))
-                        if(!reticulate::py_module_available("pandas")) suppressWarnings(suppressMessages(reticulate::conda_install(envname = "r-reticulate", packages = "pandas")))
-                        if(!reticulate::py_module_available("igraph")) suppressWarnings(suppressMessages(reticulate::conda_install(envname = "r-reticulate", packages = "python-igraph")))
-                        if(!reticulate::py_module_available("mkl")) suppressWarnings(suppressMessages(reticulate::conda_install(envname = "r-reticulate", packages = "mkl", channel = "intel")))
-                        if(!reticulate::py_module_available("umap")) suppressWarnings(suppressMessages(reticulate::conda_install(envname = "r-reticulate", packages = "umap-learn", channel = "conda-forge")))
-                        if(!reticulate::py_module_available("leidenalg")) suppressWarnings(suppressMessages(reticulate::conda_install(envname = "r-reticulate", packages = "leidenalg", channel = "conda-forge")))
-                        install.packages("reticulate",  quiet = TRUE)
-                        if(!reticulate::py_module_available("leidenalg")) suppressWarnings(suppressMessages(reticulate::conda_install(envname = "r-reticulate", packages = "leidenalg"))) #, channel = "conda-forge")
-                        utils::install.packages("reticulate",  quiet = TRUE)
+        is.reticulate.env <- any(grepl("r-reticulate/bin", reticulate::conda_list()$python))
+        if(reticulate::py_available() || is.reticulate.env ){
+            if(interactive()){
+                install.deps <- readline("install dependencies (yes/no)?")
+                packageStartupMessage(install.deps)
+            } else {
+                packageStartupMessage("install dependencies (yes/no)?")
+                install.deps <- "no (use interactive mode)"
+                packageStartupMessage("no (use interactive mode)")
+            }
+            if(install.deps == "yes" || install.deps == "y"){
+                reticulate.env <- reticulate::conda_list()$name[grep("r-reticulate/bin/python", reticulate::conda_list()$python)][1]
+                packageStartupMessage(paste(c("using environment:",  reticulate.env), collapse = " "))
+                install_python_modules <- function(method = "auto", conda = "auto") {
+                    if(!is.null(reticulate::conda_binary())){
+                        reticulate::use_python(reticulate::conda_python())
+                        if(!(is.reticulate.env)){
+                            reticulate::conda_create(envname = reticulate.env)
+                            if(!reticulate::py_module_available("conda")) reticulate::conda_install(envname = reticulate.env, packages = "conda")
+                        }
+                        suppressWarnings(suppressMessages(reticulate::use_condaenv(reticulate.env)))
+                        if(.Platform$OS.type == "windows"){
+                            utils::install.packages("devtools",  quiet = TRUE)
+                            devtools::install_github("rstudio/reticulate", ref = "86ebb56",  quiet = TRUE)
+                            if(!reticulate::py_module_available("numpy")) suppressWarnings(suppressMessages(reticulate::conda_install(envname = reticulate.env, packages = "numpy")))
+                            if(!reticulate::py_module_available("pandas")) suppressWarnings(suppressMessages(reticulate::conda_install(envname = reticulate.env, packages = "pandas")))
+                            if(!reticulate::py_module_available("igraph")) suppressWarnings(suppressMessages(reticulate::conda_install(envname = reticulate.env, packages = "python-igraph")))
+                            if(!reticulate::py_module_available("mkl")) suppressWarnings(suppressMessages(reticulate::conda_install(envname = reticulate.env, packages = "mkl", channel = "intel")))
+                            if(!reticulate::py_module_available("umap")) suppressWarnings(suppressMessages(reticulate::conda_install(envname = reticulate.env, packages = "umap-learn", channel = "conda-forge")))
+                            if(!reticulate::py_module_available("leidenalg")) suppressWarnings(suppressMessages(reticulate::conda_install(envname = reticulate.env, packages = "leidenalg", channel = "conda-forge")))
+                            install.packages("reticulate",  quiet = TRUE)
+                            if(!reticulate::py_module_available("leidenalg")) suppressWarnings(suppressMessages(reticulate::conda_install(envname = reticulate.env, packages = "leidenalg"))) #, channel = "conda-forge")
+                            utils::install.packages("reticulate",  quiet = TRUE)
+                        } else {
+                            if(!reticulate::py_module_available("numpy")) suppressWarnings(suppressMessages(reticulate::conda_install(reticulate.env, "numpy")))
+                            if(!reticulate::py_module_available("pandas")) suppressWarnings(suppressMessages(reticulate::conda_install(reticulate.env, "pandas")))
+                            if(!reticulate::py_module_available("igraph")) suppressWarnings(suppressMessages(reticulate::conda_install(reticulate.env, "python-igraph")))
+                            if(!reticulate::py_module_available("umap")) suppressWarnings(suppressMessages(reticulate::conda_install(reticulate.env, "umap-learn", forge = TRUE)))
+                            if(!reticulate::py_module_available("leidenalg")) suppressWarnings(suppressMessages(reticulate::conda_install(reticulate.env, "leidenalg", forge = TRUE)))
+                            #Sys.setenv(PATH = paste0(strsplit(reticulate::py_config()$pythonhome, ":")[[1]][1], "/bin:$PATH"))
+                            Sys.setenv(RETICULATE_PYTHON = reticulate::conda_python())
+                        }
                     } else {
-                        if(!reticulate::py_module_available("numpy")) suppressWarnings(suppressMessages(reticulate::conda_install("r-reticulate", "numpy")))
-                        if(!reticulate::py_module_available("pandas")) suppressWarnings(suppressMessages(reticulate::conda_install(envname = "r-reticulate", packages = "pandas")))
-                        if(!reticulate::py_module_available("igraph")) suppressWarnings(suppressMessages(reticulate::conda_install("r-reticulate", "python-igraph")))
-                        if(!reticulate::py_module_available("umap")) suppressWarnings(suppressMessages(reticulate::conda_install("r-reticulate", "umap-learn", forge = TRUE)))
-                        if(!reticulate::py_module_available("leidenalg")) suppressWarnings(suppressMessages(reticulate::conda_install("r-reticulate", "leidenalg", forge = TRUE)))
-                        #Sys.setenv(PATH = paste0(strsplit(reticulate::py_config()$pythonhome, ":")[[1]][1], "/bin:$PATH"))
-                        Sys.setenv(RETICULATE_PYTHON = reticulate::conda_python())
+                        if(!reticulate::py_module_available("numpy")) suppressWarnings(suppressMessages(reticulate::py_install("numpy")))
+                        if(!reticulate::py_module_available("pandas")) suppressWarnings(suppressMessages(reticulate::py_install("pandas")))
+                        if(!reticulate::py_module_available("igraph")) suppressWarnings(suppressMessages(reticulate::py_install("python-igraph", method = method, conda = conda)))
+                        if(!reticulate::py_module_available("umap")) suppressWarnings(suppressMessages(reticulate::py_install("umap-learn")))
+                        if(!reticulate::py_module_available("leidenalg")) suppressWarnings(suppressMessages(reticulate::py_install("leidenalg", method = method, conda = conda, forge = TRUE)))
+                        Sys.setenv(RETICULATE_PYTHON = reticulate::py_config()$python)
                     }
-                } else {
-                    # shell <- strsplit(Sys.getenv("SHELL"), "/")[[1]]
-                    # shell <- shell[length(shell)]
-                    # eval(parse(text = paste0(c('system("conda init ', shell, '")'), collapse = "")))
-                    # eval(parse(text = paste0(c('system("source ~/.', shell, 'rc")'), collapse = "")))
-                    # shell <- as.list(system("echo $0"))
-                    # if(shell == sh) shell <- "bash"
-                    # system("conda init")
-                    # eval(parse(text = paste0(c('system("source ~/.', shell, '_profile")'), collapse = "")))
-                    # system("conda init")
-                    # system("conda activate r-reticulate")
-                    if(!reticulate::py_module_available("numpy")) suppressWarnings(suppressMessages(reticulate::py_install("numpy")))
-                    if(!reticulate::py_module_available("pandas")) suppressWarnings(suppressMessages(reticulate::conda_install(envname = "r-reticulate", packages = "pandas")))
-                    if(!reticulate::py_module_available("igraph")) suppressWarnings(suppressMessages(reticulate::py_install("python-igraph", method = method, conda = conda)))
-                    if(!reticulate::py_module_available("umap")) suppressWarnings(suppressMessages(reticulate::py_install("umap-learn")))
-                    if(!reticulate::py_module_available("leidenalg")) suppressWarnings(suppressMessages(reticulate::py_install("leidenalg", method = method, conda = conda, forge = TRUE)))
-                    #Sys.setenv(PATH = paste0(strsplit(reticulate::py_config()$pythonhome, ":")[[1]][1], "/bin:$PATH"))
-                    Sys.setenv(RETICULATE_PYTHON = reticulate::py_config()$python)
                 }
             }
             quiet <- function(expr, all = TRUE) {
@@ -578,3 +616,4 @@ pd <- NULL
         }
     }
 }
+
