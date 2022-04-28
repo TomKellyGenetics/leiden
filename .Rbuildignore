@@ -21,6 +21,7 @@
 ^\ .DS_Store$
 revdep
 images
+lastMiKTeXException
 
 ## Files to ignore when building package
 
@@ -46,3 +47,4 @@ images
 ^vignettes/bash_py_time$
 ^revdep$
 ^aarhus_mplex.rda$
+^CRAN-SUBMISSION$

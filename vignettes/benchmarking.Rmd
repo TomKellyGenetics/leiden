@@ -109,7 +109,7 @@ First we load the packages:
 import igraph as ig
 print("igraph", ig.__version__)
 import leidenalg as la
-print("leidenalg", la.__version__)
+print("leidenalg", la.version)
 ```
 
 Then we load the Zachary karate club example data from igraph.
@@ -148,7 +148,7 @@ plot(graph_object, vertex.color = node.cols, layout=layout_with_kk)
 
 We can reproduce passing arguments in this manner as well.
 
-````{python, eval=module}
+```{python, eval=module}
 partition = la.find_partition(G, la.CPMVertexPartition, resolution_parameter = 0.05)
 print(partition)
 partition
@@ -173,7 +173,7 @@ plot(graph_object, vertex.color = node.cols, layout=layout_with_kk)
 
 We can run the RBC vertex method which generalises the modularity vertex partition.
 
-````{python, eval=module}
+```{python, eval=module}
 partition = la.find_partition(G, la.RBConfigurationVertexPartition, resolution_parameter = 1.5)
 print(partition)
 partition
@@ -350,7 +350,7 @@ plot(G, vertex.color = node.cols, layout=layout_with_kk)
 
 We can run the RBC vertex method which generalises the modularity vertex partition.
 
-````{r, eval=module}
+```{r, eval=module}
 partition <- leiden(G, "RBConfigurationVertexPartition", resolution_parameter = 1.5)
 partition
 ```
