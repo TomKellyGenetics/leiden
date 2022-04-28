@@ -162,7 +162,3 @@ test_that("same output with different input class", {
 # sum(diag(table(part_mat2, part_graph2))) == length(part_mat)
 # sum(diag(table(part_mat2, part_graph2))) == nrow(mat)
 # sum(diag(table(part_mat2, part_graph2))) == length(V(graph))
-<<<<<<< HEAD
-=======
-
->>>>>>> master

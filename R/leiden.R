@@ -381,6 +381,7 @@ leiden.igraph <- function(object,
             warning(paste("weights but be same length as number of edges:", length(E(object))))
             weights <- NULL
         }
+    }
 
         #derive Laplacian
         if(laplacian == TRUE){
@@ -574,26 +575,37 @@ leiden.igraph <- function(object,
                             if(!reticulate::py_module_available("leidenalg")) suppressWarnings(suppressMessages(reticulate::py_install("leidenalg", method = method, conda = conda, forge = TRUE)))
                             Sys.setenv(RETICULATE_PYTHON = reticulate::py_config()$python)
                         }
+<<<<<<< HEAD
+                    }
+=======
+                    } else {
+                        if(!reticulate::py_module_available("numpy")) suppressWarnings(suppressMessages(reticulate::py_install("numpy")))
+                        if(!reticulate::py_module_available("pandas")) suppressWarnings(suppressMessages(reticulate::py_install("pandas")))
+                        if(!reticulate::py_module_available("igraph")) suppressWarnings(suppressMessages(reticulate::py_install("python-igraph", method = method, conda = conda)))
+                        if(!reticulate::py_module_available("umap")) suppressWarnings(suppressMessages(reticulate::py_install("umap-learn")))
+                        if(!reticulate::py_module_available("leidenalg")) suppressWarnings(suppressMessages(reticulate::py_install("leidenalg", method = method, conda = conda, forge = TRUE)))
+                        Sys.setenv(RETICULATE_PYTHON = reticulate::py_config()$python)
                     }
                 }
-                quiet <- function(expr, all = TRUE) {
-                    if (Sys.info()['sysname'] == "Windows") {
-                        file <- "NUL"
-                    } else {
-                        file <- "/dev/null"
-                    }
-
-                    if (all) {
-                        suppressWarnings(suppressMessages(suppressPackageStartupMessages(
-                            capture.output(expr, file = file)
-                        )))
-                    } else {
-                        capture.output(expr, file = file)
-                    }
-
-                }
-                quiet(install_python_modules())
             }
+            quiet <- function(expr, all = TRUE) {
+                if (Sys.info()['sysname'] == "Windows") {
+                    file <- "NUL"
+                } else {
+                    file <- "/dev/null"
+>>>>>>> master
+                }
+
+                if (all) {
+                    suppressWarnings(suppressMessages(suppressPackageStartupMessages(
+                        capture.output(expr, file = file)
+                    )))
+                } else {
+                    capture.output(expr, file = file)
+                }
+
+            }
+<<<<<<< HEAD
         }, error = function(e){
             packageStartupMessage("Unable to install python modules igraph and leidenalg")
             packageStartupMessage("run in terminal:")
@@ -613,6 +625,28 @@ leiden.igraph <- function(object,
                 leidenalg <- reticulate::import("leidenalg", delay_load = TRUE)
                 ig <- reticulate::import("igraph", delay_load = TRUE)
             }
+=======
+            quiet(install_python_modules())
+        }
+    }, error = function(e){
+        packageStartupMessage("Unable to install python modules igraph and leidenalg")
+        packageStartupMessage("run in terminal:")
+        packageStartupMessage("conda install -n r-reticulate -c conda-forge vtraag python-igraph pandas umap learn")
+    },
+    finally = packageStartupMessage("python modules igraph and leidenalg installed"))
+    if (suppressWarnings(suppressMessages(requireNamespace("reticulate")))) {
+        modules <- reticulate::py_module_available("pandas")
+        if (modules) {
+            ## assignment in parent environment!
+            pd <- reticulate::import("pandas", delay_load = TRUE)
+        }
+        modules <- reticulate::py_module_available("leidenalg") && reticulate::py_module_available("igraph")
+        if (modules) {
+            ## assignment in parent environment!
+            numpy <- reticulate::import("numpy", delay_load = TRUE)
+            leidenalg <- reticulate::import("leidenalg", delay_load = TRUE)
+            ig <- reticulate::import("igraph", delay_load = TRUE)
+>>>>>>> master
         }
     }
 }
