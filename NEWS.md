@@ -6,6 +6,8 @@
 
 * automatically calls native R version of leiden rather than Python to improve performance
 
+* updates vignettes and unit tests to ensure consistent results with past versions
+
 # leiden 0.4.1
 
 * migrates changes to retain on CRAN to leiden 0.4.0 (alpha)
@@ -13,6 +15,8 @@
 # leiden 0.4.0
 
 * migrate to calling community_leiden in igraph
+
+* updates the benchmarking vignette to compare performance to legacy versions using reticulate
 
 # leiden 0.3.10
 
@@ -29,7 +33,6 @@
 # leiden 0.3.9
 
 Updates maintainer contact details.
->>>>>>> master
 
 # leiden 0.3.8
 
