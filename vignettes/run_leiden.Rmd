@@ -157,7 +157,7 @@ plot(graph_object, vertex.color = node.cols)
 
 ```{r, warning=FALSE, message=FALSE, eval=module}
 partition <- leiden(adjacency_matrix, max_comm_size = 12)
-node.cols <- brewer.pal(max(c(10, partition)),"Pastel1")[partition]
+node.cols <- brewer.pal(min(c(9, partition)),"Pastel1")[partition]
 plot(graph_object, vertex.color = node.cols)
 ```
 
