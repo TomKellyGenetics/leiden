@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title = "leiden: R implementation of the Leiden algorithm"
+authors:
+- family-names: "Kelly"
+  given-names: "S. Thomas"
+  orcid: "https://orcid.org/0000-0003-3904-66900"
+title: "leiden"
+version: 0.4.2
+date-released: 2022-05-98
+url: "https://github.com/TomKellyGenetics/leiden"
