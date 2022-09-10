@@ -1,3 +1,11 @@
+# leiden 0.4.3
+
+Minor update to pass CRAN checks
+
+- removed deprecated method to create sparse matrices
+
+- correct links in citations and vignettes
+
 # leiden 0.4.2
 
 * migrates bug fixes to conda environment and limit on total cells to refactored package
