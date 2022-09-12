@@ -182,7 +182,7 @@ leiden.data.frame <- leiden.matrix
 
 ##' @importFrom igraph graph_from_adjacency_matrix edge_attr set_edge_attr E
 ##' @importFrom methods as
-##' @importClassesFrom Matrix dgCMatrix dgeMatrix CsparseMatrix generalMatrix dMatrix
+##' @importClassesFrom Matrix dgCMatrix dgeMatrix
 ##' @export
 leiden.Matrix <- function(object,
                           partition_type = c(
@@ -216,7 +216,7 @@ leiden.Matrix <- function(object,
     on.exit(options(oo))
 
     #cast to sparse matrix
-    object <- as(as(as(object, "CsparseMatrix"), "generalMatrix"), "dMatrix")
+    object <- as(object, "dgCMatrix")
     #run as igraph object (passes to reticulate)
     if(is.null(weights)){
         object <- graph_from_adjacency_matrix(adjmatrix = object, weighted = TRUE)
@@ -591,7 +591,6 @@ pd <- NULL
                 } else {
                     capture.output(expr, file = file)
                 }
-
             }
             quiet(install_python_modules())
         }

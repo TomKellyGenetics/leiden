@@ -22,6 +22,7 @@ graph <- igraph::graph_from_adjacency_matrix(mat, weighted = NULL)
 test_that("run with unweighted dense matrix", {
   skip_if_no_python()
   set.seed(9000)
+<<<<<<< HEAD
   mat <- round(matrix(runif(100, max = 1), 10, 10, ), 0)
   mat
   part_mat0 <- leiden::leiden(mat, seed = 9000)
@@ -38,10 +39,38 @@ test_that("run with unweighted sparse matrix", {
 
 test_that("run with unweighted graph object", {
   skip_if_no_python()
+=======
+  mat <- round(matrix(runif(100, max = 1), 10, 10), 0)
+  mat
+  part_mat0 <- leiden::leiden(mat, seed = 9000, resolution_parameter = 0.8)
+  expect_equal(table(part_mat0), structure(c(`1` = 5L, `2` = 5L), .Dim = 2L, .Dimnames = list(
+    part_mat0 = c("1", "2")), class = "table"))
+  expect_length(object = unique(part_mat0[which(c(1, 2, 2, 2, 1, 2, 2, 1, 1, 1) == 1)]), n = 1)
+  expect_length(object = unique(part_mat0[which(c(1, 2, 2, 2, 1, 2, 2, 1, 1, 1) == 2)]), n = 1)
+})
+
+set.seed(9000)
+test_that("run with unweighted sparse matrix", {
+  skip_if_no_python()
+  set.seed(9000)
+  sp.mat <- as(mat, Class = "dgCMatrix")
+  part_sp.mat0 <- leiden::leiden(sp.mat, seed = 9000)
+  expect_equal(table(part_sp.mat0), structure(c(`1` = 5L, `2` = 5L), .Dim = 2L, .Dimnames = list(
+    part_sp.mat0 = c("1", "2")), class = "table"))
+  expect_length(object = unique(part_sp.mat0[which(c(1, 2, 2, 2, 1, 2, 2, 1, 1, 1) == 1)]), n = 1)
+  expect_length(object = unique(part_sp.mat0[which(c(1, 2, 2, 2, 1, 2, 2, 1, 1, 1) == 2)]), n = 1)
+})
+
+set.seed(9000)
+test_that("run with unweighted graph object", {
+  skip_if_no_python()
+  set.seed(9000)
+>>>>>>> 7d904bd98ec75ea8cc9bda7b50896458b3c26522
   graph <- igraph::graph_from_adjacency_matrix(mat, weighted = NULL)
   graph
   part_graph0 <- leiden::leiden(graph, seed = 9000)
   part_graph0
+<<<<<<< HEAD
   expect_equal(part_graph0,  c(1, 2, 2, 2, 1, 2, 2, 1, 1, 1))
 })
 
@@ -55,6 +84,27 @@ test_that("same output with different input class", {
   expect_equal(sum(diag(table(part_mat0, part_graph0))), length(part_mat0))
   expect_equal(sum(diag(table(part_mat0, part_graph0))), nrow(mat))
   expect_equal(sum(diag(table(part_mat0, part_graph0))), length(V(graph)))
+=======
+  expect_equal(table(part_graph0), structure(c(`1` = 5L, `2` = 5L), .Dim = 2L, .Dimnames = list(
+    part_graph0 = c("1", "2")), class = "table"))
+  expect_length(object = unique(part_graph0[which(c(1, 2, 2, 2, 1, 2, 2, 1, 1, 1) == 1)]), n = 1)
+  expect_length(object = unique(part_graph0[which(c(1, 2, 2, 2, 1, 2, 2, 1, 1, 1) == 2)]), n = 1)
+
+})
+
+set.seed(9000)
+test_that("same output with different input class", {
+  skip_if_no_python()
+  set.seed(9000)
+  part_mat0 <- leiden::leiden(mat, seed = 9000, resolution_parameter = 0.8)
+  set.seed(9000)
+  part_graph0 <- leiden::leiden(graph, seed = 9000, resolution_parameter = 0.8)
+  expect_length(object = unique(part_mat0[which(c(1, 2, 2, 2, 1, 2, 2, 1, 1, 1) == 1)]), n = 1)
+  expect_length(object = unique(part_mat0[which(c(1, 2, 2, 2, 1, 2, 2, 1, 1, 1) == 2)]), n = 1)
+  expect_length(object = unique(part_graph0[which(c(1, 2, 2, 2, 1, 2, 2, 1, 1, 1) == 1)]), n = 1)
+  expect_length(object = unique(part_graph0[which(c(1, 2, 2, 2, 1, 2, 2, 1, 1, 1) == 2)]), n = 1)
+  expect_true(all(part_mat0 + part_graph0 == 3) ||  all(part_mat0 == part_graph0))
+>>>>>>> 7d904bd98ec75ea8cc9bda7b50896458b3c26522
 })
 
 # # Test Seurat (development version)

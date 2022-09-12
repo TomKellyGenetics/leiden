@@ -5,6 +5,7 @@
 * rhub (release) Ubuntu Linux 16.04 LTS, R-release, GCC
 * Fedora (devel) Linux, R-devel, clang, gfortran
 * MacOS 10.14.6 R 3.6.1 
+* Red Hat Enterprise Linux 8.5 R 4.1.2
 * MacOS 10.15.7 R 4.2.0
 
 ## R CMD check results
@@ -21,6 +22,13 @@ Breaking changes are possible with the new implementation.
 A legacy mode with setting the random seed is supported 
 to reproduce previous results.
 
+<<<<<<< HEAD
+=======
+All vignettes and unit tests from the previous version run without errors
+or changes in results. Performance is significantly improved as
+demonstrated in the vignettes.
+
+>>>>>>> 7d904bd98ec75ea8cc9bda7b50896458b3c26522
 ## Python integration
 
 Python is a soft dependency which is still required for some functions but is not essential for core functionality any longer. It is retained for backwards compatibility.
