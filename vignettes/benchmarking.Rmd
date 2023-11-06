@@ -331,7 +331,7 @@ plot(G, vertex.color = node.cols, layout=layout_with_kk)
 
 We can reproduce passing arguments in this manner as well.
 
-````{r, eval=module}
+```{r, eval=module}
 partition <- leiden(G, "CPMVertexPartition", resolution_parameter = 0.05, legacy = TRUE)
 partition
 ```
@@ -393,7 +393,7 @@ plot(G, vertex.color = node.cols, layout=layout_with_kk)
 
 We check here that it returns the same results as in igraph.
 
-````{r, eval=module}
+```{r, eval=module}
 partition <- membership(cluster_leiden(G, objective_function = "modularity"))
 partition
 table(partition)
@@ -401,7 +401,7 @@ table(partition)
 
 We can also run CPM cost functions.
 
-````{r, eval=module}
+```{r, eval=module}
 partition <- leiden(G, "CPMVertexPartition", resolution_parameter = 0.1, legacy = FALSE)
 partition
 table(partition)
