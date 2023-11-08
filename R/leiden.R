@@ -597,7 +597,7 @@ pd <- NULL
     }, error = function(e){
         packageStartupMessage("Unable to install python modules igraph and leidenalg")
         packageStartupMessage("run in terminal:")
-        packageStartupMessage("conda install -n r-reticulate -c conda-forge vtraag python-igraph pandas umap learn")
+        packageStartupMessage("conda install -n r-reticulate -c conda-forge leidenalg python-igraph pandas umap-learn")
     },
     finally = packageStartupMessage("python modules igraph and leidenalg installed"))
     if (suppressWarnings(suppressMessages(requireNamespace("reticulate")))) {

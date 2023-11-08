@@ -800,11 +800,7 @@ Matrix methods in R are significantly slower than the updated igraph version.
 
 ```{r, eval=module}
 library("Matrix")
-<<<<<<< HEAD
 adj_mat <- as(as(as(as_adjacency_matrix(G), Class = "CsparseMatrix"), "generalMatrix"), "dMatrix")
-=======
-adj_mat <- as(as_adjacency_matrix(G), Class = "dgCMatrix")
->>>>>>> 7d904bd98ec75ea8cc9bda7b50896458b3c26522
 time15 <- Sys.time()
 partition <- leiden(adj_mat, "ModularityVertexPartition", legacy = TRUE)
 partition

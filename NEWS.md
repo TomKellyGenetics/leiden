@@ -1,10 +1,20 @@
+# leiden 0.4.3.1
+
+Bug fix to avoid archive when dependencies are updated.
+
+* corrects mismatched chunk delimiters in documentation
+
+Resolves:
+https://github.com/yihui/knitr/issues/2057
+https://github.com/yihui/knitr/pull/2306
+
 # leiden 0.4.3
 
 Minor update to pass CRAN checks
 
-- removed deprecated method to create sparse matrices
+* removed deprecated method to create sparse matrices
 
-- correct links in citations and vignettes
+* correct links in citations and vignettes
 
 # leiden 0.4.2
 

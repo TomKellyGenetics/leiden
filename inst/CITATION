@@ -3,14 +3,14 @@ citHeader("To cite the leiden package in publications use:")
 citEntry(entry = "Manual",
          title        = "leiden: R implementation of the Leiden algorithm",
          author       = personList(as.person("S. Thomas Kelly")),
-         year         = "2022",
-         note         = "R package version 0.4.3",
+         year         = "2023",
+         note         = "R package version 0.4.3.1",
          url          = "https://github.com/TomKellyGenetics/leiden",
 
          textVersion  =
-           paste("S. Thomas Kelly (2020). leiden: R implementation of the Leiden algorithm. R package version 0.4.3",
-         year         = "2022",
-         note         = "R package version 0.4.3",
+           paste("S. Thomas Kelly (2023). leiden: R implementation of the Leiden algorithm. R package version 0.4.3.1",
+         year         = "2023",
+         note         = "R package version 0.4.3.1",
          url          = "https://github.com/TomKellyGenetics/leiden",
                  "https://github.com/TomKellyGenetics/leiden")
 )
