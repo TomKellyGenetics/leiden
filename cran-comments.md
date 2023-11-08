@@ -16,17 +16,7 @@
 
 ## Updates
 
-Updates calling native R version in igraph v1.2.7 when applicable.
-Significant performance improvements are expected without python
-dependencies for some parameters.
-
-Breaking changes are possible with the new implementation.
-A legacy mode with setting the random seed is supported 
-to reproduce previous results.
-
-All vignettes and unit tests from the previous version run without errors
-or changes in results. Performance is significantly improved as
-demonstrated in the vignettes.
+Avoids archiving as a reverse dependency of knitr on upcoming release. Updates documentation to ensure matching chunk delimiters.
 
 ## Python integration
 
