@@ -11,6 +11,7 @@
 ^\.circleci$
 ^codecov\.yml$
 ^LICENSE\.md$
+^CITATION.cff$
 ^cran-comments\.md$
 ^.*\.pdf$
 ^.*\.png$

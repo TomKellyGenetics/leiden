@@ -215,11 +215,7 @@ skip_if_no_python <- function() {
     testthat::skip("leidenalg not available for testing")
 }
 
-<<<<<<< HEAD
-
-=======
 set.seed(9000)
->>>>>>> 7d904bd98ec75ea8cc9bda7b50896458b3c26522
 test_that("run with CPMVertexPartition multiplexed", {
   skip_if_no_python()
   partition <- leiden(multiplex_graph,
@@ -231,19 +227,12 @@ test_that("run with CPMVertexPartition multiplexed", {
   expect_equal(partition,
                c(8, 2, 7, 5, 2, 5, 1, 2, 6, 5, 5, 2, 2, 5, 5, 5, 3, 6, 1, 2,
                  7, 10, 3, 1, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 4, 4, 2,
-<<<<<<< HEAD
-                 2, 2, 6, 4, 2, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 6, 7, 6, 4, 9, 4
-=======
                  2, 2, 6, 4, 2, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 3, 7, 6, 4, 9, 4
->>>>>>> 7d904bd98ec75ea8cc9bda7b50896458b3c26522
                ))
   multiplex_graph
 })
 
-<<<<<<< HEAD
-=======
 set.seed(9000)
->>>>>>> 7d904bd98ec75ea8cc9bda7b50896458b3c26522
 test_that("run with ModularityVertexPartition multiplexed", {
   skip_if_no_python()
   partition <- leiden(multiplex_graph,
@@ -253,14 +242,6 @@ test_that("run with ModularityVertexPartition multiplexed", {
                       seed = 9001)
   expect_length(partition, length(V(multiplex_graph[[1]])))
   expect_equal(sort(unique(partition)), 1:6)
-<<<<<<< HEAD
-  expect_equal(partition,
-               c(3, 3, 1, 4, 3, 4, 4, 3, 1, 4, 4, 3, 3, 4, 4, 4, 1, 1, 2, 3,
-                 1, 3, 1, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 5, 5, 3, 3,
-                 3, 1, 5, 3, 1, 1, 1, 1, 1, 1, 1, 5, 5, 5, 1, 1, 1, 5, 6, 5))
-})
-
-=======
   expect_equal(table(partition),
                structure(c(`1` = 15L, `2` = 13L, `3` = 13L, `4` = 11L, `5` = 8L,
                            `6` = 1L), .Dim = 6L, .Dimnames = list(partition = c("1", "2",
@@ -272,7 +253,6 @@ test_that("run with ModularityVertexPartition multiplexed", {
 })
 
 set.seed(9000)
->>>>>>> 7d904bd98ec75ea8cc9bda7b50896458b3c26522
 test_that("run with ModularityVertexPartition multiplexed and max_comm_size", {
   skip_if_no_python()
   partition <- leiden(multiplex_graph,
@@ -284,16 +264,9 @@ test_that("run with ModularityVertexPartition multiplexed and max_comm_size", {
   expect_length(partition, length(V(multiplex_graph[[1]])))
   expect_equal(sort(unique(partition)), 1:10)
   expect_equal(max(table(partition)), 8)
-<<<<<<< HEAD
-  expect_equal(partition,
-               c(4, 4, 2, 3, 8, 3, 3, 4, 2, 3, 3, 8, 8, 3, 3, 3, 6, 6, 5, 8,
-                 2, 8, 6, 7, 2, 5, 5, 5, 7, 5, 7, 7, 5, 5, 7, 5, 4, 1, 1, 4, 4,
-                 4, 2, 1, 4, 6, 6, 6, 6, 9, 2, 6, 1, 1, 1, 2, 2, 7, 1, 10, 1))
-=======
   expect_equal(table(partition),
                structure(c(`1` = 8L, `2` = 8L, `3` = 8L, `4` = 8L, `5` = 8L,
                            `6` = 8L, `7` = 6L, `8` = 5L, `9` = 1L, `10` = 1L), .Dim = 10L, .Dimnames = list(
                              partition = c("1", "2", "3", "4", "5", "6", "7", "8", "9",
                                            "10")), class = "table"))
->>>>>>> 7d904bd98ec75ea8cc9bda7b50896458b3c26522
 })
