@@ -1,6 +1,6 @@
 citHeader("To cite the leiden package in publications use:")
 
-citEntry(entry = "Manual",
+bibentry(bibtype = "Manual",
          title        = "leiden: R implementation of the Leiden algorithm",
          author       = c(as.person("S. Thomas Kelly")),
          year         = "2023",
